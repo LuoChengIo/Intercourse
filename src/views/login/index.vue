@@ -1,34 +1,36 @@
 <!-- 登录页面 -->
 <template>
   <div class="rel hp100">
-    <!-- <div class="login-bg" ></div> -->
-    <indexbg />
-    <particles />
-    <div class="login-box clearfix">
-      <div class="l hp100 left-ct">
-        <div class="text-white cst">
-          <p class="f30">Welcome!</p>
-          <h2 class="f30 n">后台管理系统</h2>
-        </div>
+    <div class="header">
+      <div class="hd-ct">
+        <img class="logo dib vm" src="~@/assets/logo@2x.png" alt="" srcset="">
+        <span class="dib vm csd">登录</span>
       </div>
+    </div>
+    <div class="login-bg" />
+    <div class="login-box clearfix">
       <div class="l hp100 bg-white right-ct">
-        <h2 class="f30 n text-light login-tie">Login</h2>
-        <el-form ref="loginForm" :model="loginForm" class="ruleForm">
-          <el-form-item>
+        <h2 class="f30 n text-light login-tie">欢迎登录</h2>
+        <el-form ref="loginForm" label-position="top" label-suffix=":" :model="loginForm" class="ruleForm">
+          <el-form-item label="用户名">
             <el-input ref="username" v-model="loginForm.username" type="text" placeholder="用户名" maxlength="12" auto-complete="on" />
           </el-form-item>
-          <el-form-item>
+          <el-form-item label="密码">
             <el-input ref="password" v-model="loginForm.password" type="password" placeholder="密码" maxlength="18" auto-complete="on" />
           </el-form-item>
           <el-form-item>
+            <el-checkbox v-model="checked">记住我</el-checkbox>
+          </el-form-item>
+          <!-- <el-form-item>
             <el-input v-model="loginForm.captcha" style="width:170px;" placeholder="验证码" maxlength="4" @keyup.enter.native="submitForm" />
             <span class="captcha poi" @click="refreshCode">
               <img :src="getCode" alt="" srcset="">
             </span>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item>
             <el-button type="primary" class="pct100" @click="submitForm">登录</el-button>
           </el-form-item>
+          <div class="text-danger f12">您的用户名输入有误，请重新输入</div>
         </el-form>
       </div>
     </div>
@@ -36,18 +38,24 @@
 </template>
 
 <script>
-import particles from '@/components/particles'
-import indexbg from '@/components/GradientBg'
 import { baseImgURL } from '@/utils/index'
 export default {
-  components: { particles, indexbg },
   data() {
     return {
+      checked: false,
       loginForm: {
         username: 'admin', // 用户名
         password: '11111', // 密码
         captcha: '123213', // 验证码
         uid: 0 // 验证码id
+      },
+      rules: {
+        username: [
+          { required: true, message: '请输入用户名', trigger: 'blur' }
+        ],
+        password: [
+          { required: true, message: '请输入密码', trigger: 'blur' }
+        ]
       },
       loading: false,
       codeRandom: new Date().getTime()
@@ -98,95 +106,68 @@ export default {
 </script>
 
 <style lang='scss' scoped>
+  .header{
+    height: 82px;
+    background-color: #fff;
+    line-height: 82px;
+    .hd-ct{
+      margin-left: 14%;
+    }
+    .logo{
+        margin-right: 20px;
+        display: inline-block;
+        height: 28px;
+        width: auto;
+        line-height: 28px;
+    }
+    .csd{
+      padding-left: 20px;
+      border-left:2px solid #DDD;
+      font-size:24px;
+      line-height: 28px;
+      color: #333;
+    }
+  }
   .login-bg{
     position:absolute;
-    top: 0;
+    top: 82px;
     left: 0;
     right: 0;
     bottom: 0;
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
-    background-image: url('~@/assets/login/login-bg4.jpg');
-    background-attachment: fixed;
-    &:after{
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: rgba(0, 0, 0, .3);
-    }
+    background-image: url('~@/assets/login/bg_login.jpg');
   }
  .login-box{
    position: absolute;
    top: 50%;
-   left: 50%;
-   width: 760px;
-   height: 430px;
-   margin-top: -215px;
-   margin-left: -380px;
-  //  background: hsla(0,0%,100%,.3);
+   right: 14.79%;
+  width:340px;
+  height:416px;
+  background:rgba(255,255,255,1);
+    border-radius:4px;
+   margin-top: -170px;
    overflow: hidden;
-  //  border-radius: 8px;
    z-index: 10;
-   box-shadow: 0px 0px 30px 10px rgba(0, 0, 0, 0.2);
-  //  &:before{
-  //    content: '';
-  //     position: absolute;
-  //     top: 0;
-  //     right: 0;
-  //     bottom: 0;
-  //     left: 0;
-  //     z-index: -1;
-  //     filter: blur(20px);
-  //     background-position: center;
-  //     background-repeat: no-repeat;
-  //     background-size: cover;
-  //     background-image: url('~@/assets/login/login-bg2.jpg');
-  //     background-attachment: fixed;
-  //     margin: -30px;
-  //  }
- }
- .left-ct{
-  //  background: linear-gradient(to bottom right, #665c55, #101010);
-    position: relative;
-    width: 330px;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-image: url('~@/assets/login/login-bg4.jpg');
-    z-index: 1;
-    &:before{
-     content: '';
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      z-index: -1;
-      background: linear-gradient(to bottom right, #067fcd, #00427e);
-      opacity:.8;
-   }
-   .cst{
-     margin-top: 167px;
-     margin-left: 30px;
-   }
-
+   box-shadow: 0px 0px 30px 4px rgba(0, 0, 0, 0.1);
  }
  .right-ct{
-   width: 430px;
+   width: 100%;
+   padding: 38px 42px 0 42px;
   }
  .login-tie{
-   padding-top: 65px;
-   padding-left: 75px;
+   font-size: 18px;
+   margin-bottom: 28px;
  }
   .ruleForm{
-    padding: 0 75px;
-    padding-top: 20px;
     .el-form-item{
-      margin-bottom: 20px;
+      margin-bottom: 10px;
+    }
+    label{
+      font-size: 12px;
+      font-weight: normal;
+      line-height: 16px;
     }
   }
   .captcha{
@@ -206,5 +187,10 @@ export default {
   }
  .bg-white{
    background-color: #fff;
+ }
+ .el-button--primary{
+   background:linear-gradient(270deg,rgba(79,193,247,1) 0%,rgba(39,141,236,1) 100%);
+   border-color: rgba(79,193,247,1);
+  border-radius:2px;
  }
 </style>

@@ -117,3 +117,10 @@
  .el-breadcrumb__inner.is-link,.el-breadcrumb__separator, .el-breadcrumb__inner a{
    color: #001E3C;
  }
+.ruleForm{
+  .el-form-item__label{
+    font-size: 12px;
+    font-weight: normal;
+    line-height: 16px;
+  }
+}
