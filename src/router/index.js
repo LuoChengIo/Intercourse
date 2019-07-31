@@ -128,6 +128,29 @@ export const asyncRoutes = [
       }
     ]
   },
+  {
+    path: '/program-management',
+    component: Layout,
+    redirect: '/permission/page',
+    alwaysShow: true, // will always show the root menu
+    name: 'program-management',
+    meta: {
+      title: '程序管理',
+      icon: 'procedure_manage',
+      roles: ['admin', 'editor'] // you can set roles in root nav
+    },
+    children: [
+      {
+        path: 'page',
+        component: () => import('@/views/program-management/page'),
+        name: 'PagePermission',
+        meta: {
+          title: '程序管理',
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      }
+    ]
+  },
   nestedRouter,
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
