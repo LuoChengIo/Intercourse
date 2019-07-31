@@ -15,7 +15,7 @@
         <h2 class="f30 n text-light login-tie">Login</h2>
         <el-form ref="loginForm" :model="loginForm" class="ruleForm">
           <el-form-item>
-            <el-input ref="username" v-model="loginForm.username" type="text" placeholder="用户" maxlength="12" auto-complete="on" />
+            <el-input ref="username" v-model="loginForm.username" type="text" placeholder="用户名" maxlength="12" auto-complete="on" />
           </el-form-item>
           <el-form-item>
             <el-input ref="password" v-model="loginForm.password" type="password" placeholder="密码" maxlength="18" auto-complete="on" />
