@@ -33,7 +33,7 @@
           <img :src="avatar + '?imageView2/1/w/80/h/80'" class="user-avatar vm">
         </div>
         <el-dropdown-menu slot="dropdown">
-          <router-link to="/profile/index">
+          <!-- <router-link to="/profile/index">
             <el-dropdown-item>个人信息</el-dropdown-item>
           </router-link>
           <router-link to="/">
@@ -44,12 +44,11 @@
             href="https://github.com/PanJiaChen/vue-element-admin/"
           >
             <el-dropdown-item>Github</el-dropdown-item>
-          </a>
+          </a> -->
           <a
             target="_blank"
-            href="https://panjiachen.github.io/vue-element-admin-site/#/"
           >
-            <el-dropdown-item>文档</el-dropdown-item>
+            <el-dropdown-item>修改密码</el-dropdown-item>
           </a>
           <el-dropdown-item divided>
             <span style="display:block;" @click="logout">退出登录</span>
