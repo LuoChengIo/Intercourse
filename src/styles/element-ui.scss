@@ -77,3 +77,43 @@
 .el-range-editor.el-input__inner {
   display: inline-flex !important;
 }
+
+#app .sidebar-container .svg-icon{
+  color: #3182c6;
+  margin-right: 20px;
+}
+.menu-wrapper{
+  border-bottom: 1px solid #00396F;
+  &.nest-menu{
+    border-color: #022D58;
+  }
+}
+.el-menu-item,.el-submenu__title,.el-submenu .el-menu-item{
+  height: 62px;
+  line-height: 62px;
+}
+
+#app .sidebar-container .submenu-title-noDropdown.is-active,#app .sidebar-container .el-submenu .el-menu-item.is-active{
+  color: #FF414E !important;
+  background-color: #EEF5FD !important;
+  .svg-icon{
+    color: #FF414E !important;
+  }
+  &:hover{
+    background-color: #EEF5FD !important;
+  }
+  &:before{
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    content: '';
+    display: block;
+    width: 4px;
+    height: 100%;
+    background-color: #FF414E;
+  }
+ }
+ .el-breadcrumb__inner.is-link,.el-breadcrumb__separator, .el-breadcrumb__inner a{
+   color: #001E3C;
+ }
