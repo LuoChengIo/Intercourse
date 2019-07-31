@@ -2,14 +2,14 @@
   <el-row :gutter="40" class="panel-group">
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
       <div class="card-panel" @click="handleSetLineChartData('newVisitis')">
-        <div class="card-panel-icon-wrapper icon-people">
-          <svg-icon icon-class="peoples" class-name="card-panel-icon" />
-        </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-            New Visits
+            总设备数量（个）
           </div>
           <count-to :start-val="0" :end-val="102400" :duration="2600" class="card-panel-num" />
+        </div>
+        <div class="card-panel-icon-wrapper icon-people">
+          <svg-icon icon-class="peoples" class-name="card-panel-icon" />
         </div>
       </div>
     </el-col>
@@ -20,7 +20,7 @@
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-            Messages
+            总放电功率(W)
           </div>
           <count-to :start-val="0" :end-val="81212" :duration="3000" class="card-panel-num" />
         </div>
@@ -33,7 +33,7 @@
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-            Purchases
+            总充电功率(W)
           </div>
           <count-to :start-val="0" :end-val="9280" :duration="3200" class="card-panel-num" />
         </div>
@@ -46,7 +46,7 @@
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-            Shoppings
+            减少二氧化碳排放量(L)
           </div>
           <count-to :start-val="0" :end-val="13600" :duration="3600" class="card-panel-num" />
         </div>
@@ -128,7 +128,7 @@ export default {
     }
 
     .card-panel-icon-wrapper {
-      float: left;
+      float: right;
       margin: 14px 0 0 14px;
       padding: 16px;
       transition: all 0.38s ease-out;
@@ -136,25 +136,25 @@ export default {
     }
 
     .card-panel-icon {
-      float: left;
+      float: right;
       font-size: 48px;
     }
 
     .card-panel-description {
-      float: right;
+      float: left;
       font-weight: bold;
       margin: 26px;
-      margin-left: 0px;
+      margin-left: 25px;
 
       .card-panel-text {
         line-height: 18px;
         color: rgba(0, 0, 0, 0.45);
-        font-size: 16px;
+        font-size: 13px;
         margin-bottom: 12px;
       }
 
       .card-panel-num {
-        font-size: 20px;
+        font-size: 26px;
       }
     }
   }
