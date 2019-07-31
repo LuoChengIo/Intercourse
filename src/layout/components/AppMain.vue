@@ -1,5 +1,6 @@
 <template>
   <section class="app-main">
+    <breadcrumb class="breadcrumb-container" />
     <transition name="fade-transform" mode="out-in">
       <keep-alive :include="cachedViews">
         <router-view :key="key" />
@@ -9,8 +10,12 @@
 </template>
 
 <script>
+import Breadcrumb from '@/components/Breadcrumb'
 export default {
   name: 'AppMain',
+  components: {
+    Breadcrumb
+  },
   computed: {
     cachedViews() {
       return this.$store.state.tagsView.cachedViews
@@ -25,24 +30,26 @@ export default {
 <style lang="scss" scoped>
 .app-main {
   /* 50= navbar  50  */
-  min-height: calc(100vh - 50px);
+  // min-height: calc(100vh - 62px);
+  min-height:100vh;
   width: 100%;
   position: relative;
   overflow: hidden;
+  background-color:#EEF5FD;
 }
-
 .fixed-header + .app-main {
-  padding-top: 50px;
+  padding-top: 62px;
 }
 
 .hasTagsView {
   .app-main {
-    /* 84 = navbar + tags-view = 50 + 34 */
-    min-height: calc(100vh - 84px);
+    /* 84 = navbar + tags-view = 62 + 34 */
+    // min-height: calc(100vh - 96px);
+    min-height:100vh;
   }
 
   .fixed-header + .app-main {
-    padding-top: 84px;
+    padding-top: 96px;
   }
 }
 </style>

@@ -11,7 +11,7 @@ module.exports = {
    * @type {boolean} true | false
    * @description 是否需要tagsView
    */
-  tagsView: true,
+  tagsView: false,
 
   /**
    * @type {boolean} true | false
@@ -23,7 +23,7 @@ module.exports = {
    * @type {boolean} true | false
    * @description 是否在侧边栏中显示logo
    */
-  sidebarLogo: true,
+  sidebarLogo: false,
 
   /**
    * @type {string | array} 'production' | ['production', 'development']
