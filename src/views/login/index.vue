@@ -64,7 +64,7 @@ export default {
   created() {
     // 在页面加载时从cookie获取登录信息
     const username = Cookies.get('username')
-    const password = Base64.decode(Cookies.get('password'))
+    const password = Base64.decode(Cookies.get('password') || '')
     // 如果存在赋值给表单，并且将记住密码勾选
     if (username) {
       this.loginForm.username = username
