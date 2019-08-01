@@ -2,64 +2,46 @@
   <div>
     <div class="w-card search-card">
       <el-form :inline="true" :model="searchFrom" label-width="72px" class="form-inline">
-        <el-form-item label="开始时间">
-          <el-date-picker
-            v-model="searchFrom.data1"
-            type="date"
-            placeholder="选择日期"
-          />
-        </el-form-item>
-        <el-form-item label="结束时间">
-          <el-date-picker
-            v-model="searchFrom.data2"
-            type="date"
-            placeholder="选择日期"
-          />
-        </el-form-item>
         <el-form-item label="设备ID">
           <el-input v-model="searchFrom.data3" placeholder="请输入设备ID" />
         </el-form-item>
         <el-form-item label="设备名称">
-          <el-input v-model="searchFrom.data4" placeholder="请输入设备名称" />
+          <el-input v-model="searchFrom.data3" placeholder="请输入设备名称" />
         </el-form-item>
         <el-form-item label="所属公司">
-          <el-input v-model="searchFrom.data5" placeholder="请输入所属公司" />
-        </el-form-item>
-        <el-form-item label="功能状态码">
-          <el-input v-model="searchFrom.data5" placeholder="功能状态码" />
-        </el-form-item>
-        <el-form-item label="故障等级">
-          <el-select v-model="searchFrom.data6">
-            <el-option v-for="(item,index) in faultLevel" :key="index" :label="item.label" :value="item.value" />
-          </el-select>
+          <el-autocomplete
+            v-model="searchFrom.data3"
+            popper-class="my-autocomplete"
+            :fetch-suggestions="querySearch"
+            placeholder="请输入内容"
+          >
+            <i
+              slot="suffix"
+              class="el-icon-search el-input__icon"
+            />
+            <template slot-scope="{ item }">
+              <div class="name">{{ item.value }}</div>
+              <span class="addr">{{ item.address }}</span>
+            </template>
+          </el-autocomplete>
         </el-form-item>
         <el-form-item label="设备状态">
           <el-select v-model="searchFrom.data7">
             <el-option v-for="(item,index) in equipmentStatus" :key="index" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
-        <el-form-item label="最高电压值">
-          <el-input v-model="searchFrom.data8" placeholder="最高电压值" />
-        </el-form-item>
-        <el-form-item label="最低电压值">
-          <el-input v-model="searchFrom.data9" placeholder="最低电压值" />
-        </el-form-item>
-        <el-form-item label="压差值">
-          <el-input v-model="searchFrom.data10" placeholder="压差值" />
-        </el-form-item>
-        <el-form-item label="最高温度值">
-          <el-input v-model="searchFrom.data11" placeholder="最高温度值" />
-        </el-form-item>
-        <el-form-item label="最低温度值">
-          <el-input v-model="searchFrom.data12" placeholder="最低温度值" />
-        </el-form-item>
-        <el-form-item label="温差值">
-          <el-input v-model="searchFrom.data13" placeholder="温差值" />
+        <el-form-item label="出入库状态">
+          <el-select v-model="searchFrom.data7">
+            <el-option label="全部" value="" />
+            <el-option label="未入库" value="1" />
+            <el-option label="已入库" value="2" />
+            <el-option label="已出库" value="3" />
+          </el-select>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="resetFrom">重置</el-button>
           <el-button type="success" @click="searchSubmit">搜索</el-button>
-          <el-button type="success" @click="exportFrom">导出</el-button>
+          <el-button type="success" icon="el-icon-plus" @click="addSubmit">添加</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -84,7 +66,27 @@
         <el-table-column
           align="center"
           prop="data1"
-          label="状态功能码"
+          label="设备名称"
+        />
+        <el-table-column
+          align="center"
+          prop="data1"
+          label="所属公司"
+        />
+        <el-table-column
+          align="center"
+          prop="data1"
+          label="软件版本"
+        />
+        <el-table-column
+          align="center"
+          prop="data1"
+          label="硬件版本"
+        />
+        <el-table-column
+          align="center"
+          prop="data1"
+          label="创建时间"
         />
         <el-table-column
           align="center"
@@ -94,43 +96,22 @@
         <el-table-column
           align="center"
           prop="data1"
-          label="故障等级"
+          label="出入库状态"
         />
         <el-table-column
           align="center"
-          prop="data1"
-          label="最高电压(V)"
-        />
-        <el-table-column
-          align="center"
-          prop="data1"
-          label="最低电压(V)"
-        />
-        <el-table-column
-          align="center"
-          prop="data1"
-          label="最高温度(℃)"
-        />
-        <el-table-column
-          align="center"
-          prop="data1"
-          label="最低温度(℃)"
-        />
-        <el-table-column
-          align="center"
-          prop="data1"
-          label="压差(V)"
-        />
-        <el-table-column
-          align="center"
-          prop="data1"
-          label="温差(℃)"
-        />
-        <el-table-column
-          align="center"
-          prop="data1"
-          label="信息采集时间"
-        />
+          label="操作"
+          width="450"
+        >
+          <template slot-scope="scope">
+            <el-button type="info" size="mini">查看</el-button>
+            <el-button type="primary" size="mini">编辑</el-button>
+            <el-button type="success" size="mini">出库</el-button>
+            <el-button type="success" size="mini">入库</el-button>
+            <el-button type="warning" size="mini">命令下发</el-button>
+            <el-button type="danger" size="mini">删除</el-button>
+          </template>
+        </el-table-column>
       </el-table>
       <div class="pt20 pr30 pl30 tr">
         <span class="l f13 text-primary">当前显示 {{ searchFrom.currentSize }} 条，共 {{ searchFrom.total }} 条记录</span>
@@ -169,7 +150,9 @@ export default {
         total: 0 // 总页数
       },
       listLoading: false,
-      tableData: []
+      tableData: [{
+        data1: 1
+      }]
     }
   },
   computed: {},
@@ -196,6 +179,10 @@ export default {
           this.listLoading = false
         })
     },
+    addSubmit() {
+      // 添加设备
+
+    },
     handleSizeChange(val) { // 切换每页显示数
       this.searchFrom.pageNum = 1
       this.searchFrom.pageSize = val
@@ -208,15 +195,12 @@ export default {
     resetFrom() { // 重置搜索条件
       this.searchFrom = Object.assign({}, this.defaultSearchFrom)
       this.searchSubmit()
-    },
-    exportFrom() { // 导出表格数据
-      location.href = '#'
     }
   }
 }
 </script>
 <style lang="scss" scoped>
   .cont-minheight{
-    min-height: 570px;
+    min-height: 740px;
   }
 </style>

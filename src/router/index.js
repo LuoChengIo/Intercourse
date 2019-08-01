@@ -9,7 +9,8 @@ import Layout from '@/layout'
 /* Router Modules */
 import nestedRouter from './modules/nested'
 import dataRouter from './modules/data-manage'
-
+import realTimeRouter from './modules/real-time-list'
+import equipmentManageRouter from './modules/equipment-manage'
 /**
  * Note: sub-menu only appear when route children.length >= 1
  * Detail see: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
@@ -129,6 +130,8 @@ export const asyncRoutes = [
       }
     ]
   },
+  realTimeRouter,
+  equipmentManageRouter,
   dataRouter,
   {
     path: '/program-management',

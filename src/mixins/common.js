@@ -20,8 +20,10 @@ export default {
         { value: '6', label: '自检状态' }
       ],
       // 分页每页显示数
-      pageSizes: [10, 20, 50, 100, 200],
-      pageSize: 10
+      page: {
+        pageSizes: [10, 20, 50, 100, 200],
+        pageSize: 10
+      }
     }
   },
   created() {

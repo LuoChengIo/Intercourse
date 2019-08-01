@@ -135,6 +135,9 @@
   .el-date-editor.el-input, .el-date-editor.el-input__inner,.el-input{
     width: 200px;
   }
+  .el-range-editor--medium .el-range-separator{
+    width: 24px;
+  }
   .el-form-item__label{
     font-size: 13px;
     padding-right: 0;
@@ -178,3 +181,4 @@
 .el-pagination.is-background .btn-prev, .el-pagination.is-background .btn-next{
   padding: 0 10px;
 }
+
