@@ -30,7 +30,8 @@
         <div class="avatar-wrapper">
           <span class="vm text-white ">admin</span>
           <i class="el-icon-caret-bottom text-white vm" />
-          <img :src="avatar + '?imageView2/1/w/80/h/80'" class="user-avatar vm">
+          <!-- <img :src="avatar + '?imageView2/1/w/80/h/80'" class="user-avatar vm"> -->
+          <img src="~@/assets/head_portrait@2x.png" class="user-avatar vm">
         </div>
         <el-dropdown-menu slot="dropdown">
           <!-- <router-link to="/profile/index">
