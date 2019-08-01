@@ -8,6 +8,7 @@ import Layout from '@/layout'
 
 /* Router Modules */
 import nestedRouter from './modules/nested'
+import dataRouter from './modules/data-manage'
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -128,6 +129,7 @@ export const asyncRoutes = [
       }
     ]
   },
+  dataRouter,
   {
     path: '/program-management',
     component: Layout,
