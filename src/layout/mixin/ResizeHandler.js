@@ -32,13 +32,15 @@ export default {
       return rect.width - 1 < WIDTH
     },
     $_resizeHandler() {
+      console.log(document.hidden)
       if (!document.hidden) {
         const isMobile = this.$_isMobile()
+        console.log('isMobile', isMobile)
         store.dispatch('app/toggleDevice', isMobile ? 'mobile' : 'desktop')
-
-        if (isMobile) {
-          store.dispatch('app/closeSideBar', { withoutAnimation: true })
-        }
+        store.dispatch('app/toggleSideBar')
+        // if (isMobile) {
+        //   store.dispatch('app/closeSideBar', { withoutAnimation: true })
+        // }
       }
     }
   }

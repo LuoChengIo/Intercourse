@@ -28,9 +28,9 @@
             </span>
           </el-form-item> -->
           <el-form-item>
-            <el-button type="primary" class="pct100" @click="submitForm">登录</el-button>
+            <el-button type="primary" class="pct100" :loading="loading" @click="submitForm">登录</el-button>
           </el-form-item>
-          <div class="text-danger f12">您的用户名输入有误，请重新输入</div>
+          <div class="text-danger f12">{{ errorTip }}</div>
         </el-form>
       </div>
     </div>
@@ -39,24 +39,19 @@
 
 <script>
 import { baseImgURL } from '@/utils/index'
+import Cookies from 'js-cookie'
+import { Base64 } from 'js-base64'
 export default {
   data() {
     return {
       checked: false,
       loginForm: {
-        username: 'admin', // 用户名
-        password: '11111', // 密码
+        username: '', // 用户名
+        password: '', // 密码
         captcha: '123213', // 验证码
         uid: 0 // 验证码id
       },
-      rules: {
-        username: [
-          { required: true, message: '请输入用户名', trigger: 'blur' }
-        ],
-        password: [
-          { required: true, message: '请输入密码', trigger: 'blur' }
-        ]
-      },
+      errorTip: '',
       loading: false,
       codeRandom: new Date().getTime()
     }
@@ -64,6 +59,17 @@ export default {
   computed: {
     getCode() {
       return baseImgURL + '/captcha.jpg?uid=' + this.codeRandom
+    }
+  },
+  created() {
+    // 在页面加载时从cookie获取登录信息
+    const username = Cookies.get('username')
+    const password = Base64.decode(Cookies.get('password'))
+    // 如果存在赋值给表单，并且将记住密码勾选
+    if (username) {
+      this.loginForm.username = username
+      this.loginForm.password = password
+      this.checked = true
     }
   },
   mounted() {
@@ -74,20 +80,39 @@ export default {
     }
   },
   methods: {
+    // 储存表单信息
+    setUserInfo() {
+      // 判断用户是否勾选记住密码，如果勾选，向cookie中储存登录信息，
+      // 如果没有勾选，储存的信息为空
+      if (this.checked) {
+        // 忘记密码保存30天
+        Cookies.set('username', this.loginForm.username, { expires: 30 })
+        // base64加密密码
+        const password = Base64.encode(this.loginForm.password)
+        Cookies.set('password', password, { expires: 30 })
+      } else {
+        Cookies.remove('username')
+        Cookies.remove('password')
+      }
+    },
     refreshCode() { // 刷新验证码
       this.codeRandom = new Date().getTime()
     },
     submitForm(formName) { // 提交验证
+      this.errorTip = ''
       if (!this.loginForm.username) {
-        this.$message.warning('请填写您的用户名~')
+        this.errorTip = '请填写您的用户名~'
         return
       }
       if (!this.loginForm.password) {
-        this.$message.warning('请填写您的密码~')
+        this.errorTip = '请填写您的密码~'
         return
       }
       if (!this.loginForm.captcha) {
-        this.$message.warning('请填写验证码~')
+        this.errorTip = '请填写验证码~'
+        return
+      }
+      if (this.loading) {
         return
       }
       this.loginForm.uid = this.codeRandom
@@ -96,6 +121,7 @@ export default {
         .then(() => {
           this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
           this.loading = false
+          this.setUserInfo()
         })
         .catch(() => {
           this.loading = false
