@@ -10,9 +10,9 @@ html{
     font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
 }
 body{
-    font-size: 1.4rem; 
-    line-height: 1.5; 
-    color: #333333; 
+    font-size: 1.4rem;
+    line-height: 1.5;
+    color: #333333;
 }
 *, *:before, *:after {
   box-sizing: inherit;
@@ -229,9 +229,9 @@ ins, a {
 /* 单行文字溢出虚点显 示*/
 .ell { text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
 /* css3过渡动画效果 */
-.trans { 
-    -webkit-transition: all 0.3s;   
-    transition: all 0.3s; 
+.trans {
+    -webkit-transition: all 0.3s;
+    transition: all 0.3s;
 }
 /* 无框文本框文本域 */
 .bd-none { border: 0; outline: none; }
@@ -310,4 +310,15 @@ a[href^="http"]:empty::before {content: attr(href);}
         filter: Alpha(opacity=1);
         cursor: pointer;
     }
+}
+// 自定义卡片样式
+.w-card{
+  box-shadow:0px 0px 10px 0px rgba(0,0,0,0.06);
+  border-radius:8px;
+  background-color: #fff;
+  overflow: hidden;
+  &.search-card{
+    padding: 20px 30px 0 30px;
+    border:1px solid rgba(211,217,233,1);
+  }
 }

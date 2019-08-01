@@ -42,7 +42,8 @@ Object.keys(filters).forEach(key => {
 })
 
 Vue.config.productionTip = false
-
+import commonInfo from '@/mixins/common.js'
+Vue.mixin(commonInfo)
 new Vue({
   el: '#app',
   router,

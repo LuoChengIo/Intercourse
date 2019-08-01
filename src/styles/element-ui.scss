@@ -124,3 +124,57 @@
     line-height: 16px;
   }
 }
+.ruleForm{
+  .el-form-item__label{
+    font-size: 12px;
+    font-weight: normal;
+    line-height: 16px;
+  }
+}
+.form-inline{
+  .el-date-editor.el-input, .el-date-editor.el-input__inner,.el-input{
+    width: 200px;
+  }
+  .el-form-item__label{
+    font-size: 13px;
+    padding-right: 0;
+    font-weight: normal;
+    color: $primary;
+    text-align: left;
+  }
+  .el-form-item{
+    margin-right: 50px;
+    margin-bottom: 20px;
+  }
+}
+.el-table{
+  color: $primary;
+}
+.el-table--border th, .el-table--border td{
+ border-color: #D4DBEA !important;
+}
+.el-table--group, .el-table--border{
+  border: none;
+}
+ .el-table::before{
+  background-color: #D4DBEA;
+}
+.el-table--group::after, .el-table--border::after{
+  content: none;
+}
+.el-table th div{
+  color: #848E98;
+  font-weight: normal;
+}
+.el-table--border th:nth-last-child(2){
+  border-right: none;
+}
+.el-table--border th:last-child, .el-table--border td:last-child{
+  border-right: none;
+}
+.el-pagination.is-background .el-pager li:not(.disabled).active{
+  background-color: #278DEC;
+}
+.el-pagination.is-background .btn-prev, .el-pagination.is-background .btn-next{
+  padding: 0 10px;
+}
