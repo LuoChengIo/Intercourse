@@ -1,273 +1,132 @@
 <template>
-  <div class="app-container">
-    <div class="text-danger">
-      上传成功，为Bata版只推送标记为测试设备；如需推广全部设备，需要手工操作，设置为正式版。
+  <div>
+    <div class="text-red">
+      上传成功，为Bata版，只推送标记为测试设备；如需推广全部设备，需要手工操作，设置为正式版。
     </div>
-    <el-table :data="rolesList" style="width: 100%;margin-top:30px;" border>
-      <el-table-column align="center" label="序号" width="220">
-        <template slot-scope="scope">
-          {{ scope.row.key }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="程序名称" width="220">
-        <template slot-scope="scope">
-          {{ scope.row.name }}
-        </template>
-      </el-table-column>
-      <el-table-column align="header-center" label="硬件版本">
-        <template slot-scope="scope">
-          {{ scope.row.description }}
-        </template>
-      </el-table-column>
-      <el-table-column align="header-center" label="程序状态">
-        <template slot-scope="scope">
-          {{ scope.row.description }}
-        </template>
-      </el-table-column>
-      <el-table-column align="header-center" label="操作时间">
-        <template slot-scope="scope">
-          {{ scope.row.description }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="操作">
-        <template slot-scope="scope">
-          <el-button type="primary" size="small" @click="handleEdit(scope)">上传</el-button>
-          <el-button type="danger" size="small" @click="handleDelete(scope)">发布正式版</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-
-    <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'Edit Role':'New Role'">
-      <el-form :model="role" label-width="80px" label-position="left">
-        <el-form-item label="Name">
-          <el-input v-model="role.name" placeholder="Role Name" />
-        </el-form-item>
-        <el-form-item label="Desc">
-          <el-input
-            v-model="role.description"
-            :autosize="{ minRows: 2, maxRows: 4}"
-            type="textarea"
-            placeholder="Role Description"
-          />
-        </el-form-item>
-        <el-form-item label="Menus">
-          <el-tree
-            ref="tree"
-            :check-strictly="checkStrictly"
-            :data="routesData"
-            :props="defaultProps"
-            show-checkbox
-            node-key="path"
-            class="permission-tree"
-          />
-        </el-form-item>
-      </el-form>
-      <div style="text-align:right;">
-        <el-button type="danger" @click="dialogVisible=false">Cancel</el-button>
-        <el-button type="primary" @click="confirmRole">Confirm</el-button>
+    <div class="mt20 pb20 w-card cont-minheight">
+      <el-table
+        v-loading="listLoading"
+        :data="tableData"
+        border
+        style="width: 100%"
+      >
+        <el-table-column
+          label="序号"
+          align="center"
+          type="index"
+          width="90"
+        />
+        <el-table-column
+          align="center"
+          prop="data1"
+          label="程序名称"
+        />
+        <el-table-column
+          align="center"
+          prop="data1"
+          label="软件版本"
+        />
+        <el-table-column
+          align="center"
+          prop="data1"
+          label="硬件版本"
+        />
+        <el-table-column
+          align="center"
+          prop="data1"
+          sortable
+          label="程序状态"
+        />
+        <el-table-column
+          align="center"
+          prop="data1"
+          sortable
+          label="操作时间"
+        />
+        <el-table-column
+          align="center"
+          prop="data1"
+          label="操作"
+        />
+      </el-table>
+      <div class="pt20 pr30 pl30 tr">
+        <span class="l f13 text-primary">当前显示 {{ searchFrom.currentSize }} 条，共 {{ searchFrom.total }} 条记录</span>
+        <el-pagination
+          background
+          class="dib"
+          prev-text="上一页"
+          next-text="下一页"
+          :current-page="searchFrom.pageNum"
+          :page-sizes="page.pageSizes"
+          :page-size="searchFrom.pageSize"
+          :total="searchFrom.total"
+          layout="sizes, prev, pager, next"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+        />
       </div>
-    </el-dialog>
+    </div>
   </div>
 </template>
 
 <script>
-import path from 'path'
-import { deepClone } from '@/utils'
-import { getRoutes, getRoles, addRole, deleteRole, updateRole } from '@/api/role'
-
-const defaultRole = {
-  key: '',
-  name: '',
-  description: '',
-  routes: []
-}
-
+import { programList } from '@/api/program-management.js'
 export default {
+  components: {},
+  props: {},
   data() {
     return {
-      role: Object.assign({}, defaultRole),
-      routes: [],
-      rolesList: [],
-      dialogVisible: false,
-      dialogType: 'new',
-      checkStrictly: false,
-      defaultProps: {
-        children: 'children',
-        label: 'title'
-      }
+      defaultSearchFrom: {},
+      searchFrom: {
+        data6: '',
+        data7: '',
+        pageNum: 1, // 当前页
+        pageSize: 0, // 每页显示数
+        currentSize: 0, // 当前条数
+        total: 0 // 总页数
+      },
+      listLoading: false,
+      tableData: []
     }
   },
-  computed: {
-    routesData() {
-      return this.routes
-    }
-  },
+  computed: {},
+  watch: {},
+  mounted() {},
   created() {
-    // Mock: get all routes and roles list from server
-    this.getRoutes()
-    this.getRoles()
+    this.defaultSearchFrom = Object.assign({}, this.searchFrom)
+    this.searchFrom.pageSize = this.page.pageSize
   },
   methods: {
-    async getRoutes() {
-      const res = await getRoutes()
-      this.serviceRoutes = res.data
-      this.routes = this.generateRoutes(res.data)
-    },
-    async getRoles() {
-      const res = await getRoles()
-      this.rolesList = res.data
-    },
-
-    // Reshape the routes structure so that it looks the same as the sidebar
-    generateRoutes(routes, basePath = '/') {
-      const res = []
-
-      for (let route of routes) {
-        // skip some route
-        if (route.hidden) { continue }
-
-        const onlyOneShowingChild = this.onlyOneShowingChild(route.children, route)
-
-        if (route.children && onlyOneShowingChild && !route.alwaysShow) {
-          route = onlyOneShowingChild
-        }
-
-        const data = {
-          path: path.resolve(basePath, route.path),
-          title: route.meta && route.meta.title
-
-        }
-
-        // recursive child routes
-        if (route.children) {
-          data.children = this.generateRoutes(route.children, data.path)
-        }
-        res.push(data)
+    searchSubmit() { // 搜索查询
+      if (this.listLoading) {
+        return
       }
-      return res
-    },
-    generateArr(routes) {
-      let data = []
-      routes.forEach(route => {
-        data.push(route)
-        if (route.children) {
-          const temp = this.generateArr(route.children)
-          if (temp.length > 0) {
-            data = [...data, ...temp]
-          }
-        }
-      })
-      return data
-    },
-    handleEdit(scope) {
-      this.dialogType = 'edit'
-      this.dialogVisible = true
-      this.checkStrictly = true
-      this.role = deepClone(scope.row)
-      this.$nextTick(() => {
-        const routes = this.generateRoutes(this.role.routes)
-        this.$refs.tree.setCheckedNodes(this.generateArr(routes))
-        // set checked state of a node not affects its father and child nodes
-        this.checkStrictly = false
-      })
-    },
-    handleDelete({ $index, row }) {
-      this.$confirm('Confirm to remove the role?', 'Warning', {
-        confirmButtonText: 'Confirm',
-        cancelButtonText: 'Cancel',
-        type: 'warning'
-      })
-        .then(async() => {
-          await deleteRole(row.key)
-          this.rolesList.splice($index, 1)
-          this.$message({
-            type: 'success',
-            message: 'Delete succed!'
-          })
+      this.listLoading = true
+      programList(this.searchFrom)
+        .then(res => {
+          this.tableData = res.data
         })
-        .catch(err => { console.error(err) })
+        .catch(err => {
+          this.$message.error(err.message)
+        })
+        .finally(() => {
+          this.listLoading = false
+        })
     },
-    generateTree(routes, basePath = '/', checkedKeys) {
-      const res = []
-
-      for (const route of routes) {
-        const routePath = path.resolve(basePath, route.path)
-
-        // recursive child routes
-        if (route.children) {
-          route.children = this.generateTree(route.children, routePath, checkedKeys)
-        }
-
-        if (checkedKeys.includes(routePath) || (route.children && route.children.length >= 1)) {
-          res.push(route)
-        }
-      }
-      return res
+    handleSizeChange(val) { // 切换每页显示数
+      this.searchFrom.pageNum = 1
+      this.searchFrom.pageSize = val
+      this.searchSubmit()
     },
-    async confirmRole() {
-      const isEdit = this.dialogType === 'edit'
-
-      const checkedKeys = this.$refs.tree.getCheckedKeys()
-      this.role.routes = this.generateTree(deepClone(this.serviceRoutes), '/', checkedKeys)
-
-      if (isEdit) {
-        await updateRole(this.role.key, this.role)
-        for (let index = 0; index < this.rolesList.length; index++) {
-          if (this.rolesList[index].key === this.role.key) {
-            this.rolesList.splice(index, 1, Object.assign({}, this.role))
-            break
-          }
-        }
-      } else {
-        const { data } = await addRole(this.role)
-        this.role.key = data.key
-        this.rolesList.push(this.role)
-      }
-
-      const { description, key, name } = this.role
-      this.dialogVisible = false
-      this.$notify({
-        title: 'Success',
-        dangerouslyUseHTMLString: true,
-        message: `
-            <div>Role Key: ${key}</div>
-            <div>Role Nmae: ${name}</div>
-            <div>Description: ${description}</div>
-          `,
-        type: 'success'
-      })
-    },
-    // reference: src/view/layout/components/Sidebar/SidebarItem.vue
-    onlyOneShowingChild(children = [], parent) {
-      let onlyOneChild = null
-      const showingChildren = children.filter(item => !item.hidden)
-
-      // When there is only one child route, the child route is displayed by default
-      if (showingChildren.length === 1) {
-        onlyOneChild = showingChildren[0]
-        onlyOneChild.path = path.resolve(parent.path, onlyOneChild.path)
-        return onlyOneChild
-      }
-
-      // Show parent if there are no child route to display
-      if (showingChildren.length === 0) {
-        onlyOneChild = { ... parent, path: '', noShowingChildren: true }
-        return onlyOneChild
-      }
-
-      return false
+    handleCurrentChange(val) { // 切换页码
+      this.searchFrom.pageNum = val
+      this.searchSubmit()
     }
   }
 }
 </script>
-
 <style lang="scss" scoped>
-.app-container {
-  .roles-table {
-    margin-top: 30px;
+  .cont-minheight{
+    min-height: 740px;
   }
-  .permission-tree {
-    margin-bottom: 30px;
-  }
-}
 </style>
