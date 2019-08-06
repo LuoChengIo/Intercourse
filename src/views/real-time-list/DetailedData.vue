@@ -127,7 +127,14 @@ export default {
   created() {
     this.activeTab = this.tabList[0]
   },
-  methods: {}
+  methods: {
+    querySearch() {
+
+    },
+    searchSubmit() {
+
+    }
+  }
 }
 </script>
 <style lang="scss" scoped>
