@@ -44,6 +44,8 @@ Object.keys(filters).forEach(key => {
 Vue.config.productionTip = false
 import commonInfo from '@/mixins/common.js'
 Vue.mixin(commonInfo)
+import heightAuto from '@/directive/heightAuto'
+Vue.use(heightAuto)
 new Vue({
   el: '#app',
   router,

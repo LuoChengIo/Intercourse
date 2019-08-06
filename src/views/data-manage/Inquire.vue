@@ -63,7 +63,7 @@
         </el-form-item>
       </el-form>
     </div>
-    <div class="mt20 pb20 w-card cont-minheight">
+    <div v-heightAuto class="mt20 pb20 w-card">
       <el-table
         v-loading="listLoading"
         :data="tableData"

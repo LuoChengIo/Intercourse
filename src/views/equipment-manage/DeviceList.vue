@@ -45,7 +45,7 @@
         </el-form-item>
       </el-form>
     </div>
-    <div class="mt20 pb20 w-card cont-minheight">
+    <div v-heightAuto class="mt20 pb20 w-card">
       <el-table
         v-loading="listLoading"
         :data="tableData"
@@ -103,7 +103,7 @@
           label="操作"
           width="450"
         >
-          <template slot-scope="scope">
+          <template>
             <el-button type="info" size="mini">查看</el-button>
             <el-button type="primary" size="mini">编辑</el-button>
             <el-button type="success" size="mini">出库</el-button>

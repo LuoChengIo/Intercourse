@@ -18,6 +18,12 @@ const realTimeRouter = {
       component: () => import('@/views/real-time-list/TimeList.vue'), // Parent router-view
       name: 'TimeList',
       meta: { title: '列表信息' }
+    },
+    {
+      path: 'detailed-data',
+      component: () => import('@/views/real-time-list/DetailedData.vue'), // Parent router-view
+      name: 'DetailedData',
+      meta: { title: '详情数据' }
     }
   ]
 }

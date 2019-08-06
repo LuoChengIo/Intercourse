@@ -30,7 +30,7 @@
         </el-form-item>
       </el-form>
     </div>
-    <div class="mt20 p20 w-card cont-minheight">
+    <div v-heightAuto class="mt20 p20 w-card">
       <h5 class="title mb20">设备设置</h5>
       <el-form :inline="true" :model="valueFrom" class="form-inline">
         <el-form-item>
