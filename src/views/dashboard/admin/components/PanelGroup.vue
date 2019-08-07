@@ -1,6 +1,6 @@
 <template>
-  <el-row :gutter="40" class="panel-group">
-    <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
+  <el-row :gutter="0" class="panel-group">
+    <el-col :span="6" class="card-panel-col">
       <div class="card-panel bg-item1" @click="handleSetLineChartData('newVisitis')">
         <div class="card-panel-description">
           <div class="card-panel-text">
@@ -13,11 +13,8 @@
         </div> -->
       </div>
     </el-col>
-    <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
+    <el-col :span="6" class="card-panel-col">
       <div class="card-panel bg-item2" @click="handleSetLineChartData('messages')">
-        <!-- <div class="card-panel-icon-wrapper icon-message">
-          <svg-icon icon-class="message" class-name="card-panel-icon" />
-        </div> -->
         <div class="card-panel-description">
           <div class="card-panel-text">
             总放电功率(W)
@@ -26,11 +23,8 @@
         </div>
       </div>
     </el-col>
-    <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
+    <el-col :span="6" class="card-panel-col">
       <div class="card-panel bg-item3" @click="handleSetLineChartData('purchases')">
-        <!-- <div class="card-panel-icon-wrapper icon-money">
-          <svg-icon icon-class="money" class-name="card-panel-icon" />
-        </div> -->
         <div class="card-panel-description">
           <div class="card-panel-text">
             总充电功率(W)
@@ -39,11 +33,8 @@
         </div>
       </div>
     </el-col>
-    <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
+    <el-col :span="6" class="card-panel-col">
       <div class="card-panel bg-item4" @click="handleSetLineChartData('shoppings')">
-        <!-- <div class="card-panel-icon-wrapper icon-shopping">
-          <svg-icon icon-class="shopping" class-name="card-panel-icon" />
-        </div> -->
         <div class="card-panel-description">
           <div class="card-panel-text">
             减少二氧化碳排放量(L)
@@ -73,7 +64,6 @@ export default {
 <style lang="scss" scoped>
 .panel-group {
   .card-panel-col {
-    margin-bottom: 32px;
   }
   .bg-item1{
     background-image: url('../../../../assets/program-management/bg_home_sum01@2x.png');

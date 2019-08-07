@@ -4,7 +4,7 @@
 
 <script>
 import echarts from 'echarts'
-require('echarts/theme/macarons') // echarts theme
+// require('echarts/theme/macarons') // echarts theme
 import { debounce } from '@/utils'
 
 export default {
@@ -81,77 +81,147 @@ export default {
         this.__resizeHandler()
       }
     },
-    setOptions({ expectedData, actualData } = {}) {
+    setOptions(data) {
       this.chart.setOption({
         xAxis: {
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          data: ['1', '2', '3', '4', '5', '6', '7'],
+          axisLabel: { // 刻度样式
+            show: true,
+            textStyle: {
+              color: '#848E98',
+              fontSize: 8
+            }
+          },
           boundaryGap: false,
+          axisLine: {
+            show: false
+          },
           axisTick: {
             show: false
           }
         },
-        grid: {
+        tooltip: { // 提示框
+          trigger: 'axis',
+          // formatter: '{b}<br />{a0}: {c0}A<br />{a1}: {c1}C',
+          // formatter: function(params) {
+          //   var html = '';
+          //   for (var i = 0; i < params.length; i++){
+          //       html += ""+params[i].axisValue+"<br />"+params[i].marker+params[i].seriesName+": "+params[i].value+unit(params[i].seriesIndex)+"<br/>";
+          //   }
+          //   console.log(params)
+          //   return html
+          //   },
+          axisPointer: {
+            lineStyle: {
+              color: '#57617B'
+            }
+          },
+          backgroundColor: 'rgba(0,28,55,0.75)',
+          padding: 10
+        },
+        legend: {
+          left: 'center',
+          bottom: 10,
+          itemGap: 10,
+          itemWidth: 8,
+          itemHeight: 8,
+          textStyle: {
+            fontSize: 10,
+            color: '#848E98'
+          }
+        },
+        grid: { // 布局
           left: 10,
           right: 10,
-          bottom: 20,
+          bottom: 50,
           top: 30,
           containLabel: true
-        },
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            type: 'cross'
-          },
-          padding: [5, 10]
         },
         yAxis: {
           axisTick: {
             show: false
+          },
+          axisLine: {
+            show: false
+          },
+          splitLine: { // 虚线
+            lineStyle: {
+              type: 'dashed',
+              color: '#DCDCDC'
+            }
           }
         },
-        legend: {
-          data: ['expected', 'actual']
-        },
         series: [{
-          name: 'expected', itemStyle: {
+          name: '一级警告', itemStyle: {
             normal: {
-              color: '#FF005A',
+              color: '#FA2121',
               lineStyle: {
-                color: '#FF005A',
-                width: 2
+                color: '#FA2121',
+                width: 1
               }
             }
           },
-          smooth: true,
+          symbol: 'none',
+          smooth: false,
           type: 'line',
-          data: expectedData,
+          data: data.data1,
           animationDuration: 2800,
           animationEasing: 'cubicInOut'
         },
         {
-          name: 'actual',
-          smooth: true,
-          type: 'line',
-          itemStyle: {
+          name: '二级警告', itemStyle: {
             normal: {
-              color: '#3888fa',
+              color: '#FF832F',
               lineStyle: {
-                color: '#3888fa',
-                width: 2
-              },
-              areaStyle: {
-                color: '#f3f8ff'
+                color: '#FF832F',
+                width: 1
               }
             }
           },
-          data: actualData,
+          symbol: 'none',
+          smooth: false,
+          type: 'line',
+          data: data.data2,
           animationDuration: 2800,
-          animationEasing: 'quadraticOut'
+          animationEasing: 'cubicInOut'
+        }, {
+          name: '三级警告', itemStyle: {
+            normal: {
+              color: '#FFC12F',
+              lineStyle: {
+                color: '#FFC12F',
+                width: 1
+              }
+            }
+          },
+          symbol: 'none',
+          smooth: false,
+          type: 'line',
+          data: data.data3,
+          animationDuration: 2800,
+          animationEasing: 'cubicInOut'
+        },
+        {
+          name: '正常', itemStyle: {
+            normal: {
+              color: '#3FAFFF',
+              lineStyle: {
+                color: '#3FAFFF',
+                width: 1
+              }
+            }
+          },
+          symbol: 'none',
+          smooth: false,
+          type: 'line',
+          data: data.data4,
+          animationDuration: 2800,
+          animationEasing: 'cubicInOut'
         }]
       })
     },
     initChart() {
-      this.chart = echarts.init(this.$el, 'macarons')
+      this.chart = echarts.init(this.$el)
       this.setOptions(this.chartData)
     }
   }

@@ -19,11 +19,23 @@ export default {
     height: {
       type: String,
       default: '300px'
+    },
+    chartData: {
+      type: Object,
+      required: true
     }
   },
   data() {
     return {
       chart: null
+    }
+  },
+  watch: {
+    chartData: {
+      deep: true,
+      handler(val) {
+        this.setOptions(val)
+      }
     }
   },
   mounted() {
@@ -48,11 +60,17 @@ export default {
   methods: {
     initChart() {
       this.chart = echarts.init(this.$el)
+      this.setOptions(this.chartData)
+    },
+    setOptions(data) {
+      const legendArr = []
+      data.forEach(element => {
+        legendArr.push(element.name)
+      })
       this.chart.setOption({
         tooltip: {
           trigger: 'item',
           formatter: function(parms) {
-            console.log(parms)
             var str = parms.seriesName + '</br>' + parms.marker + '' + parms.data.legendname + '：' + parms.data.value + '(' + parms.percent + '%)'
             return str
           }
@@ -77,11 +95,12 @@ export default {
           textStyle: {
             fontSize: 13,
             color: '#848E98'
-          }
+          },
+          data: legendArr
         },
         series: [
           {
-            name: '时间',
+            name: 'center',
             type: 'pie',
             hoverAnimation: false,
             radius: [0, '30%'],
@@ -92,7 +111,7 @@ export default {
               normal: {
                 color: '#FFF',
                 shadowBlur: 10,
-                shadowColor: 'rgba(0,0,0,0.5)',
+                shadowColor: 'rgba(0,0,0,0.2)',
                 shadowOffsetX: 0,
                 shadowOffsetY: 0,
                 label: {
@@ -104,7 +123,7 @@ export default {
               }
             },
             data: [
-              { value: 100, name: '时间' }
+              { value: 100, name: 'center' }
             ]
           },
           {
@@ -123,10 +142,7 @@ export default {
                 }
               }
             },
-            data: [
-              { value: 320, legendname: '开机时间', name: '开机时间 71%', itemStyle: { color: '#3FAFFF' }},
-              { value: 240, legendname: '关机时间', name: '关机时间 72%', itemStyle: { color: '#4C4C4C' }}
-            ],
+            data: data,
             animationEasing: 'cubicInOut',
             animationDuration: 2600
           }

@@ -4,7 +4,6 @@
 
 <script>
 import echarts from 'echarts'
-require('echarts/theme/macarons') // echarts theme
 import { debounce } from '@/utils'
 
 export default {
@@ -19,12 +18,24 @@ export default {
     },
     height: {
       type: String,
-      default: '300px'
+      default: '280px'
+    },
+    chartData: {
+      type: Object,
+      required: true
     }
   },
   data() {
     return {
       chart: null
+    }
+  },
+  watch: {
+    chartData: {
+      deep: true,
+      handler(val) {
+        this.setOptions(val)
+      }
     }
   },
   mounted() {
@@ -48,32 +59,92 @@ export default {
   },
   methods: {
     initChart() {
-      this.chart = echarts.init(this.$el, 'macarons')
-
+      this.chart = echarts.init(this.$el)
+      this.setOptions(this.chartData)
+    },
+    setOptions(data) {
+      const legendArr = []
+      data.forEach(element => {
+        legendArr.push(element.name)
+      })
       this.chart.setOption({
         tooltip: {
           trigger: 'item',
-          formatter: '{a} <br/>{b} : {c} ({d}%)'
+          formatter: function(parms) {
+            var str = parms.seriesName + '</br>' + parms.marker + '' + parms.data.legendname + '：' + parms.data.value + '(' + parms.percent + '%)'
+            return str
+          }
+        },
+        title: {
+          text: '时间',
+          x: '31%',
+          y: 'center',
+          textStyle: {
+            fontSize: 17,
+            fontWeight: 'normal',
+            color: '#848E98'
+          }
         },
         legend: {
-          left: 'center',
-          bottom: '10',
-          data: ['Industries', 'Technology', 'Forex', 'Gold', 'Forecasts']
+          right: '6%',
+          orient: 'vertical',
+          bottom: 'center',
+          itemGap: 10,
+          itemWidth: 13,
+          itemHeight: 13,
+          textStyle: {
+            fontSize: 13,
+            color: '#848E98'
+          },
+          data: legendArr
         },
         series: [
           {
-            name: 'WEEKLY WRITE ARTICLES',
+            name: 'center',
             type: 'pie',
-            roseType: 'radius',
-            radius: [15, 95],
-            center: ['50%', '38%'],
+            hoverAnimation: false,
+            radius: [0, '30%'],
+            center: ['35%', '50%'],
+            tooltip: {
+              show: false
+            },
+            itemStyle: {
+              normal: {
+                color: '#FFF',
+                shadowBlur: 10,
+                shadowColor: 'rgba(0,0,0,0.2)',
+                shadowOffsetX: 0,
+                shadowOffsetY: 0,
+                label: {
+                  show: false
+                },
+                labelLine: {
+                  show: false
+                }
+              }
+            },
             data: [
-              { value: 320, name: 'Industries' },
-              { value: 240, name: 'Technology' },
-              { value: 149, name: 'Forex' },
-              { value: 100, name: 'Gold' },
-              { value: 59, name: 'Forecasts' }
-            ],
+              { value: 100, name: 'center' }
+            ]
+          },
+          {
+            name: '时间',
+            type: 'pie',
+            clockWise: true,
+            radius: ['50%', '60%'],
+            center: ['35%', '50%'],
+            hoverAnimation: false,
+            itemStyle: {
+              normal: {
+                label: {
+                  show: false
+                },
+                labelLine: {
+                  show: false
+                }
+              }
+            },
+            data: data,
             animationEasing: 'cubicInOut',
             animationDuration: 2600
           }
