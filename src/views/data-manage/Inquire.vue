@@ -176,8 +176,8 @@ export default {
   watch: {},
   mounted() {},
   created() {
-    this.defaultSearchFrom = Object.assign({}, this.searchFrom)
     this.searchFrom.pageSize = this.page.pageSize
+    this.defaultSearchFrom = Object.assign({}, this.searchFrom)
   },
   methods: {
     searchSubmit() { // 搜索查询

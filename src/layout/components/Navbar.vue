@@ -46,17 +46,38 @@
           >
             <el-dropdown-item>Github</el-dropdown-item>
           </a> -->
-          <a
-            target="_blank"
-          >
-            <el-dropdown-item>修改密码</el-dropdown-item>
-          </a>
+
+          <el-dropdown-item>
+            <span style="display:block;" @click="dialogVisible = true">修改密码</span>
+          </el-dropdown-item>
           <el-dropdown-item divided>
             <span style="display:block;" @click="logout">退出登录</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
+    <el-dialog
+      title="修改密码"
+      :visible.sync="dialogVisible"
+      width="500px"
+      append-to-body
+    >
+      <el-form ref="ruleForm" :model="ruleForm" status-icon :rules="rules" label-width="100px" class="demo-ruleForm">
+        <el-form-item label="原密码" prop="pass">
+          <el-input v-model="ruleForm.pass" type="password" auto-complete="off" />
+        </el-form-item>
+        <el-form-item label="新密码" prop="newPass">
+          <el-input v-model="ruleForm.newPass" type="password" auto-complete="off" />
+        </el-form-item>
+        <el-form-item label="确认密码" prop="checkPass">
+          <el-input v-model.number="ruleForm.checkPass" type="password" auto-complete="off" />
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -77,6 +98,27 @@ export default {
     // Screenfull,
     // SizeSelect,
     // Search
+  },
+  data() {
+    return {
+      dialogVisible: false,
+      ruleForm: {
+        pass: '',
+        newPass: '',
+        checkPass: ''
+      },
+      rules: {
+        pass: [
+          { required: true, message: '请输入原密码', trigger: 'blur' }
+        ],
+        newPass: [
+          { required: true, message: '请输入新密码', trigger: 'blur' }
+        ],
+        checkPass: [
+          { required: true, message: '请确认新密码', trigger: 'blur' }
+        ]
+      }
+    }
   },
   computed: {
     ...mapGetters(['sidebar', 'avatar', 'device'])

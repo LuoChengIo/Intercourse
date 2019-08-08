@@ -21,7 +21,7 @@ export default {
       default: '300px'
     },
     chartData: {
-      type: Object,
+      type: Array,
       required: true
     }
   },
