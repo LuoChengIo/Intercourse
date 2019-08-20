@@ -53,12 +53,26 @@ export default {
       },
       errorTip: '',
       loading: false,
-      codeRandom: new Date().getTime()
+      codeRandom: new Date().getTime(),
+      redirect: undefined,
+      otherQuery: {}
     }
   },
   computed: {
     getCode() {
       return baseImgURL + '/captcha.jpg?uid=' + this.codeRandom
+    }
+  },
+  watch: {
+    $route: {
+      handler: function(route) {
+        const query = route.query
+        if (query) {
+          this.redirect = query.redirect
+          this.otherQuery = this.getOtherQuery(query)
+        }
+      },
+      immediate: true
     }
   },
   created() {
@@ -71,6 +85,7 @@ export default {
       this.loginForm.password = password
       this.checked = true
     }
+    console.log(this.redirect, this.otherQuery)
   },
   mounted() {
     if (this.loginForm.username === '') {
@@ -80,6 +95,14 @@ export default {
     }
   },
   methods: {
+    getOtherQuery(query) {
+      return Object.keys(query).reduce((acc, cur) => {
+        if (cur !== 'redirect') {
+          acc[cur] = query[cur]
+        }
+        return acc
+      }, {})
+    },
     // 储存表单信息
     setUserInfo() {
       // 判断用户是否勾选记住密码，如果勾选，向cookie中储存登录信息，
