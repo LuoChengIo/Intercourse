@@ -133,7 +133,7 @@
 }
 .form-inline{
   .el-date-editor.el-input, .el-date-editor.el-input__inner,.el-input{
-    width: 200px;
+    width: 180px;
   }
   .el-range-editor.el-input,.el-range-editor.el-input__inner{
     width: 245px;
@@ -184,7 +184,9 @@
 .el-pagination.is-background .btn-prev, .el-pagination.is-background .btn-next{
   padding: 0 10px;
 }
-
+.el-table th > .cell{
+  line-height: 1.25;
+}
 #app .sidebar-container .svg-icon{
   font-size: 20px;
   vertical-align: -0.25em;

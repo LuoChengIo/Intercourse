@@ -6,58 +6,22 @@
           <el-input v-model="searchFrom.data3" placeholder="请输入设备ID" />
         </el-form-item>
         <el-form-item label="设备名称">
-          <el-input v-model="searchFrom.data3" placeholder="请输入设备名称" />
+          <el-input v-model="searchFrom.data4" disabled placeholder="" />
         </el-form-item>
         <el-form-item label="设备名称">
-          <el-input v-model="searchFrom.data3" placeholder="请输入设备名称" />
+          <el-input v-model="searchFrom.data4" disabled placeholder="" />
         </el-form-item>
         <el-form-item label="所属公司">
-          <el-autocomplete
-            v-model="searchFrom.data3"
-            popper-class="my-autocomplete"
-            :fetch-suggestions="querySearch"
-            placeholder="请输入内容"
-          >
-            <i
-              slot="suffix"
-              class="el-icon-search el-input__icon"
-            />
-            <template slot-scope="{ item }">
-              <div class="name">{{ item.value }}</div>
-              <span class="addr">{{ item.address }}</span>
-            </template>
-          </el-autocomplete>
+          <el-input v-model="searchFrom.data4" disabled placeholder="" />
         </el-form-item>
         <el-form-item label="所属用户">
-          <el-autocomplete
-            v-model="searchFrom.data3"
-            popper-class="my-autocomplete"
-            :fetch-suggestions="querySearch"
-            placeholder="请输入内容"
-          >
-            <i
-              slot="suffix"
-              class="el-icon-search el-input__icon"
-            />
-            <template slot-scope="{ item }">
-              <div class="name">{{ item.value }}</div>
-              <span class="addr">{{ item.address }}</span>
-            </template>
-          </el-autocomplete>
+          <el-input v-model="searchFrom.data4" disabled placeholder="" />
         </el-form-item>
         <el-form-item label="软件版本">
-          <el-select v-model="searchFrom.data7">
-            <el-option label="全部" value="" />
-            <el-option label="2.1.0" value="2" />
-            <el-option label="1.1.0" value="1" />
-          </el-select>
+          <el-input v-model="searchFrom.data4" disabled placeholder="" />
         </el-form-item>
         <el-form-item label="硬件版本">
-          <el-select v-model="searchFrom.data7">
-            <el-option label="全部" value="" />
-            <el-option label="ERERER" value="1" />
-            <el-option label="SDDSD" value="2" />
-          </el-select>
+          <el-input v-model="searchFrom.data4" disabled placeholder="" />
         </el-form-item>
         <el-form-item>
           <el-button type="success" @click="searchSubmit">搜索</el-button>
@@ -108,11 +72,13 @@ export default {
         id: 4,
         name: '报警数据',
         components: 'Police'
-      }, {
-        id: 5,
-        name: '统计数据',
-        components: 'Statistics'
-      }],
+      }
+      // {
+      //   id: 5,
+      //   name: '统计数据',
+      //   components: 'Statistics'
+      // }
+      ],
       activeTab: {},
       searchFrom: {}
     }

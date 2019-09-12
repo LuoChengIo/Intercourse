@@ -13,7 +13,7 @@
         <h2 class="f30 n text-light login-tie">欢迎登录</h2>
         <el-form ref="loginForm" label-position="top" label-suffix=":" :model="loginForm" class="ruleForm">
           <el-form-item label="用户名">
-            <el-input ref="username" v-model="loginForm.username" type="text" placeholder="用户名" maxlength="12" auto-complete="on" />
+            <el-input ref="loginId" v-model="loginForm.loginId" type="text" placeholder="用户名" maxlength="12" auto-complete="on" />
           </el-form-item>
           <el-form-item label="密码">
             <el-input ref="password" v-model="loginForm.password" type="password" placeholder="密码" maxlength="18" auto-complete="on" />
@@ -38,6 +38,7 @@
 </template>
 
 <script>
+import { getEncKey } from '@/api/user'
 import { baseImgURL } from '@/utils/index'
 import Cookies from 'js-cookie'
 import { Base64 } from 'js-base64'
@@ -46,10 +47,10 @@ export default {
     return {
       checked: false,
       loginForm: {
-        username: '', // 用户名
-        password: '', // 密码
-        captcha: '123213', // 验证码
-        uid: 0 // 验证码id
+        loginId: '', // 用户名
+        password: ''// 密码
+        // captcha: '', // 验证码
+        // uid: 0 // 验证码id
       },
       errorTip: '',
       loading: false,
@@ -77,19 +78,19 @@ export default {
   },
   created() {
     // 在页面加载时从cookie获取登录信息
-    const username = Cookies.get('username')
+    const loginId = Cookies.get('loginId')
     const password = Base64.decode(Cookies.get('password') || '')
     // 如果存在赋值给表单，并且将记住密码勾选
-    if (username) {
-      this.loginForm.username = username
+    if (loginId) {
+      this.loginForm.loginId = loginId
       this.loginForm.password = password
       this.checked = true
     }
     console.log(this.redirect, this.otherQuery)
   },
   mounted() {
-    if (this.loginForm.username === '') {
-      this.$refs.username.focus()
+    if (this.loginForm.loginId === '') {
+      this.$refs.loginId.focus()
     } else if (this.loginForm.password === '') {
       this.$refs.password.focus()
     }
@@ -109,12 +110,12 @@ export default {
       // 如果没有勾选，储存的信息为空
       if (this.checked) {
         // 忘记密码保存30天
-        Cookies.set('username', this.loginForm.username, { expires: 30 })
+        Cookies.set('loginId', this.loginForm.loginId, { expires: 30 })
         // base64加密密码
         const password = Base64.encode(this.loginForm.password)
         Cookies.set('password', password, { expires: 30 })
       } else {
-        Cookies.remove('username')
+        Cookies.remove('loginId')
         Cookies.remove('password')
       }
     },
@@ -123,7 +124,7 @@ export default {
     },
     submitForm(formName) { // 提交验证
       this.errorTip = ''
-      if (!this.loginForm.username) {
+      if (!this.loginForm.loginId) {
         this.errorTip = '请填写您的用户名~'
         return
       }
@@ -131,24 +132,30 @@ export default {
         this.errorTip = '请填写您的密码~'
         return
       }
-      if (!this.loginForm.captcha) {
-        this.errorTip = '请填写验证码~'
-        return
-      }
+      // if (!this.loginForm.captcha) {
+      //   this.errorTip = '请填写验证码~'
+      //   return
+      // }
       if (this.loading) {
         return
       }
-      this.loginForm.uid = this.codeRandom
+      // this.loginForm.uid = this.codeRandom
       this.loading = true
-      this.$store.dispatch('user/login', this.loginForm)
-        .then(() => {
-          this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
-          this.loading = false
-          this.setUserInfo()
+      getEncKey(this.loginForm).then((res) => {
+        // 拿到加密key res.signKey
+        return this.$store.dispatch('user/login', {
+          loginId: this.loginForm.loginId, // 用户名
+          password: this.loginForm.password// 密码
         })
-        .catch(() => {
-          this.loading = false
-        })
+      }).then(() => {
+        this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+        this.loading = false
+        this.setUserInfo()
+      }).catch((err) => {
+        console.log(err)
+        // this.$message.error(err.message)
+        this.loading = false
+      })
     }
   }
 }

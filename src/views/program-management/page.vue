@@ -3,7 +3,7 @@
     <div class="text-red">
       上传成功，为Bata版，只推送标记为测试设备；如需推广全部设备，需要手工操作，设置为正式版。
     </div>
-    <div class="mt20 pb20 w-card cont-minheight">
+    <div v-heightAuto class="mt20 pb20 w-card ">
       <el-table
         v-loading="listLoading"
         :data="tableData"

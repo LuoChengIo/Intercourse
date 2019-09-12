@@ -25,6 +25,15 @@
         <el-form-item label="所属公司">
           <el-input v-model="searchFrom.data5" placeholder="请输入所属公司" />
         </el-form-item>
+        <el-form-item label="所属用户">
+          <el-input v-model="searchFrom.data5" placeholder="请输入所属用户" />
+        </el-form-item>
+        <el-form-item label="硬件版本">
+          <el-input v-model="searchFrom.data5" placeholder="硬件版本" />
+        </el-form-item>
+        <el-form-item label="软件版本">
+          <el-input v-model="searchFrom.data5" placeholder="软件版本" />
+        </el-form-item>
         <el-form-item label="功能状态码">
           <el-input v-model="searchFrom.data5" placeholder="功能状态码" />
         </el-form-item>

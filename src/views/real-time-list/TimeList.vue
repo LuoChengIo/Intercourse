@@ -14,8 +14,10 @@
             v-model="searchFrom.data2"
             type="daterange"
             range-separator="至"
+            :picker-options="pickerOptions0"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
+            @change="changeDate0"
           />
         </el-form-item>
         <el-form-item label="设备ID">
@@ -24,6 +26,15 @@
         <el-form-item>
           <el-button type="primary" @click="resetFrom">重置</el-button>
           <el-button type="success" @click="searchSubmit">搜索</el-button>
+        </el-form-item>
+        <br>
+        <el-form-item label="故障等级">
+          <el-checkbox-group v-model="searchFrom.data4">
+            <el-checkbox label="一级警报">一级警报</el-checkbox>
+            <el-checkbox label="二级警报">二级警报</el-checkbox>
+            <el-checkbox label="三级警报">三级警报</el-checkbox>
+            <el-checkbox label="正常">正常</el-checkbox>
+          </el-checkbox-group>
         </el-form-item>
       </el-form>
     </div>
@@ -58,12 +69,14 @@
         <el-table-column
           align="center"
           prop="data1"
+          width="120"
           sortable
           label="设备状态"
         />
         <el-table-column
           align="center"
           prop="data1"
+          width="120"
           sortable
           label="故障等级"
         />
@@ -144,6 +157,7 @@ export default {
       searchFrom: {
         data6: '',
         data7: '',
+        data4: [],
         pageNum: 1, // 当前页
         pageSize: 0, // 每页显示数
         currentSize: 0, // 当前条数

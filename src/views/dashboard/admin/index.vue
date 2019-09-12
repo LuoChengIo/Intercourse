@@ -5,27 +5,27 @@
       <div class="w-card left-ct p10">
         <h5 class="f14 n title">警告数量</h5>
         <el-row :gutter="20" class="tc blue-title mt20">
-          <el-col :span="8">
+          <el-col :span="12">
             故障等级
           </el-col>
-          <el-col :span="8">
+          <el-col :span="12">
             数量
           </el-col>
-          <el-col :span="8">
+          <!-- <el-col :span="8">
             同比
-          </el-col>
+          </el-col> -->
         </el-row>
         <el-row v-for="(item,index) in warningData" :key="index" class="mt20 mb20 f13">
-          <el-col :span="8" class="text-primary">
+          <el-col :span="12" class="text-primary">
             <img class="warn-icon" :src="item.imgsrc" alt="" srcset="">
             {{ item.title }}
           </el-col>
-          <el-col :span="8" :class="item.myclass" class="tc">
+          <el-col :span="12" :class="item.myclass" class="tc">
             {{ item.quantity }}
           </el-col>
-          <el-col :span="8" :class="item.myclass" class="tc">
+          <!-- <el-col :span="8" :class="item.myclass" class="tc">
             {{ item.yearonyear }}
-          </el-col>
+          </el-col> -->
         </el-row>
         <div>
           <line-chart :chart-data="lineChartData" />

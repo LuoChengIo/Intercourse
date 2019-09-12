@@ -23,6 +23,33 @@ export default {
       page: {
         pageSizes: [10, 20, 50, 100, 200],
         pageSize: 10
+      },
+      // 时间范围选择器
+      minDate0: '',
+      pickerOptions0: {
+        disabledDate: (time) => {
+          if (this.minDate0) {
+            var nowMonth = this.minDate0.getMonth() // 当前月
+            var nowYear = this.minDate0.getFullYear() // 当前年
+            var monthStartDate = new Date(nowYear, nowMonth, 1).getTime() // 本月的开始时间
+            var monthEndDate = new Date(nowYear, nowMonth + 1, 0).getTime() // 本月的结束时间
+            return time.getTime() < monthStartDate || time.getTime() > monthEndDate || time.getTime() > Date.now()
+          } else {
+            return time.getTime() > Date.now()
+          }
+        },
+        onPick: (val) => {
+          this.minDate0 = val.minDate
+        }
+      }
+    }
+  },
+  computed: {
+  },
+  methods: {
+    changeDate0(val) {
+      if (!val) {
+        this.minDate0 = ''
       }
     }
   },

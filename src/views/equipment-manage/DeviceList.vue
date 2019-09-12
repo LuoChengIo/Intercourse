@@ -30,14 +30,14 @@
             <el-option v-for="(item,index) in equipmentStatus" :key="index" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
-        <el-form-item label="出入库状态">
+        <!-- <el-form-item label="出入库状态">
           <el-select v-model="searchFrom.data7">
             <el-option label="全部" value="" />
             <el-option label="未入库" value="1" />
             <el-option label="已入库" value="2" />
             <el-option label="已出库" value="3" />
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item>
           <el-button type="primary" @click="resetFrom">重置</el-button>
           <el-button type="success" @click="searchSubmit">搜索</el-button>
@@ -106,8 +106,7 @@
           <template>
             <el-button type="info" size="mini">查看</el-button>
             <el-button type="primary" size="mini">编辑</el-button>
-            <el-button type="success" size="mini">出库</el-button>
-            <el-button type="success" size="mini">入库</el-button>
+            <el-button type="success" size="mini">查看详情</el-button>
             <el-button type="warning" size="mini">命令下发</el-button>
             <el-button type="danger" size="mini">删除</el-button>
           </template>

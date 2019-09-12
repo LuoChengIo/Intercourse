@@ -23,14 +23,14 @@ const equipmentManageRouter = {
       path: 'order-issuedt',
       component: () => import('@/views/equipment-manage/OrderIssued.vue'), // Parent router-view
       name: 'OrderIssued',
-      meta: { title: '命令下发' }
-    },
-    {
-      path: 'alarm-data',
-      component: () => import('@/views/equipment-manage/AlarmData.vue'), // Parent router-view
-      name: 'AlarmData',
-      meta: { title: '告警数据' }
+      meta: { title: '参数配置' }
     }
+    // {
+    //   path: 'alarm-data',
+    //   component: () => import('@/views/equipment-manage/AlarmData.vue'), // Parent router-view
+    //   name: 'AlarmData',
+    //   meta: { title: '告警数据' }
+    // }
   ]
 }
 
