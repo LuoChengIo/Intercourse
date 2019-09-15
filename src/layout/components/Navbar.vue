@@ -8,7 +8,7 @@
     />
 
     <breadcrumb id="breadcrumb-container" class="breadcrumb-container" /> -->
-    <img class="logo" src="~@/assets/logo@2x.png" alt="" srcset="">
+    <img class="logo" :src="userInfo.companyLogoUrl||'~@/assets/logo@2x.png'" alt="" srcset="">
     <div class="right-menu">
       <template v-if="device !== 'mobile'">
         <!-- <el-tooltip content="菜单搜索" effect="dark" placement="bottom">
@@ -28,7 +28,7 @@
         trigger="click"
       >
         <div class="avatar-wrapper">
-          <span class="vm text-white ">admin</span>
+          <span class="vm text-white ">{{ userInfo.username }}</span>
           <i class="el-icon-caret-bottom text-white vm" />
           <!-- <img :src="avatar + '?imageView2/1/w/80/h/80'" class="user-avatar vm"> -->
           <img src="~@/assets/head_portrait@2x.png" class="user-avatar vm">
@@ -86,6 +86,7 @@ import { mapGetters } from 'vuex'
 // import Breadcrumb from '@/components/Breadcrumb'
 // import Hamburger from '@/components/Hamburger'
 import ErrorLog from '@/components/ErrorLog'
+// import { userInfo } from 'os'
 // import Screenfull from '@/components/Screenfull'
 // import SizeSelect from '@/components/SizeSelect'
 // import Search from '@/components/HeaderSearch'
@@ -121,7 +122,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['sidebar', 'avatar', 'device'])
+    ...mapGetters(['sidebar', 'avatar', 'device', 'userInfo'])
   },
   methods: {
     toggleSideBar() {

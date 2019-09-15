@@ -150,7 +150,7 @@
           next-text="下一页"
           :current-page="searchFrom.pageNum"
           :page-sizes="page.pageSizes"
-          :page-size="searchFrom.pageSize"
+          :page-size="searchFrom.pageRows"
           :total="searchFrom.total"
           layout="sizes, prev, pager, next"
           @size-change="handleSizeChange"
@@ -173,7 +173,7 @@ export default {
         data6: '',
         data7: '',
         pageNum: 1, // 当前页
-        pageSize: 0, // 每页显示数
+        pageRows: 10, // 每页显示数
         currentSize: 0, // 当前条数
         total: 0 // 总页数
       },
@@ -185,7 +185,7 @@ export default {
   watch: {},
   mounted() {},
   created() {
-    this.searchFrom.pageSize = this.page.pageSize
+    this.searchFrom.pageRows = this.page.pageSize
     this.defaultSearchFrom = Object.assign({}, this.searchFrom)
   },
   methods: {
@@ -207,7 +207,7 @@ export default {
     },
     handleSizeChange(val) { // 切换每页显示数
       this.searchFrom.pageNum = 1
-      this.searchFrom.pageSize = val
+      this.searchFrom.pageRows = val
       this.searchSubmit()
     },
     handleCurrentChange(val) { // 切换页码

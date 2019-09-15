@@ -1,3 +1,4 @@
+
 /**
  * Created by PanJiaChen on 16/11/18.
  */
@@ -348,3 +349,26 @@ export function removeClass(ele, cls) {
     ele.className = ele.className.replace(reg, ' ')
   }
 }
+
+// 加密
+export function encryptedData(public_key, data) {
+  // eslint-disable-next-line no-undef
+  var _encrypt = new JSEncrypt()
+  _encrypt.setPublicKey(public_key)
+  var encrypted = _encrypt.encrypt(data)
+  return encrypted
+  // let rsa = new jsrsasign.RSAKey()
+  // var k = `-----BEGIN PRIVATE KEY-----
+  // ${private_key}
+  // -----END PRIVATE KEY-----`
+  // rsa = jsrsasign.KEYUTIL.getKey(k)
+  // // SHA1withRSA SHA256withRSA 这个参数可选
+  // const sig = new jsrsasign.KJUR.crypto.Signature({ 'alg': 'SHA1withRSA', 'prov': 'cryptojs/jsrsa' })
+  // sig.init(rsa)
+  // // 传入待加密字符串password
+  // sig.updateString(data)
+  // // 生成密文
+  // const sign = jsrsasign.hextob64(sig.sign())
+  // return sign
+}
+

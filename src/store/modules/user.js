@@ -1,4 +1,4 @@
-import { login, logout, getInfo } from '@/api/user'
+import { login, logout } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 
@@ -35,9 +35,10 @@ const actions = {
     return new Promise((resolve, reject) => {
       login(userInfo).then(response => {
         const { data } = response
+        data.username = userInfo.loginId
         sessionStorage.setItem('userInfo', JSON.stringify(data))
-        // commit('SET_TOKEN', data.token)
-        // setToken(data.token)
+        commit('SET_TOKEN', data.token)
+        setToken(data.token)
         resolve()
       }).catch(error => {
         reject(error)
@@ -48,25 +49,9 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
-        const { data } = response
-
-        if (!data) {
-          reject('Verification failed, please Login again.')
-        }
-
-        // const { functionlist, companyLogoUrl } = data
-        // roles must be a non-empty array
-        // if (!roles || roles.length <= 0) {
-        //   reject('getInfo: roles must be a non-null array!')
-        // }
-        // commit('SET_ROLES', roles)
-        // commit('SET_NAME', name)
-        // commit('SET_AVATAR', avatar)
-        resolve(data)
-      }).catch(error => {
-        reject(error)
-      })
+      commit('SET_ROLES', state.userInfo.functionlist)
+      console.log(state.userInfo.functionlist)
+      resolve(state.userInfo.functionlist)
     })
   },
 

@@ -1,7 +1,9 @@
 
 const tokens = {
-  admin: {
-    token: 'admin-token'
+  admin123: {
+    token: 'admin-token',
+    companyLogoUrl: 'companyLogoUrl',
+    functionlist: ['admin']
   },
   editor: {
     token: 'editor-token'
@@ -29,9 +31,8 @@ export default [
     url: '/userManage/login',
     type: 'post',
     response: config => {
-      const { username } = config.body
-      const token = tokens[username]
-
+      const { loginId } = config.body
+      const token = tokens[loginId]
       // mock error
       if (!token) {
         return {
@@ -39,14 +40,24 @@ export default [
           message: 'Account and password are incorrect.'
         }
       }
-
       return {
         code: 20000,
         data: token
       }
     }
   },
-
+  {
+    url: '/userManage/getEncKey',
+    type: 'post',
+    response: config => {
+      return {
+        code: 20000,
+        data: {
+          signKey: `MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCFVNJNtvQ7pO6XueD1gy5x0A1npl5sDpp8n7LNueaX53xlds8yEaE+lkdA9C/zwPDeWOz9kyNAoQB9MTcVcWtM5mOlywtCWcEXmlv/8c6o7dy2/Mu5d3G0oFlpBLhulqmYuGPgYz6h3z72Pzesh3C19EjPJVafKZm9X1wv/Sdo+wIDAQAB`
+        }
+      }
+    }
+  },
   // get user info
   {
     url: '/user/info\.*',

@@ -39,7 +39,8 @@
 
 <script>
 import { getEncKey } from '@/api/user'
-import { baseImgURL } from '@/utils/index'
+import { baseImgURL, encryptedData } from '@/utils/index'
+import { validUsername } from '@/utils/validate'
 import Cookies from 'js-cookie'
 import { Base64 } from 'js-base64'
 export default {
@@ -86,7 +87,6 @@ export default {
       this.loginForm.password = password
       this.checked = true
     }
-    console.log(this.redirect, this.otherQuery)
   },
   mounted() {
     if (this.loginForm.loginId === '') {
@@ -128,6 +128,10 @@ export default {
         this.errorTip = '请填写您的用户名~'
         return
       }
+      if (!validUsername(this.loginForm.loginId)) {
+        this.errorTip = '请填写正确的用户名~'
+        return
+      }
       if (!this.loginForm.password) {
         this.errorTip = '请填写您的密码~'
         return
@@ -143,16 +147,17 @@ export default {
       this.loading = true
       getEncKey(this.loginForm).then((res) => {
         // 拿到加密key res.signKey
+        console.log(encryptedData(res.data.signKey, this.loginForm.password))
         return this.$store.dispatch('user/login', {
           loginId: this.loginForm.loginId, // 用户名
-          password: this.loginForm.password// 密码
+          password: encryptedData(res.data.signKey, this.loginForm.password) // 密码
         })
       }).then(() => {
         this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
         this.loading = false
         this.setUserInfo()
       }).catch((err) => {
-        console.log(err)
+        console.log('err', err)
         // this.$message.error(err.message)
         this.loading = false
       })
