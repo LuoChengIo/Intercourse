@@ -13,10 +13,10 @@
         <h2 class="f30 n text-light login-tie">欢迎登录</h2>
         <el-form ref="loginForm" label-position="top" label-suffix=":" :model="loginForm" class="ruleForm">
           <el-form-item label="用户名">
-            <el-input ref="loginId" v-model="loginForm.loginId" type="text" placeholder="用户名" maxlength="12" auto-complete="on" />
+            <el-input ref="loginId" v-model="loginForm.loginId" type="text" placeholder="用户名" maxlength="12" />
           </el-form-item>
           <el-form-item label="密码">
-            <el-input ref="password" v-model="loginForm.password" type="password" placeholder="密码" maxlength="18" auto-complete="on" />
+            <el-input ref="password" v-model="loginForm.password" type="password" placeholder="密码" maxlength="18" />
           </el-form-item>
           <el-form-item>
             <el-checkbox v-model="checked">记住我</el-checkbox>
@@ -147,7 +147,6 @@ export default {
       this.loading = true
       getEncKey(this.loginForm).then((res) => {
         // 拿到加密key res.signKey
-        console.log(encryptedData(res.data.signKey, this.loginForm.password))
         return this.$store.dispatch('user/login', {
           loginId: this.loginForm.loginId, // 用户名
           password: encryptedData(res.data.signKey, this.loginForm.password) // 密码

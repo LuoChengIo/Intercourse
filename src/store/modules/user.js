@@ -15,6 +15,9 @@ const mutations = {
   SET_TOKEN: (state, token) => {
     state.token = token
   },
+  SET_USERINFO: (state, userInfo) => {
+    state.userInfo = userInfo
+  },
   SET_INTRODUCTION: (state, introduction) => {
     state.introduction = introduction
   },
@@ -37,6 +40,7 @@ const actions = {
         const { data } = response
         data.username = userInfo.loginId
         sessionStorage.setItem('userInfo', JSON.stringify(data))
+        commit('SET_USERINFO', data)
         commit('SET_TOKEN', data.token)
         setToken(data.token)
         resolve()
@@ -49,8 +53,8 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      commit('SET_ROLES', state.userInfo.functionlist)
       console.log(state.userInfo.functionlist)
+      commit('SET_ROLES', state.userInfo.functionlist)
       resolve(state.userInfo.functionlist)
     })
   },
