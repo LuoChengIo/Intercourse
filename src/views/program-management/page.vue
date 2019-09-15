@@ -15,31 +15,32 @@
           align="center"
           type="index"
           width="90"
+          prop="id"
         />
         <el-table-column
           align="center"
-          prop="data1"
+          prop="equipmentProgramName"
           label="程序名称"
         />
         <el-table-column
           align="center"
-          prop="data1"
+          prop="equipmentSoftVersion"
           label="软件版本"
         />
         <el-table-column
           align="center"
-          prop="data1"
+          prop="equipmentHardwareVersion"
           label="硬件版本"
         />
         <el-table-column
           align="center"
-          prop="data1"
+          prop="state"
           sortable
           label="程序状态"
         />
         <el-table-column
           align="center"
-          prop="data1"
+          prop="addtime"
           sortable
           label="操作时间"
         />
@@ -47,7 +48,12 @@
           align="center"
           prop="data1"
           label="操作"
-        />
+        >
+          <template slot-scope="scope">
+            <el-button type="text" size="small" @click="upload(scope.row)">上传</el-button>
+            <el-button type="text" size="small">发布正式版</el-button>
+          </template>
+        </el-table-column>
       </el-table>
       <div class="pt20 pr30 pl30 tr">
         <span class="l f13 text-primary">当前显示 {{ searchFrom.currentSize }} 条，共 {{ searchFrom.total }} 条记录</span>
@@ -78,23 +84,57 @@ export default {
     return {
       defaultSearchFrom: {},
       searchFrom: {
-        data6: '',
-        data7: '',
-        pageNum: 1, // 当前页
+        id: '',
+        equipmentSoftVersion: '',
+        equipmentHardwareVersion: 1, // 当前页
+        equipmentProgramName: '',
+        state: '',
+        addtime: '',
         pageRows: 10, // 每页显示数
         currentSize: 0, // 当前条数
         total: 0 // 总页数
       },
       listLoading: false,
-      tableData: []
+      tableData: [
+        {
+          id: '1',
+          equipmentProgramName: '程序名称',
+          equipmentSoftVersion: '软件版本',
+          equipmentHardwareVersion: '硬件版本',
+          state: '程序状态',
+          addtime: '2014-12-12'
+        }, {
+          id: '2',
+          equipmentProgramName: '程序名称',
+          equipmentSoftVersion: '软件版本',
+          equipmentHardwareVersion: '硬件版本',
+          state: '程序状态',
+          addtime: '2014-12-12'
+        }, {
+          id: '3',
+          equipmentProgramName: '程序名称',
+          equipmentSoftVersion: '软件版本',
+          equipmentHardwareVersion: '硬件版本',
+          state: '程序状态',
+          addtime: '2014-12-12'
+        }, {
+          id: '4',
+          equipmentProgramName: '程序名称',
+          equipmentSoftVersion: '软件版本',
+          equipmentHardwareVersion: '硬件版本',
+          state: '程序状态',
+          addtime: '2014-12-12'
+        }
+      ]
     }
   },
   computed: {},
   watch: {},
   mounted() {},
   created() {
-    this.searchFrom.pageRows = this.page.pageSize
-    this.defaultSearchFrom = Object.assign({}, this.searchFrom)
+    debugger
+    // this.searchFrom.pageRows = this.page.pageSize
+    // this.defaultSearchFrom = Object.assign({}, this.searchFrom)
   },
   methods: {
     searchSubmit() { // 搜索查询
@@ -121,6 +161,18 @@ export default {
     handleCurrentChange(val) { // 切换页码
       this.searchFrom.pageNum = val
       this.searchSubmit()
+    },
+    upload(row) { // 上传文件
+      programList(row.id, multiRequest)
+        .then(res => {
+          this.$message.error('上传成功')
+        })
+        .catch(err => {
+          this.$message.error('上传失败')
+        })
+        .finally(() => {
+
+        })
     }
   }
 }
