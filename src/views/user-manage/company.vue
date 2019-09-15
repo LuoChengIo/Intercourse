@@ -11,7 +11,7 @@
         <el-form-item>
           <el-button type="primary" @click="resetFrom">重置</el-button>
           <el-button type="success" @click="searchSubmit">搜索</el-button>
-          <el-button type="success" icon="el-icon-plus" @click="addCompany">新增</el-button>
+          <el-button type="success" icon="el-icon-plus" @click="dialogCompany(1)">新增</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -59,10 +59,10 @@
           label="操作"
           width="450"
         >
-          <template>
-            <el-button type="info" size="mini">查看</el-button>
-            <el-button type="primary" size="mini">编辑</el-button>
-            <el-button type="danger" size="mini">删除</el-button>
+          <template slot-scope="scope">
+            <el-button type="info" size="mini" @click="dialogCompany(2,scope.row)">查看</el-button>
+            <el-button type="primary" size="mini" @click="dialogCompany(3,scope.row)">编辑</el-button>
+            <el-button type="danger" size="mini" @click="deleteCompany(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -85,18 +85,22 @@
     </div>
     <!-- 弹框 -->
     <el-dialog
-      title="新增公司"
+      :title="dialogTitle"
       :visible.sync="dialogVisible"
       width="645px"
     >
-      <el-form :inline="true" :model="formInline" label-width="102px" class="demo-form-inline">
+      <el-form :inline="true" :model="formInline" :disabled="formInline.disabled" label-width="102px" class="demo-form-inline">
+        <el-form-item v-if="dialogType===2" label="公司ID">
+          <el-input v-model="formInline.companyId" disabled placeholder="" />
+        </el-form-item>
         <el-form-item label="公司名称">
-          <el-input v-model="formInline.companyName" placeholder="" />
+          <el-input v-model="formInline.companyName" maxlength="30" placeholder="" />
         </el-form-item>
         <el-form-item label="公司logo">
           <el-upload
             class="avatar-uploader"
-            action="https://jsonplaceholder.typicode.com/posts/"
+            action=""
+            :http-request="uploadFile"
             :show-file-list="false"
             :on-success="handleAvatarSuccess"
             :before-upload="beforeAvatarUpload"
@@ -106,18 +110,29 @@
           </el-upload>
         </el-form-item>
         <el-form-item label="超管名称">
-          <el-input v-model="formInline.loginId" placeholder="" />
+          <el-input v-model="formInline.loginId" maxlength="12" placeholder="" />
         </el-form-item>
         <el-form-item label="超管登录密码">
-          <el-input v-model="formInline.password" type="password" placeholder="" />
+          <el-input v-model="formInline.wpassword" type="password" maxlength="18" placeholder="" />
         </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="onSubmit">查询</el-button>
-        </el-form-item>
+        <div class="mb5">
+          <el-checkbox @change="checkedAll">超管可配置权限</el-checkbox>
+        </div>
+        <div class="tree-ct">
+          <el-tree
+            ref="vuetree"
+            :data="treeData"
+            show-checkbox
+            default-expand-all
+            node-key="id"
+            highlight-current
+            :props="defaultProps"
+          />
+        </div>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        <el-button v-if="dialogType!==2" type="primary" @click="addEditSubmit">确 定</el-button>
+        <el-button @click="dialogVisible = false">关闭</el-button>
       </span>
     </el-dialog>
   </div>
@@ -125,7 +140,8 @@
 
 <script>
 // addCompany, deleteCompany, modifyCompanyInformation, getCompanyInformation,
-import { getCompanyList } from '@/api/user.js'
+import { getCompanyList, uploadImage, deleteCompany, modifyCompanyInformation, addCompany } from '@/api/user.js'
+import { encryptedData } from '@/utils/index'
 export default {
   components: {},
   props: {},
@@ -142,10 +158,51 @@ export default {
       },
       previewSrcList: [],
       listLoading: false,
-      tableData: [],
+      tableData: [{
+        data1: ''
+      }],
+      dialogType: 1,
       dialogVisible: false,
+      dialogTitle: '',
       formInline: {
-
+        companyName: '',
+        companyLogoUrl: '',
+        loginId: '',
+        wpassword: '',
+        password: '',
+        disabled: false
+      },
+      treeData: [{
+        id: 1,
+        label: '一级 1',
+        children: [{
+          id: 4,
+          label: '二级 1-1'
+        }]
+      }, {
+        id: 2,
+        label: '一级 2',
+        children: [{
+          id: 5,
+          label: '二级 2-1'
+        }, {
+          id: 6,
+          label: '二级 2-2'
+        }]
+      }, {
+        id: 3,
+        label: '一级 3',
+        children: [{
+          id: 7,
+          label: '二级 3-1'
+        }, {
+          id: 8,
+          label: '二级 3-2'
+        }]
+      }],
+      defaultProps: {
+        children: 'children',
+        label: 'label'
       }
     }
   },
@@ -157,23 +214,42 @@ export default {
     this.defaultSearchFrom = Object.assign({}, this.searchFrom)
   },
   methods: {
+    checkedAll(val) {
+      if (val) {
+        // 全选
+        this.$refs.vuetree.setCheckedNodes(this.treeData)
+      } else {
+        // 取消选中
+        this.$refs.vuetree.setCheckedKeys([])
+      }
+    },
+    uploadFile(content) { // 上传文件
+      console.log(content)
+      uploadImage({
+        Image: content.file
+      }).then(res => {
+        content.onSuccess(res)
+      }).catch(err => {
+        // content.onSuccess(err)
+        content.onError(err)
+      })
+    },
     handleAvatarSuccess(res, file) {
-      this.formInline.companyLogoUrl = URL.createObjectURL(file.raw)
+      console.log(res, file)
+      // this.formInline.companyLogoUrl = URL.createObjectURL(file.raw)
+      this.formInline.companyLogoUrl = res.filePath
     },
     beforeAvatarUpload(file) {
-      const isJPG = file.type === 'image/jpeg'
+      const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
       const isLt2M = file.size / 1024 / 1024 < 2
 
       if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG 格式!')
+        this.$message.error('上传头像图片只能是 JPG 和png格式!')
       }
       if (!isLt2M) {
         this.$message.error('上传头像图片大小不能超过 2MB!')
       }
       return isJPG && isLt2M
-    },
-    querySearch() {
-
     },
     searchSubmit() { // 搜索查询
       if (this.listLoading) {
@@ -196,9 +272,70 @@ export default {
           this.listLoading = false
         })
     },
-    addCompany() {
-      // 添加公司
+    dialogCompany(type, item) {
+      this.dialogType = type
+      this.formInline.disabled = false
+      if (type === 1) {
+        // 添加公司
+        this.formInline = Object.assign(this.formInline, {
+          companyName: '',
+          companyLogoUrl: '',
+          loginId: '',
+          wpassword: '',
+          password: ''
+        })
+        this.dialogTitle = '新建公司'
+      } else if (type === 2) {
+        this.formInline = Object.assign(this.formInline, item)
+        this.formInline.disabled = true
+        this.dialogTitle = '查看公司'
+      } else if (type === 3) {
+        this.formInline = Object.assign(this.formInline, item)
+        this.dialogTitle = '编辑公司'
+      }
       this.dialogVisible = true
+    },
+    deleteCompany(item) { // 删除公司
+      this.$confirm('公司删除后其下所有用户将不可用，删除操作不可逆，是否确认删除？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteCompany({
+          companyId: item.companyId
+        }).then(() => {
+          this.$message.success('删除成功！')
+        }).catch(() => {
+        })
+      }).catch(() => {
+      })
+    },
+    addEditSubmit() { // 编辑公司
+      let actionFuc = addCompany
+      if (this.dialogType === 2) {
+        actionFuc = modifyCompanyInformation
+      }
+      if (!this.formInline.companyName) {
+        this.$message('请填写公司名称')
+        return
+      }
+      if (!this.formInline.companyLogoUrl) {
+        this.$message('请上传公司logo')
+        return
+      }
+      if (!this.formInline.loginId) {
+        this.$message('请填写超管名称')
+        return
+      }
+      if (!this.formInline.wpassword && !this.formInline.password) {
+        this.$message('超管登录密码')
+        return
+      }
+      this.formInline.password = encryptedData(this.$store.getters.signKey, this.formInline.wpassword)
+      actionFuc(this.formInline).then(() => {
+        this.$message.success('保存成功！')
+      }).catch(() => {
+      })
     },
     handleSizeChange(val) { // 切换每页显示数
       this.searchFrom.pageNum = 1
@@ -219,5 +356,31 @@ export default {
 <style lang="scss" scoped>
   .cont-minheight{
     min-height: 740px;
+  }
+  .avatar-uploader {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    width: 186px;
+    height: 36px;
+    line-height: 36px;
+    text-align: center;
+    .avatar-uploader-icon{
+      width: 186px;
+      height: 36px;
+    }
+    .avatar{
+      max-width: 186px;
+      max-height: 36px;
+    }
+  }
+  .tree-ct{
+    border:1px solid #ddd;
+    padding: 10px;
+    height: 300px;
+    border-radius: 2px;
+    overflow-y: auto;
   }
 </style>

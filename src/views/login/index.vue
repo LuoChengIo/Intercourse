@@ -149,7 +149,8 @@ export default {
         // 拿到加密key res.signKey
         return this.$store.dispatch('user/login', {
           loginId: this.loginForm.loginId, // 用户名
-          password: encryptedData(res.data.signKey, this.loginForm.password) // 密码
+          password: encryptedData(res.data.signKey, this.loginForm.password), // 密码
+          signKey: res.data.signKey
         })
       }).then(() => {
         this.$router.push({ path: this.redirect || '/', query: this.otherQuery })

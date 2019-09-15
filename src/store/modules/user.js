@@ -5,6 +5,7 @@ import router, { resetRouter } from '@/router'
 const state = {
   token: getToken(),
   userInfo: JSON.parse(sessionStorage.getItem('userInfo')),
+  signKey: sessionStorage.getItem('signKey'),
   name: '',
   avatar: '',
   introduction: '',
@@ -17,6 +18,9 @@ const mutations = {
   },
   SET_USERINFO: (state, userInfo) => {
     state.userInfo = userInfo
+  },
+  SET_SIGNKEY: (state, signKey) => {
+    state.signKey = signKey
   },
   SET_INTRODUCTION: (state, introduction) => {
     state.introduction = introduction
@@ -40,7 +44,9 @@ const actions = {
         const { data } = response
         data.username = userInfo.loginId
         sessionStorage.setItem('userInfo', JSON.stringify(data))
+        sessionStorage.setItem('signKey', userInfo.signKey)
         commit('SET_USERINFO', data)
+        commit('SET_SIGNKEY', userInfo.signKey)
         commit('SET_TOKEN', data.token)
         setToken(data.token)
         resolve()
