@@ -162,13 +162,13 @@ export default {
       this.searchFrom.pageNum = val
       this.searchSubmit()
     },
-    upload(row) { // 上传文件
-      programList(row.id, multiRequest)
+    upload(row) { // 上传文件 multiRequest为必填参数
+      programList(row.id)
         .then(res => {
           this.$message.error('上传成功')
         })
         .catch(err => {
-          this.$message.error('上传失败')
+          this.$message.error(err.message)
         })
         .finally(() => {
 
