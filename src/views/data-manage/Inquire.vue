@@ -4,66 +4,66 @@
       <el-form :inline="true" :model="searchFrom" label-width="72px" class="form-inline">
         <el-form-item label="开始时间">
           <el-date-picker
-            v-model="searchFrom.data1"
+            v-model="searchFrom.startDate"
             type="date"
             placeholder="选择日期"
           />
         </el-form-item>
         <el-form-item label="结束时间">
           <el-date-picker
-            v-model="searchFrom.data2"
+            v-model="searchFrom.endDate"
             type="date"
             placeholder="选择日期"
           />
         </el-form-item>
         <el-form-item label="设备ID">
-          <el-input v-model="searchFrom.data3" placeholder="请输入设备ID" />
+          <el-input v-model="searchFrom.equipmentId" placeholder="请输入设备ID" />
         </el-form-item>
         <el-form-item label="设备名称">
-          <el-input v-model="searchFrom.data4" placeholder="请输入设备名称" />
+          <el-input v-model="searchFrom.equipmentName" placeholder="请输入设备名称" />
         </el-form-item>
         <el-form-item label="所属公司">
-          <el-input v-model="searchFrom.data5" placeholder="请输入所属公司" />
+          <el-input v-model="searchFrom.companId" placeholder="请输入所属公司" />
         </el-form-item>
         <el-form-item label="所属用户">
-          <el-input v-model="searchFrom.data5" placeholder="请输入所属用户" />
+          <el-input v-model="searchFrom.userId" placeholder="请输入所属用户" />
         </el-form-item>
         <el-form-item label="硬件版本">
-          <el-input v-model="searchFrom.data5" placeholder="硬件版本" />
+          <el-input v-model="searchFrom.equipmentSoftVersion" placeholder="硬件版本" />
         </el-form-item>
         <el-form-item label="软件版本">
-          <el-input v-model="searchFrom.data5" placeholder="软件版本" />
+          <el-input v-model="searchFrom.equipmentHardwareVersion" placeholder="软件版本" />
         </el-form-item>
         <el-form-item label="功能状态码">
-          <el-input v-model="searchFrom.data5" placeholder="功能状态码" />
+          <el-input v-model="searchFrom.statusCode" placeholder="功能状态码" />
         </el-form-item>
         <el-form-item label="故障等级">
-          <el-select v-model="searchFrom.data6">
+          <el-select v-model="searchFrom.failure">
             <el-option v-for="(item,index) in faultLevel" :key="index" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
         <el-form-item label="设备状态">
-          <el-select v-model="searchFrom.data7">
+          <el-select v-model="searchFrom.status">
             <el-option v-for="(item,index) in equipmentStatus" :key="index" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
         <el-form-item label="最高电压值">
-          <el-input v-model="searchFrom.data8" placeholder="最高电压值" />
+          <el-input v-model="searchFrom.oneBatteryVoltageHigh" placeholder="最高电压值" />
         </el-form-item>
         <el-form-item label="最低电压值">
-          <el-input v-model="searchFrom.data9" placeholder="最低电压值" />
+          <el-input v-model="searchFrom.oneBatteryVoltageLow" placeholder="最低电压值" />
         </el-form-item>
         <el-form-item label="压差值">
-          <el-input v-model="searchFrom.data10" placeholder="压差值" />
+          <el-input v-model="searchFrom.voltageDifference" placeholder="压差值" />
         </el-form-item>
         <el-form-item label="最高温度值">
-          <el-input v-model="searchFrom.data11" placeholder="最高温度值" />
+          <el-input v-model="searchFrom.highTemperature" placeholder="最高温度值" />
         </el-form-item>
         <el-form-item label="最低温度值">
-          <el-input v-model="searchFrom.data12" placeholder="最低温度值" />
+          <el-input v-model="searchFrom.lowTemperature" placeholder="最低温度值" />
         </el-form-item>
         <el-form-item label="温差值">
-          <el-input v-model="searchFrom.data13" placeholder="温差值" />
+          <el-input v-model="searchFrom.temperatureDifference" placeholder="温差值" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="resetFrom">重置</el-button>
@@ -87,57 +87,57 @@
         />
         <el-table-column
           align="center"
-          prop="data1"
+          prop="equipmentId"
           label="设备ID"
         />
         <el-table-column
           align="center"
-          prop="data1"
+          prop="statusCodeFormat"
           label="状态功能码"
         />
         <el-table-column
           align="center"
-          prop="data1"
+          prop="statusName"
           label="设备状态"
         />
         <el-table-column
           align="center"
-          prop="data1"
+          prop="failureName"
           label="故障等级"
         />
         <el-table-column
           align="center"
-          prop="data1"
+          prop="oneBatteryVoltageHigh"
           label="最高电压(V)"
         />
         <el-table-column
           align="center"
-          prop="data1"
+          prop="oneBatteryVoltageLow"
           label="最低电压(V)"
         />
         <el-table-column
           align="center"
-          prop="data1"
+          prop="highTemperature"
           label="最高温度(℃)"
         />
         <el-table-column
           align="center"
-          prop="data1"
+          prop="lowTemperature"
           label="最低温度(℃)"
         />
         <el-table-column
           align="center"
-          prop="data1"
+          prop="voltageDifference"
           label="压差(V)"
         />
         <el-table-column
           align="center"
-          prop="data1"
+          prop="temperatureDifference"
           label="温差(℃)"
         />
         <el-table-column
           align="center"
-          prop="data1"
+          prop="collectionTime"
           label="信息采集时间"
         />
       </el-table>
@@ -148,7 +148,7 @@
           class="dib"
           prev-text="上一页"
           next-text="下一页"
-          :current-page="searchFrom.pageNum"
+          :current-page="searchFrom.pageNo"
           :page-sizes="page.pageSizes"
           :page-size="searchFrom.pageRows"
           :total="searchFrom.total"
@@ -170,9 +170,24 @@ export default {
     return {
       defaultSearchFrom: {},
       searchFrom: {
-        data6: '',
-        data7: '',
-        pageNum: 1, // 当前页
+        startDate: '',
+        endDate: '',
+        equipmentId: '',
+        equipmentName: '',
+        equipmentSoftVersion: '',
+        equipmentHardwareVersion: '',
+        companId: '',
+        userId: '',
+        oneBatteryVoltageHigh: '',
+        oneBatteryVoltageLow: '',
+        highTemperature: '',
+        lowTemperature: '',
+        voltageDifference: '',
+        temperatureDifference: '',
+        status: '',
+        statusCode: '',
+        failure: '',
+        pageNo: 1, // 当前页
         pageRows: 10, // 每页显示数
         currentSize: 0, // 当前条数
         total: 0 // 总页数
@@ -219,7 +234,7 @@ export default {
       this.searchSubmit()
     },
     exportFrom() { // 导出表格数据
-      location.href = '#'
+      location.href = ''
     }
   }
 }
