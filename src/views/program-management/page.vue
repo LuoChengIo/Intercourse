@@ -50,8 +50,8 @@
           label="操作"
         >
           <template slot-scope="scope">
-            <el-button type="text" size="small" @click="upload(scope.row)">上传</el-button>
-            <el-button type="text" size="small">发布正式版</el-button>
+            <el-button type="primary" size="small" @click="upload(scope.row)">上传</el-button>
+            <el-button type="primary" size="small" @click="releaseVersion(scope.row)">发布正式版</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -62,7 +62,7 @@
           class="dib"
           prev-text="上一页"
           next-text="下一页"
-          :current-page="searchFrom.pageNum"
+          :current-page="searchFrom.pageNo"
           :page-sizes="page.pageSizes"
           :page-size="searchFrom.pageRows"
           :total="searchFrom.total"
@@ -76,7 +76,7 @@
 </template>
 
 <script>
-import { programList } from '@/api/program-management.js'
+import { programList, programPublish } from '@/api/program-management.js'
 export default {
   components: {},
   props: {},
@@ -84,16 +84,12 @@ export default {
     return {
       defaultSearchFrom: {},
       searchFrom: {
-        id: '',
-        equipmentSoftVersion: '',
-        equipmentHardwareVersion: 1, // 当前页
-        equipmentProgramName: '',
-        state: '',
-        addtime: '',
         pageRows: 10, // 每页显示数
         currentSize: 0, // 当前条数
-        total: 0 // 总页数
+        total: 0, // 总页数
+        pageNo: 0 // 页码
       },
+      version: 'beta-内测版', // beta-内测版 online-生产版
       listLoading: false,
       tableData: [
         {
@@ -132,9 +128,9 @@ export default {
   watch: {},
   mounted() {},
   created() {
-    debugger
-    // this.searchFrom.pageRows = this.page.pageSize
-    // this.defaultSearchFrom = Object.assign({}, this.searchFrom)
+    this.searchFrom.pageRows = this.page.pageSize
+    this.defaultSearchFrom = Object.assign({}, this.searchFrom)
+    this.searchSubmit()
   },
   methods: {
     searchSubmit() { // 搜索查询
@@ -166,6 +162,22 @@ export default {
       programList(row.id)
         .then(res => {
           this.$message.error('上传成功')
+        })
+        .catch(err => {
+          this.$message.error(err.message)
+        })
+        .finally(() => {
+
+        })
+    },
+    releaseVersion(item) {
+      var data = {
+        id: item.id,
+        version: this.version
+      }
+      programPublish(data)
+        .then(res => {
+          this.$message.error('发布成功')
         })
         .catch(err => {
           this.$message.error(err.message)
