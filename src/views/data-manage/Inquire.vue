@@ -202,6 +202,7 @@ export default {
   created() {
     this.searchFrom.pageRows = this.page.pageSize
     this.defaultSearchFrom = Object.assign({}, this.searchFrom)
+    this.searchSubmit()
   },
   methods: {
     searchSubmit() { // 搜索查询

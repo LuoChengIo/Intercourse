@@ -3,14 +3,14 @@
     <div class="w-card search-card">
       <el-form :inline="true" :model="searchFrom" label-width="72px" class="form-inline">
         <el-form-item label="设备ID">
-          <el-input v-model="searchFrom.data3" placeholder="请输入设备ID" />
+          <el-input v-model="searchFrom.equipmentId" placeholder="请输入设备ID" />
         </el-form-item>
         <el-form-item label="设备名称">
-          <el-input v-model="searchFrom.data3" placeholder="请输入设备名称" />
+          <el-input v-model="searchFrom.equipmentName" placeholder="请输入设备名称" />
         </el-form-item>
         <el-form-item label="所属公司">
           <el-autocomplete
-            v-model="searchFrom.data3"
+            v-model="searchFrom.companyId"
             popper-class="my-autocomplete"
             :fetch-suggestions="querySearch"
             placeholder="请输入内容"
@@ -26,18 +26,18 @@
           </el-autocomplete>
         </el-form-item>
         <el-form-item label="设备状态">
-          <el-select v-model="searchFrom.data7">
+          <el-select v-model="searchFrom.state">
             <el-option v-for="(item,index) in equipmentStatus" :key="index" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
-        <!-- <el-form-item label="出入库状态">
-          <el-select v-model="searchFrom.data7">
+        <el-form-item label="出入库状态">
+          <el-select v-model="searchFrom.status">
             <el-option label="全部" value="" />
             <el-option label="未入库" value="1" />
             <el-option label="已入库" value="2" />
             <el-option label="已出库" value="3" />
           </el-select>
-        </el-form-item> -->
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="resetFrom">重置</el-button>
           <el-button type="success" @click="searchSubmit">搜索</el-button>
@@ -119,7 +119,7 @@
           class="dib"
           prev-text="上一页"
           next-text="下一页"
-          :current-page="searchFrom.pageNum"
+          :current-page="searchFrom.pageNo"
           :page-sizes="page.pageSizes"
           :page-size="searchFrom.pageRows"
           :total="searchFrom.total"
@@ -133,7 +133,7 @@
 </template>
 
 <script>
-import { inquireList } from '@/api/data-manage.js'
+import { equipmentList, equipmentSave, equipmentDel, equipmentView, equipmentStatics, equipmentOut, equipmentIn } from '@/api/equipment-manage.js'
 export default {
   components: {},
   props: {},
@@ -141,9 +141,13 @@ export default {
     return {
       defaultSearchFrom: {},
       searchFrom: {
-        data6: '',
-        data7: '',
-        pageNum: 1, // 当前页
+        equipmentId: '',
+        equipmentName: '',
+        companyId: '',
+        state: '',
+        status: '',
+        equipmentName: '',
+        pageNo: 1, // 当前页
         pageRows: 10, // 每页显示数
         currentSize: 0, // 当前条数
         total: 0 // 总页数
@@ -158,8 +162,9 @@ export default {
   watch: {},
   mounted() {},
   created() {
-    this.searchFrom.pageRows = this.page.pageSize
+    this.searchFrom.pageNo = this.page.pageSize
     this.defaultSearchFrom = Object.assign({}, this.searchFrom)
+    this.searchSubmit()
   },
   methods: {
     searchSubmit() { // 搜索查询
@@ -167,7 +172,7 @@ export default {
         return
       }
       this.listLoading = true
-      inquireList(this.searchFrom)
+      equipmentList(this.searchFrom)
         .then(res => {
           this.tableData = res.data
         })
@@ -183,17 +188,23 @@ export default {
 
     },
     handleSizeChange(val) { // 切换每页显示数
-      this.searchFrom.pageNum = 1
+      this.searchFrom.pageNo = 1
       this.searchFrom.pageRows = val
       this.searchSubmit()
     },
     handleCurrentChange(val) { // 切换页码
-      this.searchFrom.pageNum = val
+      this.searchFrom.pageNo = val
       this.searchSubmit()
     },
     resetFrom() { // 重置搜索条件
       this.searchFrom = Object.assign({}, this.defaultSearchFrom)
       this.searchSubmit()
+    },
+    querySearch(queryString, cb) {
+      var restaurants = this.restaurants
+      var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants
+      // 调用 callback 返回建议列表的数据
+      cb(results)
     }
   }
 }
