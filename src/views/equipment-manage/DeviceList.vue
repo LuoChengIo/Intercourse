@@ -45,6 +45,34 @@
         </el-form-item>
       </el-form>
     </div>
+    <el-dialog title="收货地址" :visible.sync="dialogFormVisible" width="360px" center="true">
+      <div>
+        <el-form :model="formData">
+          <el-form-item label="活动名称" label-width="72px" class="form-inline">
+            <el-input v-model="form.name" autocomplete="off" />
+          </el-form-item>
+        </el-form>
+        <el-form :model="formData">
+          <el-form-item label="活动名称" label-width="72px" class="form-inline">
+            <el-input v-model="form.name" autocomplete="off" />
+          </el-form-item>
+        </el-form>
+        <el-form :model="formData">
+          <el-form-item label="活动名称" label-width="72px" class="form-inline">
+            <el-input v-model="form.name" autocomplete="off" />
+          </el-form-item>
+        </el-form>
+        <el-form :model="formData">
+          <el-form-item label="活动名称" label-width="72px" class="form-inline">
+            <el-input v-model="form.name" autocomplete="off" />
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button type="success" @click="dialogFormVisible = false">确 定</el-button>
+          <el-button @click="dialogFormVisible = false">取 消</el-button>
+        </div>
+      </div>
+    </el-dialog>
     <div v-heightAuto class="mt20 pb20 w-card">
       <el-table
         v-loading="listLoading"
@@ -146,7 +174,6 @@ export default {
         companyId: '',
         state: '',
         status: '',
-        equipmentName: '',
         pageNo: 1, // 当前页
         pageRows: 10, // 每页显示数
         currentSize: 0, // 当前条数
@@ -155,7 +182,19 @@ export default {
       listLoading: false,
       tableData: [{
         data1: 1
-      }]
+      }],
+      dialogFormVisible: false,
+      form: {
+        name: '',
+        region: '',
+        date1: '',
+        date2: '',
+        delivery: false,
+        type: [],
+        resource: '',
+        desc: ''
+      },
+      formLabelWidth: '120px'
     }
   },
   computed: {},
@@ -185,7 +224,7 @@ export default {
     },
     addSubmit() {
       // 添加设备
-
+      this.dialogFormVisible = true
     },
     handleSizeChange(val) { // 切换每页显示数
       this.searchFrom.pageNo = 1
@@ -212,5 +251,8 @@ export default {
 <style lang="scss" scoped>
   .cont-minheight{
     min-height: 740px;
+  }
+  .dialog-footer{
+    text-align: center;
   }
 </style>
