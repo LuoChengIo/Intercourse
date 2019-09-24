@@ -1,4 +1,4 @@
-
+import md5 from 'js-md5'
 /**
  * Created by PanJiaChen on 16/11/18.
  */
@@ -349,26 +349,15 @@ export function removeClass(ele, cls) {
     ele.className = ele.className.replace(reg, ' ')
   }
 }
-
 // 加密
-export function encryptedData(public_key, data) {
+export function encryptedData(data) {
+  // const publick_key = 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQClGwbiLjao2af29WdT+ECUfVgFrv0qmLCmglKCP4LCeTNZoDVpC0sWYFwfrbHz33IhuF8mtIXmZLoJPaikx108o80Bg65zjJzpoQS8Tb5FIi14LqI4H+Y83ZSg9CEf7EgAAs5tSt0Xv2el3pYlJNdroGTq+zua7SG6rYuno4bcvQIDAQAB'
+  // // eslint-disable-next-line no-undef
+  // var _encrypt = new JSEncrypt()
+  // _encrypt.setPublicKey(publick_key)
+  // var encrypted = _encrypt.encrypt(data)
   // eslint-disable-next-line no-undef
-  var _encrypt = new JSEncrypt()
-  _encrypt.setPublicKey(public_key)
-  var encrypted = _encrypt.encrypt(data)
-  return encrypted
-  // let rsa = new jsrsasign.RSAKey()
-  // var k = `-----BEGIN PRIVATE KEY-----
-  // ${private_key}
-  // -----END PRIVATE KEY-----`
-  // rsa = jsrsasign.KEYUTIL.getKey(k)
-  // // SHA1withRSA SHA256withRSA 这个参数可选
-  // const sig = new jsrsasign.KJUR.crypto.Signature({ 'alg': 'SHA1withRSA', 'prov': 'cryptojs/jsrsa' })
-  // sig.init(rsa)
-  // // 传入待加密字符串password
-  // sig.updateString(data)
-  // // 生成密文
-  // const sign = jsrsasign.hextob64(sig.sign())
-  // return sign
+  return md5(data)
+  // return 'NUcNyx/KTPlNxKOItdQMYt9BG/ybHmcBmWzIVXk5yzQQ7VIic5Miciw5CwxA0lJ5A5d/2qdHVxdIhsMCFDxNh5dBm84J0g/Yi75O4DWk2PPKRUfSDsgO1PX8hqcfFO5x%2BSBXkxgH9v6ZHY64bJARtgu2ZA40Iy6GwTVv4wpzWt0='
 }
 

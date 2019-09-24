@@ -1,10 +1,40 @@
 import axios from 'axios'
+import qs from 'Qs'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 
 // create an axios instance
 const service = axios.create({
+  // headers: {
+  //   'Content-Type': 'application/json'
+  // },
+  headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+  transformRequest: [
+    function(data) {
+      // Do whatever you want to transform the data
+      for (const key in data) {
+        if (data.hasOwnProperty(key)) {
+          if (data[key] === '') {
+            delete data[key]
+          }
+        }
+      }
+      const request = qs.stringify(data)
+      // const request = JSON.stringify(data)
+      return request
+    }
+  ],
+  paramsSerializer: function(params) {
+    for (const key in params) {
+      if (params.hasOwnProperty(key)) {
+        if (params[key] === '') {
+          delete params[key]
+        }
+      }
+    }
+    return qs.stringify(params)
+  },
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
   withCredentials: true, // send cookies when cross-domain requests
   timeout: 5000 // request timeout
@@ -46,19 +76,18 @@ service.interceptors.response.use(
     const res = response.data
 
     // if the custom code is not 20000, it is judged as an error.
-    if (res.code !== 20000) {
+    if (res.code !== 1) {
       Message({
-        message: res.message || 'error',
+        message: res.msg || 'error',
         type: 'error',
         duration: 5 * 1000
       })
-
-      // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
-      if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
+      // eslint-disable-next-line eqeqeq
+      if (res.code == 'S0001') {
         // to re-login
-        MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
-          confirmButtonText: 'Re-Login',
-          cancelButtonText: 'Cancel',
+        MessageBox.confirm('你的登录已失效，你可以重新登录或者取消。', '登录失效', {
+          confirmButtonText: '重新登录',
+          cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
           store.dispatch('user/resetToken').then(() => {
@@ -66,7 +95,7 @@ service.interceptors.response.use(
           })
         })
       }
-      return Promise.reject(res.message || 'error')
+      return Promise.reject(res.msg || 'error')
     } else {
       return res
     }

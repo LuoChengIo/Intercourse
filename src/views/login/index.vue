@@ -38,7 +38,6 @@
 </template>
 
 <script>
-import { getEncKey } from '@/api/user'
 import { baseImgURL, encryptedData } from '@/utils/index'
 import { validUsername } from '@/utils/validate'
 import Cookies from 'js-cookie'
@@ -145,13 +144,10 @@ export default {
       }
       // this.loginForm.uid = this.codeRandom
       this.loading = true
-      getEncKey(this.loginForm).then((res) => {
-        // 拿到加密key res.signKey
-        return this.$store.dispatch('user/login', {
-          loginId: this.loginForm.loginId, // 用户名
-          password: encryptedData(res.data.signKey, this.loginForm.password), // 密码
-          signKey: res.data.signKey
-        })
+
+      this.$store.dispatch('user/login', {
+        loginId: this.loginForm.loginId, // 用户名
+        password: encryptedData(this.loginForm.password) // 密码
       }).then(() => {
         this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
         this.loading = false

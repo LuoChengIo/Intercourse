@@ -2,14 +2,14 @@ import request from '@/utils/request'
 
 export function login(data) {
   return request({
-    url: '/userManage/login',
+    url: '/zjxt-api/user/userManage/login',
     method: 'post',
     data
   })
 }
 export function getEncKey(data) {
   return request({
-    url: '/userManage/getEncKey',
+    url: '/user/userManage/getEncKey',
     method: 'post',
     data
   })
@@ -71,11 +71,11 @@ export function getCompanyInformation(data) { // 查询公司详细信息
     data
   })
 }
-export function getCompanyList(data) { // 查询公司列表
+export function getCompanyList(params) { // 查询公司列表
   return request({
     url: '/systemManage/getCompanyList',
-    method: 'post',
-    data
+    method: 'get',
+    params
   })
 }
 export function addUser(data) { // 新增用户

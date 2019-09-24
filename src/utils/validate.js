@@ -15,7 +15,8 @@ export function isExternal(path) {
  * @returns {Boolean}
  */
 export function validUsername(str) {
-  const reg = /^(?=.*[A-Za-z])(?=.*\d)[^]{4,16}$/
+  // const reg = /^(?=.*[A-Za-z])(?=.*\d)[^]{4,16}$/
+  const reg = /^[A-Za-z0-9]+$/
   return reg.test(str)
 }
 

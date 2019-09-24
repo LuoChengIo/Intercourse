@@ -4,7 +4,7 @@ import router, { resetRouter } from '@/router'
 
 const state = {
   token: getToken(),
-  userInfo: JSON.parse(sessionStorage.getItem('userInfo')),
+  userInfo: sessionStorage.getItem('userInfo') && JSON.parse(sessionStorage.getItem('userInfo')),
   signKey: sessionStorage.getItem('signKey'),
   name: '',
   avatar: '',
@@ -41,10 +41,10 @@ const actions = {
   login({ commit }, userInfo) {
     return new Promise((resolve, reject) => {
       login(userInfo).then(response => {
-        const { data } = response
+        const data = response
         data.username = userInfo.loginId
         sessionStorage.setItem('userInfo', JSON.stringify(data))
-        sessionStorage.setItem('signKey', userInfo.signKey)
+        sessionStorage.setItem('isLogin', true)
         commit('SET_USERINFO', data)
         commit('SET_SIGNKEY', userInfo.signKey)
         commit('SET_TOKEN', data.token)
@@ -59,9 +59,9 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      console.log(state.userInfo.functionlist)
-      commit('SET_ROLES', state.userInfo.functionlist)
-      resolve(state.userInfo.functionlist)
+      console.log(state.userInfo.functionList)
+      commit('SET_ROLES', state.userInfo.functionList)
+      resolve(state.userInfo.functionList)
     })
   },
 
@@ -69,6 +69,9 @@ const actions = {
   logout({ commit, state }) {
     return new Promise((resolve, reject) => {
       logout(state.token).then(() => {
+        sessionStorage.setItem('userInfo', '')
+        sessionStorage.setItem('signKey', '')
+        sessionStorage.setItem('isLogin', '')
         commit('SET_TOKEN', '')
         commit('SET_ROLES', [])
         removeToken()

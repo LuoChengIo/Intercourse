@@ -16,7 +16,7 @@ const dataRouter = {
       path: 'day-statistics',
       component: () => import('@/views/data-manage/Statistics.vue'), // Parent router-view
       name: 'Statistics',
-      meta: { title: '当日数据统计' }
+      meta: { title: '数据统计' }
     },
     {
       path: 'inquire',

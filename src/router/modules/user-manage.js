@@ -8,7 +8,7 @@ const userRouter = {
   redirect: '/personal/day-statistics',
   name: 'userManage',
   meta: {
-    title: '用户管理',
+    title: '系统管理',
     icon: 'icon_systerm_manage'
   },
   children: [

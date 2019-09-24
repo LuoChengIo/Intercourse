@@ -62,7 +62,7 @@
           <template slot-scope="scope">
             <el-button type="info" size="mini" @click="dialogCompany(2,scope.row)">查看</el-button>
             <el-button type="primary" size="mini" @click="dialogCompany(3,scope.row)">编辑</el-button>
-            <el-button type="danger" size="mini" @click="deleteCompany(scope.row)">删除</el-button>
+            <el-button type="danger" size="mini" @click="deleteCompany(scope.row,scope.$index)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -73,7 +73,7 @@
           class="dib"
           prev-text="上一页"
           next-text="下一页"
-          :current-page="searchFrom.pageNum"
+          :current-page="searchFrom.pageNo"
           :page-sizes="page.pageSizes"
           :page-size="searchFrom.pageRows"
           :total="searchFrom.total"
@@ -151,7 +151,7 @@ export default {
       searchFrom: {
         companyId: '',
         companyName: '',
-        pageNum: 1, // 当前页
+        pageNo: 1, // 当前页
         pageRows: 10, // 每页显示数
         currentSize: 0, // 当前条数
         total: 0 // 总页数
@@ -212,6 +212,7 @@ export default {
   created() {
     this.searchFrom.pageRows = this.page.pageSize
     this.defaultSearchFrom = Object.assign({}, this.searchFrom)
+    this.searchSubmit()
   },
   methods: {
     checkedAll(val) {
@@ -259,11 +260,13 @@ export default {
       getCompanyList(this.searchFrom)
         .then(res => {
           const arr = []
-          res.data.list.forEach((ele) => {
+          res.companyList.list.forEach((ele) => {
             arr.push(ele.companyLogoUrl)
           })
           this.previewSrcList = arr
-          this.tableData = res.data.list
+          this.tableData = res.companyList.list
+          this.searchFrom.currentSize = res.companyList.size
+          this.searchFrom.total = res.companyList.total
         })
         .catch(err => {
           console.log(err)
@@ -295,7 +298,7 @@ export default {
       }
       this.dialogVisible = true
     },
-    deleteCompany(item) { // 删除公司
+    deleteCompany(item, index) { // 删除公司
       this.$confirm('公司删除后其下所有用户将不可用，删除操作不可逆，是否确认删除？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -304,6 +307,7 @@ export default {
         deleteCompany({
           companyId: item.companyId
         }).then(() => {
+          this.tableData.splice(index, 1)
           this.$message.success('删除成功！')
         }).catch(() => {
         })
@@ -338,12 +342,12 @@ export default {
       })
     },
     handleSizeChange(val) { // 切换每页显示数
-      this.searchFrom.pageNum = 1
+      this.searchFrom.pageNo = 1
       this.searchFrom.pageRows = val
       this.searchSubmit()
     },
     handleCurrentChange(val) { // 切换页码
-      this.searchFrom.pageNum = val
+      this.searchFrom.pageNo = val
       this.searchSubmit()
     },
     resetFrom() { // 重置搜索条件
