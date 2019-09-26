@@ -90,7 +90,7 @@
       width="645px"
     >
       <el-form :inline="true" :model="formInline" :disabled="formInline.disabled" label-width="102px" class="demo-form-inline">
-        <el-form-item v-if="dialogType===2" label="公司ID">
+        <el-form-item v-if="dialogType!==1" label="公司ID">
           <el-input v-model="formInline.companyId" disabled placeholder="" />
         </el-form-item>
         <el-form-item label="公司名称">
@@ -112,11 +112,11 @@
         <el-form-item label="超管名称">
           <el-input v-model="formInline.loginId" maxlength="12" placeholder="" />
         </el-form-item>
-        <el-form-item label="超管登录密码">
+        <el-form-item v-if="dialogType===1" label="超管登录密码">
           <el-input v-model="formInline.wpassword" type="password" maxlength="18" placeholder="" />
         </el-form-item>
         <div class="mb5">
-          <el-checkbox @change="checkedAll">超管可配置权限</el-checkbox>
+          <el-checkbox v-model="formInline.checkAll" @change="checkedAll">超管可配置权限</el-checkbox>
         </div>
         <div class="tree-ct">
           <el-tree
@@ -127,6 +127,7 @@
             node-key="id"
             highlight-current
             :props="defaultProps"
+            @check="checkCallback"
           />
         </div>
       </el-form>
@@ -140,7 +141,7 @@
 
 <script>
 // addCompany, deleteCompany, modifyCompanyInformation, getCompanyInformation,
-import { getCompanyList, uploadImage, deleteCompany, modifyCompanyInformation, addCompany } from '@/api/user.js'
+import { getCompanyList, uploadImage, deleteCompany, modifyCompanyInformation, addCompany, getFunctionList, getCompanyInformation } from '@/api/user.js'
 import { encryptedData } from '@/utils/index'
 export default {
   components: {},
@@ -170,39 +171,15 @@ export default {
         loginId: '',
         wpassword: '',
         password: '',
-        disabled: false
+        oneLevelFunctionString: '',
+        twoLevelFunctionString: '',
+        disabled: false,
+        checkAll: false
       },
-      treeData: [{
-        id: 1,
-        label: '一级 1',
-        children: [{
-          id: 4,
-          label: '二级 1-1'
-        }]
-      }, {
-        id: 2,
-        label: '一级 2',
-        children: [{
-          id: 5,
-          label: '二级 2-1'
-        }, {
-          id: 6,
-          label: '二级 2-2'
-        }]
-      }, {
-        id: 3,
-        label: '一级 3',
-        children: [{
-          id: 7,
-          label: '二级 3-1'
-        }, {
-          id: 8,
-          label: '二级 3-2'
-        }]
-      }],
+      treeData: [],
       defaultProps: {
-        children: 'children',
-        label: 'label'
+        children: 'twoLevelFunctionList',
+        label: 'functionName'
       }
     }
   },
@@ -213,6 +190,7 @@ export default {
     this.searchFrom.pageRows = this.page.pageSize
     this.defaultSearchFrom = Object.assign({}, this.searchFrom)
     this.searchSubmit()
+    this.getFunctionList()
   },
   methods: {
     checkedAll(val) {
@@ -224,15 +202,41 @@ export default {
         this.$refs.vuetree.setCheckedKeys([])
       }
     },
+    checkCallback(checkobj) {
+      // console.log(this.$refs.vuetree.getCheckedKeys(false))
+      // if (this.$refs.vuetree.getCheckedKeys(false).length) {
+      //   this.formInline.checkAll = false
+      // } else {
+      //   this.formInline.checkAll = true
+      // }
+    },
     uploadFile(content) { // 上传文件
       console.log(content)
-      uploadImage({
-        Image: content.file
-      }).then(res => {
+      const fd = new FormData()
+      fd.append('Image', content.file)
+      uploadImage(fd).then(res => {
         content.onSuccess(res)
       }).catch(err => {
         // content.onSuccess(err)
         content.onError(err)
+      })
+    },
+    getFunctionList() {
+      // 获取菜单
+      getFunctionList().then(res => {
+        const data = res.functionList
+        function dataFor(tree) {
+          tree.forEach(element => {
+            element.id = element.functionId
+            if (element.twoLevelFunctionList && element.twoLevelFunctionList.length) {
+              dataFor(element.twoLevelFunctionList)
+            }
+          })
+        }
+        dataFor(data)
+        this.treeData = data
+      }).catch(err => {
+        console.log(err)
       })
     },
     handleAvatarSuccess(res, file) {
@@ -282,19 +286,33 @@ export default {
         // 添加公司
         this.formInline = Object.assign(this.formInline, {
           companyName: '',
-          companyLogoUrl: '',
+          companyLogoUrl: 'http://imgcdn.gz01.bdysite.com/upfile/t0155b78807f4893cb9.jpg',
           loginId: '',
           wpassword: '',
-          password: ''
+          password: '',
+          checkAll: false
         })
         this.dialogTitle = '新建公司'
-      } else if (type === 2) {
-        this.formInline = Object.assign(this.formInline, item)
-        this.formInline.disabled = true
-        this.dialogTitle = '查看公司'
-      } else if (type === 3) {
-        this.formInline = Object.assign(this.formInline, item)
+        this.$nextTick(() => {
+          this.$refs.vuetree.setCheckedKeys([])
+        })
+      } else if (type === 3 || type === 2) {
+        getCompanyInformation({
+          companyId: item.companyId
+        }).then((res) => {
+          const data = res.companyInformation
+          data.loginId = data.adminId
+          this.formInline = Object.assign(this.formInline, data)
+          this.$nextTick(() => {
+            this.$refs.vuetree.setCheckedKeys([])
+          })
+        }).catch(() => {
+        })
         this.dialogTitle = '编辑公司'
+        if (type === 2) {
+          this.formInline.disabled = true
+          this.dialogTitle = '查看公司'
+        }
       }
       this.dialogVisible = true
     },
@@ -314,9 +332,9 @@ export default {
       }).catch(() => {
       })
     },
-    addEditSubmit() { // 编辑公司
+    addEditSubmit() { // 编辑公司c
       let actionFuc = addCompany
-      if (this.dialogType === 2) {
+      if (this.dialogType === 3) {
         actionFuc = modifyCompanyInformation
       }
       if (!this.formInline.companyName) {
@@ -331,11 +349,29 @@ export default {
         this.$message('请填写超管名称')
         return
       }
-      if (!this.formInline.wpassword && !this.formInline.password) {
-        this.$message('超管登录密码')
+      if (this.dialogType === 2 && this.formInline.wpassword && !this.formInline.password) {
+        this.$message('请填写超管登录密码')
         return
       }
-      this.formInline.password = encryptedData(this.$store.getters.signKey, this.formInline.wpassword)
+      const checkNode = this.$refs.vuetree.getCheckedNodes().concat(this.$refs.vuetree.getHalfCheckedNodes())
+      if (!checkNode.length) {
+        this.$message('请选择权限功能')
+        return
+      }
+      const arr1 = []
+      const arr2 = []
+      checkNode.forEach(ele => {
+        if (ele.twoLevelFunctionList) {
+          arr1.push(ele.functionId)
+        } else {
+          arr2.push(ele.functionId)
+        }
+      })
+      this.formInline.oneLevelFunctionString = arr1.join('|')
+      this.formInline.twoLevelFunctionString = arr2.join('|')
+      if (this.formInline.wpassword) {
+        this.formInline.password = encryptedData(this.formInline.wpassword)
+      }
       actionFuc(this.formInline).then(() => {
         this.$message.success('保存成功！')
       }).catch(() => {

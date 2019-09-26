@@ -35,12 +35,12 @@ module.exports = {
     },
     https: false,
     proxy: {
-      '/zjxt-api': {
+      [process.env.VUE_APP_BASE_API]: {
         target: 'http://47.103.142.9:8080',
         changeOrigin: true,
         ws: true,
         pathRewrite: {
-          '^/zjxt-api': ''
+          ['^' + process.env.VUE_APP_BASE_API]: ''
         }
       }
     }
