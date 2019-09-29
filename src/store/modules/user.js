@@ -71,8 +71,6 @@ const actions = {
       sessionStorage.setItem('userInfo', '')
       sessionStorage.setItem('signKey', '')
       sessionStorage.setItem('isLogin', '')
-      commit('SET_TOKEN', '')
-      commit('SET_ROLES', [])
       removeToken()
       resetRouter()
       resolve()
@@ -82,6 +80,9 @@ const actions = {
   // remove token
   resetToken({ commit }) {
     return new Promise(resolve => {
+      sessionStorage.setItem('userInfo', '')
+      sessionStorage.setItem('signKey', '')
+      sessionStorage.setItem('isLogin', '')
       commit('SET_TOKEN', '')
       commit('SET_ROLES', [])
       removeToken()

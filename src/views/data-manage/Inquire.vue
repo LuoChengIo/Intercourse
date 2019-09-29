@@ -222,12 +222,12 @@ export default {
         })
     },
     handleSizeChange(val) { // 切换每页显示数
-      this.searchFrom.pageNum = 1
+      this.searchFrom.pageNo = 1
       this.searchFrom.pageRows = val
       this.searchSubmit()
     },
     handleCurrentChange(val) { // 切换页码
-      this.searchFrom.pageNum = val
+      this.searchFrom.pageNo = val
       this.searchSubmit()
     },
     resetFrom() { // 重置搜索条件

@@ -133,7 +133,7 @@
           class="dib"
           prev-text="上一页"
           next-text="下一页"
-          :current-page="searchFrom.pageNum"
+          :current-page="searchFrom.pageNo"
           :page-sizes="page.pageSizes"
           :page-size="searchFrom.pageRows"
           :total="searchFrom.total"
@@ -158,7 +158,7 @@ export default {
         data6: '',
         data7: '',
         data4: [],
-        pageNum: 1, // 当前页
+        pageNo: 1, // 当前页
         pageRows: 10, // 每页显示数
         currentSize: 0, // 当前条数
         total: 0 // 总页数
@@ -192,12 +192,12 @@ export default {
         })
     },
     handleSizeChange(val) { // 切换每页显示数
-      this.searchFrom.pageNum = 1
+      this.searchFrom.pageNo = 1
       this.searchFrom.pageRows = val
       this.searchSubmit()
     },
     handleCurrentChange(val) { // 切换页码
-      this.searchFrom.pageNum = val
+      this.searchFrom.pageNo = val
       this.searchSubmit()
     },
     resetFrom() { // 重置搜索条件

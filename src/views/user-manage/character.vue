@@ -116,9 +116,11 @@
           <el-autocomplete
             v-model="formInline.ascriptionCompanyName"
             popper-class="my-autocomplete"
+            :disabled="dialogType===2?true:false"
             value-key="companyName"
             :fetch-suggestions="querySearch"
             placeholder="请输入所属公司"
+            @select="getFunctions"
           >
             <i
               slot="suffix"
@@ -145,7 +147,7 @@
         </div>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button v-if="dialogType!==2" type="primary" @click="addEditSubmit">确 定</el-button>
+        <el-button type="primary" @click="addEditSubmit">确 定</el-button>
         <el-button @click="dialogVisible = false">关闭</el-button>
       </span>
     </el-dialog>
@@ -153,7 +155,7 @@
 </template>
 
 <script>
-import { getRoleList, getCompanyList, addRole, modifyRoleInformation, deleteRole, getRoleFunction } from '@/api/user.js'
+import { getRoleList, getCompanyList, addRole, modifyRoleInformation, deleteRole, getRoleFunction, getCompanyInformation } from '@/api/user.js'
 export default {
   components: {},
   props: {},
@@ -270,6 +272,28 @@ export default {
       }).catch(() => {
       })
     },
+    getFunctions(item, callback) {
+      this.formInline.ascriptionCompanyId = item.companyId
+      // 获取当前公司的权限
+      getCompanyInformation({
+        companyId: item.companyId
+      }).then((res) => {
+        const data = res.companyInformation.superUserFunctionList
+        data.loginId = data.adminId
+        function dataFor(tree) {
+          tree.forEach(element => {
+            element.id = element.functionId
+            if (element.twoLevelFunctionList && element.twoLevelFunctionList.length) {
+              dataFor(element.twoLevelFunctionList)
+            }
+          })
+        }
+        dataFor(data)
+        this.treeDialogData = data
+        callback && callback()
+      }).catch(() => {
+      })
+    },
     dialogAddEdit(type, item) {
       this.dialogType = type
       this.formInline.disabled = false
@@ -285,6 +309,27 @@ export default {
       } else if (type === 2) {
         this.formInline = Object.assign(this.formInline, item)
         this.dialogTitle = '编辑角色'
+        console.log(item)
+        this.getFunctions({
+          companyId: item.ascriptionCompanyId
+        }, () => {
+          this.getRoleFunction(item, (res) => {
+            const data = res.roleFunctionList
+            var arr = []
+            function secheckArr(checkData) {
+              checkData.forEach((element) => {
+                arr.push(element.functionId)
+                if (element.twoLevelFunctionList && element.twoLevelFunctionList.length) {
+                  secheckArr(element.twoLevelFunctionList)
+                }
+              })
+            }
+            secheckArr(data)
+            this.$nextTick(() => {
+              this.$refs.vuetree.setCheckedKeys(arr)
+            })
+          })
+        })
       }
       this.dialogVisible = true
     },
@@ -310,16 +355,16 @@ export default {
         actionFuc = modifyRoleInformation
       }
       if (!this.formInline.roleName) {
-        this.$message('请填写角色名称')
+        this.$message.warning('请填写角色名称')
         return
       }
       if (!this.formInline.ascriptionCompanyName) {
-        this.$message('请填写公司名称')
+        this.$message.warning('请填写公司名称')
         return
       }
       const checkNode = this.$refs.vuetree.getCheckedNodes().concat(this.$refs.vuetree.getHalfCheckedNodes())
       if (!checkNode.length) {
-        this.$message('请选择权限功能')
+        this.$message.warning('请选择权限功能')
         return
       }
       const arr1 = []
@@ -331,10 +376,12 @@ export default {
           arr2.push(ele.functionId)
         }
       })
-      this.formInline.oneLevelFunctionString = arr1.join('|')
-      this.formInline.twoLevelFunctionString = arr2.join('|')
+      this.formInline.oneLevelFunctionString = arr1.join('|') + '|'
+      this.formInline.twoLevelFunctionString = arr2.join('|') + '|'
       actionFuc(this.formInline).then(() => {
         this.$message.success('保存成功！')
+        this.dialogVisible = false
+        this.searchSubmit()
       }).catch(() => {
       })
     },

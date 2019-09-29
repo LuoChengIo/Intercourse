@@ -38,10 +38,9 @@
               <el-image
                 style="max-width: 100%; max-height: 100%"
                 :src="scope.row.companyLogoUrl"
-                :preview-src-list="previewSrcList"
+                :preview-src-list="scope.row.previewSrcList"
               />
             </div>
-            <span style="margin-left: 10px">{{ scope.row.companyLogoUrl }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -263,11 +262,9 @@ export default {
       this.listLoading = true
       getCompanyList(this.searchFrom)
         .then(res => {
-          const arr = []
           res.companyList.list.forEach((ele) => {
-            arr.push(ele.companyLogoUrl)
+            ele.previewSrcList = [ele.companyLogoUrl]
           })
-          this.previewSrcList = arr
           this.tableData = res.companyList.list
           this.searchFrom.currentSize = res.companyList.size
           this.searchFrom.total = res.companyList.total
@@ -286,7 +283,7 @@ export default {
         // 添加公司
         this.formInline = Object.assign(this.formInline, {
           companyName: '',
-          companyLogoUrl: 'http://imgcdn.gz01.bdysite.com/upfile/t0155b78807f4893cb9.jpg',
+          companyLogoUrl: '',
           loginId: '',
           wpassword: '',
           password: '',
@@ -303,8 +300,19 @@ export default {
           const data = res.companyInformation
           data.loginId = data.adminId
           this.formInline = Object.assign(this.formInline, data)
+          var arr = []
+          function secheckArr(checkData) {
+            checkData.forEach((element) => {
+              arr.push(element.functionId)
+              if (element.twoLevelFunctionList && element.twoLevelFunctionList.length) {
+                secheckArr(element.twoLevelFunctionList)
+              }
+            })
+          }
+          secheckArr(this.formInline.superUserFunctionList)
+          console.log(arr)
           this.$nextTick(() => {
-            this.$refs.vuetree.setCheckedKeys([])
+            this.$refs.vuetree.setCheckedKeys(arr)
           })
         }).catch(() => {
         })
@@ -338,24 +346,24 @@ export default {
         actionFuc = modifyCompanyInformation
       }
       if (!this.formInline.companyName) {
-        this.$message('请填写公司名称')
+        this.$message.warning('请填写公司名称')
         return
       }
       if (!this.formInline.companyLogoUrl) {
-        this.$message('请上传公司logo')
+        this.$message.warning('请上传公司logo')
         return
       }
       if (!this.formInline.loginId) {
-        this.$message('请填写超管名称')
+        this.$message.warning('请填写超管名称')
         return
       }
       if (this.dialogType === 2 && this.formInline.wpassword && !this.formInline.password) {
-        this.$message('请填写超管登录密码')
+        this.$message.warning('请填写超管登录密码')
         return
       }
       const checkNode = this.$refs.vuetree.getCheckedNodes().concat(this.$refs.vuetree.getHalfCheckedNodes())
       if (!checkNode.length) {
-        this.$message('请选择权限功能')
+        this.$message.warning('请选择权限功能')
         return
       }
       const arr1 = []
@@ -367,13 +375,15 @@ export default {
           arr2.push(ele.functionId)
         }
       })
-      this.formInline.oneLevelFunctionString = arr1.join('|')
-      this.formInline.twoLevelFunctionString = arr2.join('|')
+      this.formInline.oneLevelFunctionString = arr1.join('|') + '|'
+      this.formInline.twoLevelFunctionString = arr2.join('|') + '|'
       if (this.formInline.wpassword) {
         this.formInline.password = encryptedData(this.formInline.wpassword)
       }
       actionFuc(this.formInline).then(() => {
         this.$message.success('保存成功！')
+        this.dialogVisible = false
+        this.searchSubmit()
       }).catch(() => {
       })
     },

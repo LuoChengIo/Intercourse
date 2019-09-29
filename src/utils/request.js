@@ -83,7 +83,7 @@ service.interceptors.response.use(
         duration: 5 * 1000
       })
       // eslint-disable-next-line eqeqeq
-      if (res.code == 'S0001') {
+      if (res.code == 80001) {
         // to re-login
         MessageBox.confirm('你的登录已失效，你可以重新登录或者取消。', '登录失效', {
           confirmButtonText: '重新登录',
