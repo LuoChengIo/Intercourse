@@ -35,7 +35,7 @@
         <el-form-item>
           <el-button type="primary" @click="resetFrom">重置</el-button>
           <el-button type="success" @click="searchSubmit">搜索</el-button>
-          <el-button type="success" icon="el-icon-plus" @click="dialogVisible = true">新增</el-button>
+          <el-button type="success" icon="el-icon-plus" @click="operationHandle('',6)">新增</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -135,20 +135,21 @@
         </div>
         <div class="dg-left-ct">
           <el-form class="dialog-boder-card mb15 demo-form-inline pt15" :inline="true" :model="formInline" :disabled="formInline.disabled" label-width="90px">
-            <el-form-item label="账户ID">
-              <el-input v-model="formInline.roleId" disabled placeholder="" />
+            <el-form-item v-if="dialogType==1||dialogType==2" label="账户ID">
+              <el-input v-model="formInline.operatorId" disabled placeholder="" />
             </el-form-item>
             <el-form-item label="用户名称">
-              <el-input v-model="formInline.roleId" placeholder="" />
+              <el-input v-model="formInline.loginId" placeholder="" />
             </el-form-item>
             <el-form-item label="所属公司">
               <el-autocomplete
-                v-model="formInline.ascriptionCompanyName"
+                v-model="formInline.ascriptionCompanyId"
                 style="width:155px;"
                 popper-class="my-autocomplete"
                 value-key="companyName"
                 :fetch-suggestions="querySearch"
                 placeholder="请输入所属公司"
+                @change="companyChange"
               >
                 <i
                   slot="suffix"
@@ -159,18 +160,18 @@
                 </template>
               </el-autocomplete>
             </el-form-item>
-            <el-form-item label="上级用户">
-              <el-input v-model="formInline.roleId" placeholder="" />
+            <el-form-item v-if="dialogType==1||dialogType==2" label="上级用户">
+              <el-input v-model="formInline.roleId" disabled placeholder="" />
             </el-form-item>
-            <el-form-item label="用户等级">
-              <el-input v-model="formInline.roleName" maxlength="30" placeholder="" />
+            <el-form-item v-if="dialogType==1||dialogType==2" label="用户等级">
+              <el-input v-model="formInline.roleName" disabled maxlength="30" placeholder="" />
             </el-form-item>
             <el-form-item label="子账户数">
-              <el-input v-model="formInline.roleName" maxlength="30" placeholder="" />
+              <el-input v-model="formInline.subOperatorNum" maxlength="30" placeholder="" />
             </el-form-item>
           </el-form>
           <div class="dialog-boder-card p10">
-            <el-transfer v-model="formInline.transfer" :data="transferData" />
+            <el-transfer v-model="formInline.roleIdString" :data="transferData" />
           </div>
         </div>
 
@@ -184,7 +185,7 @@
 </template>
 
 <script>
-import { getUserList, getCompanyList, midifyUserStatus, passwordReset } from '@/api/user.js'
+import { getUserList, getCompanyList, midifyUserStatus, passwordReset, getUserInformation, addUser, modifyUserInformation } from '@/api/user.js'
 import { encryptedData } from '@/utils/index'
 export default {
   components: {},
@@ -214,12 +215,17 @@ export default {
         ascriptionCompanyId: '',
         oneLevelFunctionString: '',
         twoLevelFunctionString: '',
+        roleIdString: '',
         transfer: [],
         disabled: false,
         checkAll: false
       },
       treeDialogData: [],
-      transferData: []
+      transferData: [],
+      defaultProps: {
+        children: 'twoLevelFunctionList',
+        label: 'functionName'
+      }
     }
   },
   computed: {},
@@ -248,6 +254,24 @@ export default {
           cb(results)
         })
     },
+    companyChange(val) {
+      // 选择公司后 展示对应的角色
+      getUserList({
+        ascriptionCompanyName: val,
+        pageNo: 1, // 当前页
+        pageRows: 100000 // 每页显示数
+      })
+        .then(res => {
+          var transferData = res.userList.list || []
+          transferData.forEach(element => {
+            element.key = element.roleId
+            element.label = element.roleName
+          })
+          this.transferData = transferData
+        })
+        .catch(() => {
+        })
+    },
     searchSubmit() { // 搜索查询
       if (this.listLoading) {
         return
@@ -266,16 +290,72 @@ export default {
           this.listLoading = false
         })
     },
-    addSubmit() {
-      // 添加设备
-
+    addEditSubmit() { // 编辑角色
+      let actionFuc = addUser
+      if (this.dialogType === 2) {
+        actionFuc = modifyUserInformation
+      }
+      if (!this.formInline.roleName) {
+        this.$message('请填写角色名称')
+        return
+      }
+      if (!this.formInline.ascriptionCompanyName) {
+        this.$message('请填写公司名称')
+        return
+      }
+      const checkNode = this.$refs.vuetree.getCheckedNodes().concat(this.$refs.vuetree.getHalfCheckedNodes())
+      if (!checkNode.length) {
+        this.$message('请选择权限功能')
+        return
+      }
+      const arr1 = []
+      const arr2 = []
+      checkNode.forEach(ele => {
+        if (ele.twoLevelFunctionList) {
+          arr1.push(ele.functionId)
+        } else {
+          arr2.push(ele.functionId)
+        }
+      })
+      this.formInline.oneLevelFunctionString = arr1.join('|')
+      this.formInline.twoLevelFunctionString = arr2.join('|')
+      actionFuc(this.formInline).then(() => {
+        this.$message.success('保存成功！')
+      }).catch(() => {
+      })
     },
     operationHandle(item, type) {
       // 系列操作
-      if (type === 1) {
-        console.log(1)
-      } else if (type === 2) {
-        console.log(1)
+      this.dialogType = type
+      this.formInline.disabled = false
+      if (type === 6) {
+        // 添加用户
+        this.formInline = Object.assign(this.formInline, {
+          roleId: '',
+          roleName: '',
+          ascriptionCompanyName: '',
+          ascriptionCompanyId: '',
+          oneLevelFunctionString: '',
+          twoLevelFunctionString: '',
+          roleIdString: '',
+          transfer: []
+        })
+        this.dialogTitle = '添加用户'
+        this.treeDialogData = []
+      } else if (type === 1 || type === 2) {
+        getUserInformation({
+          loginId: item.loginId
+        }).then((res) => {
+          const data = res.companyInformation
+          data.loginId = data.adminId
+          this.formInline = Object.assign(this.formInline, data)
+        }).catch(() => {
+        })
+        this.dialogTitle = '编辑公司'
+        if (type === 1) {
+          this.formInline.disabled = true
+          this.dialogTitle = '查看公司'
+        }
       } else if (type === 3) {
         // 启用
         midifyUserStatus({
