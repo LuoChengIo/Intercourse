@@ -63,3 +63,27 @@ export function equipmentIn(data) {
     })
   }
   
+// 设备管理-  设备搜索接口
+export function getEquipment(params) {
+  return request({
+    url: '/equipmentManage/getEquipment',
+    method: 'get',
+    params
+  })
+}
+// 设备管理- 读取设备信息
+export function readDevice(params) {
+  return request({
+    url: '/equipmentManage/readDevice',
+    method: 'get',
+    params
+  })
+}
+// 设备管理- 命令下发
+export function downCode(data) {
+  return request({
+    url: '/equipmentManage/downCode',
+    method: 'post',
+    data
+  })
+}

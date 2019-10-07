@@ -3,16 +3,16 @@
     <div class="w-card search-card">
       <el-form :inline="true" :model="searchFrom" label-width="72px" class="form-inline my-inline-form">
         <el-form-item label="设备ID">
-          <el-input v-model="searchFrom.data3" placeholder="请输入设备ID" />
+          <el-input v-model="searchFrom.equipmentNo" placeholder="请输入设备ID" />
         </el-form-item>
         <el-form-item label="设备名称">
-          <el-input v-model="searchFrom.data3" disabled placeholder="" />
+          <el-input v-model="searchFrom.equipmentName" disabled placeholder="" />
         </el-form-item>
         <el-form-item label="所属公司">
-          <el-input v-model="searchFrom.data3" disabled placeholder="" />
+          <el-input v-model="searchFrom.companyName" disabled placeholder="" />
         </el-form-item>
         <el-form-item>
-          <el-button type="success" @click="searchSubmit">搜索</el-button>
+          <el-button type="success" :loading="searchLoading" @click="searchSubmit">搜索</el-button>
           <el-button type="primary">读取</el-button>
         </el-form-item>
       </el-form>
@@ -75,7 +75,7 @@
         </el-form-item>
       </el-form>
       <div class="mt30 tc">
-        <el-button type="primary">重置</el-button>
+        <el-button type="primary" @click="resetFrom">重置</el-button>
         <el-button type="success" @click="submitFrom">下发</el-button>
       </div>
     </div>
@@ -83,12 +83,19 @@
 </template>
 
 <script>
+import { getEquipment, readDevice, downCode } from '@/api/equipment-manage.js'
 export default {
   components: {},
   props: {},
   data() {
     return {
-      searchFrom: {},
+      searchFrom: {
+        equipmentNo: this.$route.query.equipmentNo || '',
+        equipmentName: '',
+        companyName: '',
+        companyId: ''
+      },
+      searchLoading: false,
       valueFrom: {},
       currentParameter: [ // 电流参数
         { checked: false, name: '', text: '单体充电截止电压值(mV)', value: '' },
@@ -185,19 +192,141 @@ export default {
         { checked: false, name: '', text: '被动均衡开启电压差值（mV）', value: '' },
         { checked: false, name: '', text: '被动均衡开启压差值（mV）', value: '' },
         { checked: false, name: '', text: '远程升级使能', value: '', type: 'select', options: [{ name: '使能', value: 1 }, { name: '禁止', value: 0 }] }
-      ]
+      ],
+      defaultCurrentParameter: [],
+      defaultMonomerVoltageParameter: [],
+      defaultTotalVoltageParameter: [],
+      defaultChargingParameter: [],
+      defaultDischargeParameter: [],
+      defaultElseParameter: []
     }
   },
   computed: {},
   watch: {},
   mounted() {},
-  created() {},
+  created() {
+    if (this.$route.query.equipmentNo) {
+      this.searchSubmit()
+    }
+  },
   methods: {
     searchSubmit() {
-
+      // 搜索设备
+      this.searchLoading = true
+      getEquipment({
+        equipmentNo: this.searchFrom.equipmentNo
+      }).then((res) => {
+        this.searchFrom.equipmentName = res.equipmentName
+        this.searchFrom.companyName = res.companyName
+        this.searchFrom.companyId = res.companyId
+      }).catch(() => {
+      }).finally(() => {
+        this.searchLoading = false
+      })
+    },
+    readDevice() {
+      // 读取设备信息
+      if (!this.searchFrom.companyName) {
+        this.$message.warning('请先进行设备搜索~')
+        return
+      }
+      readDevice({
+        equipmentNo: this.searchFrom.equipmentNo
+      }).then((res) => {
+        this.defaultCurrentParameter = [...this.currentParameter]
+        this.defaultMonomerVoltageParameter = [...this.monomerVoltageParameter]
+        this.defaultTotalVoltageParameter = [...this.totalVoltageParameter]
+        this.defaultChargingParameter = [...this.chargingParameter]
+        this.defaultDischargeParameter = [...this.dischargeParameter]
+        this.defaultElseParameter = [...this.elseParameter]
+      }).catch(() => {
+      }).finally(() => {
+      })
+    },
+    resetFrom() {
+      // 重置表单
+      this.currentParameter = [...this.defaultCurrentParameter]
+      this.monomerVoltageParameter = [...this.defaultMonomerVoltageParameter]
+      this.totalVoltageParameter = [...this.defaultTotalVoltageParameter]
+      this.dischargeParameter = [...this.defaultDischargeParameter]
+      this.chargingParameter = [...this.defaultChargingParameter]
+      this.elseParameter = [...this.defaultElseParameter]
     },
     submitFrom() {
-      console.log(this.currentParameter)
+      const currentParameter = this.currentParameter.filter(element => {
+        return element.checked && !element.value
+      })
+      const monomerVoltageParameter = this.monomerVoltageParameter.filter(element => {
+        return element.checked && !element.value
+      })
+      const totalVoltageParameter = this.totalVoltageParameter.filter(element => {
+        return element.checked && !element.value
+      })
+      const chargingParameter = this.chargingParameter.filter(element => {
+        return element.checked && !element.value
+      })
+      const dischargeParameter = this.dischargeParameter.filter(element => {
+        return element.checked && !element.value
+      })
+      const elseParameter = this.elseParameter.filter(element => {
+        return element.checked && !element.value
+      })
+      if (currentParameter.length) {
+        currentParameter.forEach(element => {
+          setTimeout(() => {
+            this.$message.warning('请输入' + element.text)
+          }, 200)
+        })
+        return
+      }
+      if (monomerVoltageParameter.length) {
+        monomerVoltageParameter.forEach(element => {
+          setTimeout(() => {
+            this.$message.warning('请输入' + element.text)
+          }, 200)
+        })
+        return
+      }
+      if (totalVoltageParameter.length) {
+        totalVoltageParameter.forEach(element => {
+          setTimeout(() => {
+            this.$message.warning('请输入' + element.text)
+          }, 200)
+        })
+        return
+      }
+      if (chargingParameter.length) {
+        chargingParameter.forEach(element => {
+          setTimeout(() => {
+            this.$message.warning('请输入' + element.text)
+          }, 200)
+        })
+        return
+      }
+      if (dischargeParameter.length) {
+        dischargeParameter.forEach(element => {
+          setTimeout(() => {
+            this.$message.warning('请输入' + element.text)
+          }, 200)
+        })
+        return
+      }
+      if (elseParameter.length) {
+        elseParameter.forEach(element => {
+          setTimeout(() => {
+            this.$message.warning('请输入' + element.text)
+          }, 200)
+        })
+        return
+      }
+      downCode({
+        equipmentNo: this.searchFrom.equipmentNo
+      }).then((res) => {
+
+      }).catch(() => {
+      }).finally(() => {
+
+      })
     }
   }
 }

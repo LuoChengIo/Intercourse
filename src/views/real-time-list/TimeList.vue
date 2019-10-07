@@ -3,7 +3,7 @@
     <div class="w-card search-card">
       <el-form :inline="true" :model="searchFrom" label-width="72px" class="form-inline">
         <el-form-item label="是否掉线">
-          <el-select v-model="searchFrom.data1">
+          <el-select v-model="searchFrom.statusName">
             <el-option label="全部" value="" />
             <el-option label="正常" value="1" />
             <el-option label="掉线" value="0" />
@@ -11,7 +11,7 @@
         </el-form-item>
         <el-form-item label="时间范围">
           <el-date-picker
-            v-model="searchFrom.data2"
+            v-model="searchFrom.rangeDate"
             type="daterange"
             range-separator="至"
             :picker-options="pickerOptions0"
@@ -21,7 +21,7 @@
           />
         </el-form-item>
         <el-form-item label="设备ID">
-          <el-input v-model="searchFrom.data3" placeholder="请输入设备ID" />
+          <el-input v-model="searchFrom.equipmentId" placeholder="请输入设备ID" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="resetFrom">重置</el-button>
@@ -29,7 +29,7 @@
         </el-form-item>
         <br>
         <el-form-item label="故障等级">
-          <el-checkbox-group v-model="searchFrom.data4">
+          <el-checkbox-group v-model="searchFrom.failureName">
             <el-checkbox label="一级警报">一级警报</el-checkbox>
             <el-checkbox label="二级警报">二级警报</el-checkbox>
             <el-checkbox label="三级警报">三级警报</el-checkbox>
@@ -53,76 +53,78 @@
         />
         <el-table-column
           align="center"
-          prop="data1"
+          prop="equipmentId"
           label="设备ID"
         />
         <el-table-column
           align="center"
-          prop="data1"
+          prop="equipmentName"
           label="设备名称"
         />
         <el-table-column
           align="center"
-          prop="data1"
+          prop="soc"
           label="soc(%)"
         />
         <el-table-column
           align="center"
-          prop="data1"
+          prop="statusName"
           width="120"
           sortable
           label="设备状态"
         />
         <el-table-column
           align="center"
-          prop="data1"
+          prop="failureName"
           width="120"
           sortable
           label="故障等级"
         />
         <el-table-column
           align="center"
-          prop="data1"
+          prop="statusCodeFormat"
           label="状态功能码"
         />
+        <el-table-column align="center" width="140px" label="电压（最高|最低）">
+          <template slot-scope="scope">
+            <div>
+              {{ scope.row.oneBatteryVoltageHigh }}|{{ scope.row.oneBatteryVoltageLow }}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" width="140px" label="温度（最高|最低）">
+          <template slot-scope="scope">
+            <div>
+              {{ scope.row.highTemperature }}|{{ scope.row.lowTemperature }}
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
-          prop="data1"
-          width="140px"
-          label="电压（最高|最低）"
-        />
-        <el-table-column
-          align="center"
-          prop="data1"
-          width="140px"
-          label="温度（最高|最低）"
-        />
-        <el-table-column
-          align="center"
-          prop="data1"
+          prop="sysProbe"
           width="140px"
           label="总电流（单位A）"
         />
         <el-table-column
           align="center"
-          prop="data1"
+          prop="sysVoltage"
           width="140px"
           label="总电压（单位V）"
         />
         <el-table-column
           align="center"
-          prop="data1"
+          prop="voltageDifference"
           width="140px"
           label="压差（单位V）"
         />
         <el-table-column
           align="center"
-          prop="data1"
+          prop="temperatureDifference"
           label="温差（°C）"
         />
         <el-table-column
           align="center"
-          prop="data1"
+          prop="collectionTime"
           label="信息采集时间"
         />
       </el-table>
@@ -147,7 +149,7 @@
 </template>
 
 <script>
-import { inquireList } from '@/api/data-manage.js'
+import { dataList } from '@/api/real-time-list.js'
 export default {
   components: {},
   props: {},
@@ -155,9 +157,12 @@ export default {
     return {
       defaultSearchFrom: {},
       searchFrom: {
-        data6: '',
-        data7: '',
-        data4: [],
+        equipmentId: '',
+        statusName: '',
+        startDate: '',
+        endDate: '',
+        rangeDate: [],
+        failureName: [],
         pageNo: 1, // 当前页
         pageRows: 10, // 每页显示数
         currentSize: 0, // 当前条数
@@ -180,7 +185,7 @@ export default {
         return
       }
       this.listLoading = true
-      inquireList(this.searchFrom)
+      dataList(this.searchFrom)
         .then(res => {
           this.tableData = res.data
         })

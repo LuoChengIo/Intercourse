@@ -3,28 +3,25 @@
     <div class="w-card search-card">
       <el-form :inline="true" :model="searchFrom" label-width="72px" class="form-inline">
         <el-form-item label="设备ID">
-          <el-input v-model="searchFrom.data3" placeholder="请输入设备ID" />
+          <el-input v-model="searchFrom.equipmentId" placeholder="请输入设备ID" />
         </el-form-item>
         <el-form-item label="设备名称">
-          <el-input v-model="searchFrom.data4" disabled placeholder="" />
-        </el-form-item>
-        <el-form-item label="设备名称">
-          <el-input v-model="searchFrom.data4" disabled placeholder="" />
+          <el-input v-model="searchFrom.equipmentName" disabled placeholder="" />
         </el-form-item>
         <el-form-item label="所属公司">
-          <el-input v-model="searchFrom.data4" disabled placeholder="" />
+          <el-input v-model="searchFrom.companyname" disabled placeholder="" />
         </el-form-item>
         <el-form-item label="所属用户">
-          <el-input v-model="searchFrom.data4" disabled placeholder="" />
+          <el-input v-model="searchFrom.companyname" disabled placeholder="" />
         </el-form-item>
         <el-form-item label="软件版本">
-          <el-input v-model="searchFrom.data4" disabled placeholder="" />
+          <el-input v-model="searchFrom.equipmentSoftVersion" disabled placeholder="" />
         </el-form-item>
         <el-form-item label="硬件版本">
-          <el-input v-model="searchFrom.data4" disabled placeholder="" />
+          <el-input v-model="searchFrom.equipmentHardwareVersion" disabled placeholder="" />
         </el-form-item>
         <el-form-item>
-          <el-button type="success" @click="searchSubmit">搜索</el-button>
+          <el-button type="success" :loading="queryLoading" @click="searchSubmit">搜索</el-button>
           <el-button type="success" @click="searchSubmit">命令下发</el-button>
         </el-form-item>
       </el-form>
@@ -40,6 +37,7 @@
 </template>
 
 <script>
+import { dataList } from '@/api/real-time-list.js'
 import Battery from './components/Battery'
 import Extremum from './components/Extremum'
 import Police from './components/Police'
@@ -79,8 +77,16 @@ export default {
       //   components: 'Statistics'
       // }
       ],
+      queryLoading: false,
       activeTab: {},
-      searchFrom: {}
+      searchFrom: {
+        equipmentId: '',
+        equipmentName: '',
+        companyname: '',
+        statename: '',
+        equipmentSoftVersion: '',
+        equipmentHardwareVersion: ''
+      }
     }
   },
   computed: {
@@ -95,7 +101,25 @@ export default {
   },
   methods: {
     querySearch() {
-
+      this.queryLoading = true
+      if (!this.searchFrom.equipmentId) {
+        this.$message.warning('请输入设备id~')
+        return
+      }
+      dataList({
+        equipmentId: this.searchFrom.equipmentId,
+        pageNo: 1,
+        pageRows: 1000
+      })
+        .then(res => {
+          this.searchFrom = Object.assign(this.searchFrom, res.data[0])
+        })
+        .catch(err => {
+          this.$message.error(err.message)
+        })
+        .finally(() => {
+          this.queryLoading = false
+        })
     },
     searchSubmit() {
 
