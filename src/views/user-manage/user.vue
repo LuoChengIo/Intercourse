@@ -53,7 +53,7 @@
         />
         <el-table-column
           align="center"
-          prop="userName"
+          prop="loginId"
           label="用户名称"
         />
         <el-table-column
@@ -180,7 +180,7 @@
 
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button v-if="dialogType!==2" type="primary" @click="addEditSubmit">确 定</el-button>
+        <el-button v-if="dialogType!==1" type="primary" @click="addEditSubmit">确 定</el-button>
         <el-button @click="dialogVisible = false">关闭</el-button>
       </span>
     </el-dialog>
@@ -360,17 +360,17 @@ export default {
       // 系列操作
       this.dialogType = type
       this.formInline.disabled = false
+      this.formInline = Object.assign(this.formInline, {
+        operatorId: '',
+        loginId: '',
+        ascriptionCompanyId: '',
+        ascriptionCompanyName: '',
+        subOperatorNum: '',
+        roleIdString: '',
+        transfer: []
+      })
       if (type === 6) {
         // 添加用户
-        this.formInline = Object.assign(this.formInline, {
-          operatorId: '',
-          loginId: '',
-          ascriptionCompanyId: '',
-          ascriptionCompanyName: '',
-          subOperatorNum: '',
-          roleIdString: '',
-          transfer: []
-        })
         this.dialogTitle = '添加用户'
         this.treeDialogData = []
         this.dialogVisible = true
@@ -379,7 +379,6 @@ export default {
           userId: item.userId
         }).then((res) => {
           const data = res.userInformation
-          data.loginId = data.userName
           data.subOperatorNum = data.subUserNum
           data.operatorId = data.userId
           this.formInline = Object.assign(this.formInline, data)
@@ -404,8 +403,8 @@ export default {
       } else if (type === 4) {
         // 启用
         midifyUserStatus({
-          operatorId: item.userId,
-          status: 0
+          userId: item.userId,
+          operateFlag: 0
         })
       } else if (type === 3) {
         // 停用
@@ -415,8 +414,8 @@ export default {
           type: 'warning'
         }).then(() => {
           midifyUserStatus({
-            operatorId: item.userId,
-            status: 1
+            userId: item.userId,
+            operateFlag: 1
           })
         }).catch(() => {
         })
@@ -424,13 +423,14 @@ export default {
         // 重置密码
         this.$prompt('请输入密码', '提示', {
           confirmButtonText: '确定',
-          cancelButtonText: '取消'
+          cancelButtonText: '取消',
+          inputType: 'password'
         }).then(({ value }) => {
           if (value.length !== 6) {
             this.$message.warning('请输入6位以上密码')
           }
           passwordReset({
-            loginId: item.userId,
+            loginId: item.loginId,
             companyId: item.ascriptionCompanyId,
             password: encryptedData(value)
           }).then(() => {
@@ -438,15 +438,6 @@ export default {
           })
         })
       }
-    },
-    midifyUserStatus(item) {
-      midifyUserStatus({
-        operatorId: item.operatorId,
-        status: item.status
-      }).then(() => {
-        this.$message.success('保存成功！')
-      }).catch(() => {
-      })
     },
     handleSizeChange(val) { // 切换每页显示数
       this.searchFrom.pageNo = 1

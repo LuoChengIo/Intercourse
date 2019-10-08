@@ -63,11 +63,11 @@
       append-to-body
     >
       <el-form ref="ruleForm" :model="ruleForm" status-icon :rules="rules" label-width="100px" class="demo-ruleForm">
-        <el-form-item label="原密码" prop="pass">
-          <el-input v-model="ruleForm.pass" type="password" auto-complete="off" />
+        <el-form-item label="原密码" prop="oldPassword">
+          <el-input v-model="ruleForm.oldPassword" type="password" auto-complete="off" />
         </el-form-item>
-        <el-form-item label="新密码" prop="newPass">
-          <el-input v-model="ruleForm.newPass" type="password" auto-complete="off" />
+        <el-form-item label="新密码" prop="password">
+          <el-input v-model="ruleForm.password" type="password" auto-complete="off" />
         </el-form-item>
         <el-form-item label="确认密码" prop="checkPass">
           <el-input v-model.number="ruleForm.checkPass" type="password" auto-complete="off" />
@@ -75,7 +75,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        <el-button type="primary" @click="modifyPassword">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -83,6 +83,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import { modifyPassword } from '@/api/user.js'
 // import Breadcrumb from '@/components/Breadcrumb'
 // import Hamburger from '@/components/Hamburger'
 import ErrorLog from '@/components/ErrorLog'
@@ -90,7 +91,7 @@ import ErrorLog from '@/components/ErrorLog'
 // import Screenfull from '@/components/Screenfull'
 // import SizeSelect from '@/components/SizeSelect'
 // import Search from '@/components/HeaderSearch'
-
+import { encryptedData } from '@/utils/index'
 export default {
   components: {
     // Breadcrumb,
@@ -104,15 +105,15 @@ export default {
     return {
       dialogVisible: false,
       ruleForm: {
-        pass: '',
-        newPass: '',
+        oldPassword: '',
+        password: '',
         checkPass: ''
       },
       rules: {
-        pass: [
+        oldPassword: [
           { required: true, message: '请输入原密码', trigger: 'blur' }
         ],
-        newPass: [
+        password: [
           { required: true, message: '请输入新密码', trigger: 'blur' }
         ],
         checkPass: [
@@ -127,6 +128,14 @@ export default {
   methods: {
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
+    },
+    modifyPassword() {
+      modifyPassword({
+        oldPassword: encryptedData(this.ruleForm.oldPassword),
+        password: encryptedData(this.ruleForm.password)
+      }).then(res => {
+        this.dialogVisible = false
+      })
     },
     async logout() {
       await this.$store.dispatch('user/logout')

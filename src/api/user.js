@@ -29,6 +29,14 @@ export function logout() {
     method: 'post'
   })
 }
+
+export function modifyPassword(data) { // 密码修改
+  return request({
+    url: '/userManage/modifyPassword',
+    method: 'post',
+    data
+  })
+}
 export function passwordReset(data) { // 密码重置
   return request({
     url: '/userManage/passwordReset',

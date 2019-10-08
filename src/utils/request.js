@@ -77,11 +77,6 @@ service.interceptors.response.use(
 
     // if the custom code is not 20000, it is judged as an error.
     if (res.code !== 1) {
-      Message({
-        message: res.msg || 'error',
-        type: 'error',
-        duration: 5 * 1000
-      })
       // eslint-disable-next-line eqeqeq
       if (res.code == 80001) {
         // to re-login
@@ -94,7 +89,13 @@ service.interceptors.response.use(
             location.reload()
           })
         })
+        return Promise.reject(res.msg || 'error')
       }
+      Message({
+        message: res.msg || 'error',
+        type: 'error',
+        duration: 5 * 1000
+      })
       return Promise.reject(res.msg || 'error')
     } else {
       return res

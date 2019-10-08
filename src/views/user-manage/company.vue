@@ -212,7 +212,7 @@ export default {
     uploadFile(content) { // 上传文件
       console.log(content)
       const fd = new FormData()
-      fd.append('Image', content.file)
+      fd.append('file', content.file)
       uploadImage(fd).then(res => {
         content.onSuccess(res)
       }).catch(err => {
