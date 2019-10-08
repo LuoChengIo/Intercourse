@@ -59,6 +59,7 @@
     <el-dialog
       title="修改密码"
       :visible.sync="dialogVisible"
+      :close-on-click-modal="false"
       width="500px"
       append-to-body
     >
@@ -70,7 +71,7 @@
           <el-input v-model="ruleForm.password" type="password" auto-complete="off" />
         </el-form-item>
         <el-form-item label="确认密码" prop="checkPass">
-          <el-input v-model.number="ruleForm.checkPass" type="password" auto-complete="off" />
+          <el-input v-model="ruleForm.checkPass" type="password" auto-complete="off" />
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -102,6 +103,25 @@ export default {
     // Search
   },
   data() {
+    var validatePass = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入密码'))
+      } else {
+        if (this.ruleForm.checkPass !== '') {
+          this.$refs.ruleForm.validateField('checkPass')
+        }
+        callback()
+      }
+    }
+    var validatePass2 = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'))
+      } else if (value !== this.ruleForm.password) {
+        callback(new Error('两次输入密码不一致!'))
+      } else {
+        callback()
+      }
+    }
     return {
       dialogVisible: false,
       ruleForm: {
@@ -114,10 +134,10 @@ export default {
           { required: true, message: '请输入原密码', trigger: 'blur' }
         ],
         password: [
-          { required: true, message: '请输入新密码', trigger: 'blur' }
+          { required: true, validator: validatePass, trigger: 'blur' }
         ],
         checkPass: [
-          { required: true, message: '请确认新密码', trigger: 'blur' }
+          { required: true, validator: validatePass2, trigger: 'blur' }
         ]
       }
     }
@@ -130,11 +150,18 @@ export default {
       this.$store.dispatch('app/toggleSideBar')
     },
     modifyPassword() {
-      modifyPassword({
-        oldPassword: encryptedData(this.ruleForm.oldPassword),
-        password: encryptedData(this.ruleForm.password)
-      }).then(res => {
-        this.dialogVisible = false
+      this.$refs.ruleForm.validate((valid) => {
+        if (valid) {
+          modifyPassword({
+            oldPassword: encryptedData(this.ruleForm.oldPassword),
+            password: encryptedData(this.ruleForm.password)
+          }).then(res => {
+            this.dialogVisible = false
+          })
+        } else {
+          console.log('error submit!!')
+          return false
+        }
       })
     },
     async logout() {

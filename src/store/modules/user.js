@@ -71,6 +71,7 @@ const actions = {
       sessionStorage.setItem('userInfo', '')
       sessionStorage.setItem('signKey', '')
       sessionStorage.setItem('isLogin', '')
+      commit('SET_ROLES', [])
       removeToken()
       resetRouter()
       resolve()

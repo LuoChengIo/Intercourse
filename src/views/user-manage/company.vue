@@ -114,10 +114,10 @@
         <el-form-item v-if="dialogType===1" label="超管登录密码">
           <el-input v-model="formInline.wpassword" type="password" maxlength="18" placeholder="" />
         </el-form-item>
-        <div class="mb5">
+        <div v-if="false" class="mb5">
           <el-checkbox v-model="formInline.checkAll" @change="checkedAll">超管可配置权限</el-checkbox>
         </div>
-        <div class="tree-ct">
+        <div v-if="false" class="tree-ct">
           <el-tree
             ref="vuetree"
             :data="treeData"
@@ -241,7 +241,7 @@ export default {
     handleAvatarSuccess(res, file) {
       console.log(res, file)
       // this.formInline.companyLogoUrl = URL.createObjectURL(file.raw)
-      this.formInline.companyLogoUrl = res.filePath
+      this.formInline.companyLogoUrl = res.data.path
     },
     beforeAvatarUpload(file) {
       const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
@@ -291,7 +291,7 @@ export default {
         })
         this.dialogTitle = '新建公司'
         this.$nextTick(() => {
-          this.$refs.vuetree.setCheckedKeys([])
+          // this.$refs.vuetree.setCheckedKeys([])
         })
       } else if (type === 3 || type === 2) {
         getCompanyInformation({
@@ -312,7 +312,7 @@ export default {
           secheckArr(this.formInline.superUserFunctionList)
           console.log(arr)
           this.$nextTick(() => {
-            this.$refs.vuetree.setCheckedKeys(arr)
+            // this.$refs.vuetree.setCheckedKeys(arr)
           })
         }).catch(() => {
         })
@@ -361,22 +361,22 @@ export default {
         this.$message.warning('请填写超管登录密码')
         return
       }
-      const checkNode = this.$refs.vuetree.getCheckedNodes().concat(this.$refs.vuetree.getHalfCheckedNodes())
-      if (!checkNode.length) {
-        this.$message.warning('请选择权限功能')
-        return
-      }
-      const arr1 = []
-      const arr2 = []
-      checkNode.forEach(ele => {
-        if (ele.twoLevelFunctionList) {
-          arr1.push(ele.functionId)
-        } else {
-          arr2.push(ele.functionId)
-        }
-      })
-      this.formInline.oneLevelFunctionString = arr1.join('|') + '|'
-      this.formInline.twoLevelFunctionString = arr2.join('|') + '|'
+      // const checkNode = this.$refs.vuetree.getCheckedNodes().concat(this.$refs.vuetree.getHalfCheckedNodes())
+      // if (!checkNode.length) {
+      //   this.$message.warning('请选择权限功能')
+      //   return
+      // }
+      // const arr1 = []
+      // const arr2 = []
+      // checkNode.forEach(ele => {
+      //   if (ele.twoLevelFunctionList) {
+      //     arr1.push(ele.functionId)
+      //   } else {
+      //     arr2.push(ele.functionId)
+      //   }
+      // })
+      // this.formInline.oneLevelFunctionString = arr1.join('|') + '|'
+      // this.formInline.twoLevelFunctionString = arr2.join('|') + '|'
       if (this.formInline.wpassword) {
         this.formInline.password = encryptedData(this.formInline.wpassword)
       }
