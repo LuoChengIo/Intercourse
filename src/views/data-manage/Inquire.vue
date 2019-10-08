@@ -162,7 +162,7 @@
 </template>
 
 <script>
-import { inquireList } from '@/api/data-manage.js'
+import { inquireList, exportData } from '@/api/data-manage.js'
 export default {
   components: {},
   props: {},
@@ -212,7 +212,9 @@ export default {
       this.listLoading = true
       inquireList(this.searchFrom)
         .then(res => {
-          this.tableData = res.data
+          this.tableData = res.data.list
+          this.searchFrom.currentSize = res.data.size
+          this.searchFrom.total = res.data.total
         })
         .catch(err => {
           this.$message.error(err.message)
@@ -235,7 +237,8 @@ export default {
       this.searchSubmit()
     },
     exportFrom() { // 导出表格数据
-      location.href = ''
+      debugger
+      location.href = exportData(this.searchFrom)
     }
   }
 }

@@ -15,14 +15,14 @@ export function listDetails(data) {
     data
   })
 }
-// // 统计分析-数据导出
-// export function export(data) {
-//   return request({
-//     url: '/data/month/export',
-//     method: 'post',
-//     data
-//   })
-// }
+// 统计分析-数据导出
+export function exportData(data) {
+  return request({
+    url: '/data/month/export',
+    method: 'get',
+    data
+  })
+}
 
 // 统计分析-当日数据 统计
 export function dayList(data) {
