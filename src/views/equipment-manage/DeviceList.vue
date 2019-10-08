@@ -88,42 +88,42 @@
         />
         <el-table-column
           align="center"
-          prop="data1"
+          prop="equipmentId"
           label="设备ID"
         />
         <el-table-column
           align="center"
-          prop="data1"
+          prop="equipmentName"
           label="设备名称"
         />
         <el-table-column
           align="center"
-          prop="data1"
+          prop="companyname"
           label="所属公司"
         />
         <el-table-column
           align="center"
-          prop="data1"
+          prop="equipmentSoftVersion"
           label="软件版本"
         />
         <el-table-column
           align="center"
-          prop="data1"
+          prop="equipmentHardwareVersion"
           label="硬件版本"
         />
         <el-table-column
           align="center"
-          prop="data1"
+          prop="updatetime"
           label="创建时间"
         />
         <el-table-column
           align="center"
-          prop="data1"
+          prop="statename"
           label="设备状态"
         />
         <el-table-column
           align="center"
-          prop="data1"
+          prop="status"
           label="出入库状态"
         />
         <el-table-column
@@ -194,6 +194,7 @@ export default {
         resource: '',
         desc: ''
       },
+      formData: '',
       formLabelWidth: '120px'
     }
   },
@@ -213,7 +214,9 @@ export default {
       this.listLoading = true
       equipmentList(this.searchFrom)
         .then(res => {
-          this.tableData = res.data
+          this.tableData = res.data.list
+          this.searchFrom.currentSize = res.data.size
+          this.searchFrom.total = res.data.total
         })
         .catch(err => {
           this.$message.error(err.message)

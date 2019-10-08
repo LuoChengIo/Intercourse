@@ -106,7 +106,7 @@
         />
         <el-table-column
           align="center"
-          prop="dathighVoltageOneBatteryNoa1"
+          prop="highVoltageOneBatteryNo"
           label="最高单体电压电池单体编号"
         />
         <el-table-column
@@ -181,6 +181,7 @@ export default {
   created() {
     this.searchFrom.pageRows = this.page.pageSize
     this.defaultSearchFrom = Object.assign({}, this.searchFrom)
+    this.searchSubmit()
   },
   methods: {
     handClick() {
@@ -193,7 +194,9 @@ export default {
       this.listLoading = true
       dayList(this.searchFrom)
         .then(res => {
-          this.tableData = res.data
+          this.tableData = res.data.list
+          this.searchFrom.currentSize = res.data.size
+          this.searchFrom.total = res.data.total
         })
         .catch(err => {
           this.$message.error(err.message)
