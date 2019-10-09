@@ -92,9 +92,9 @@
             </div>
           </div></el-col>
         <el-col :span="6">
-          <div v-heightAuto class="w-card p20">
+          <div v-heightAuto v-loading="treeLoading" class="w-card p20">
             <h4 class="n pb10 f14">角色权限列表</h4>
-            <el-tree :data="treeData" :props="defaultProps" />
+            <el-tree :data="treeData" :default-expand-all="true" :props="defaultProps" />
           </div>
         </el-col>
       </el-row>
@@ -192,7 +192,8 @@ export default {
       defaultProps: {
         children: 'twoLevelFunctionList',
         label: 'functionName'
-      }
+      },
+      treeLoading: false
     }
   },
   computed: {},
@@ -249,6 +250,10 @@ export default {
         })
     },
     rowClick(row) {
+      if (this.treeLoading) {
+        return
+      }
+      this.treeLoading = true
       this.getRoleFunction(row, (res) => {
         const data = res.roleFunctionList
         function dataFor(tree) {
@@ -260,6 +265,7 @@ export default {
           })
         }
         dataFor(data)
+        this.treeLoading = false
         this.treeData = data
       })
     },
@@ -297,6 +303,7 @@ export default {
     dialogAddEdit(type, item) {
       this.dialogType = type
       this.formInline.disabled = false
+      this.treeDialogData = []
       if (type === 1) {
         // 添加角色
         this.formInline = Object.assign(this.formInline, {
@@ -309,7 +316,6 @@ export default {
       } else if (type === 2) {
         this.formInline = Object.assign(this.formInline, item)
         this.dialogTitle = '编辑角色'
-        console.log(item)
         this.getFunctions({
           companyId: item.ascriptionCompanyId
         }, () => {

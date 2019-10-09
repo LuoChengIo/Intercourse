@@ -135,6 +135,14 @@ export function modifyRoleInformation(data) { // 修改角色信息
     data
   })
 }
+export function getFunctionListByRoleList(params) { // 查询角色信息
+  return request({
+    url: '/systemManage/getFunctionListByRoleList',
+    method: 'get',
+    params
+  })
+}
+
 export function deleteRole(data) { // 删除角色信息
   return request({
     url: '/systemManage/deleteRole',

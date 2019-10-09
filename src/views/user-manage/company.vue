@@ -242,6 +242,7 @@ export default {
       console.log(res, file)
       // this.formInline.companyLogoUrl = URL.createObjectURL(file.raw)
       this.formInline.companyLogoUrl = res.data.path
+      // this.formInline.companyLogoUrl = process.env.VUE_APP_BASE_IMAGE + res.data.path
     },
     beforeAvatarUpload(file) {
       const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
@@ -263,6 +264,7 @@ export default {
       getCompanyList(this.searchFrom)
         .then(res => {
           res.companyList.list.forEach((ele) => {
+            // ele.companyLogoUrl = process.env.VUE_APP_BASE_IMAGE + ele.companyLogoUrl
             ele.previewSrcList = [ele.companyLogoUrl]
           })
           this.tableData = res.companyList.list
