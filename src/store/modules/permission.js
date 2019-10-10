@@ -55,6 +55,7 @@ const actions = {
       //   accessedRoutes = asyncRoutes || []
       // } else {
       const accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
+      accessedRoutes.push({ path: '*', redirect: '/404', hidden: true })
       // }
       commit('SET_ROUTES', accessedRoutes)
       resolve(accessedRoutes)

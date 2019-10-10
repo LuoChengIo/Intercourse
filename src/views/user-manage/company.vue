@@ -34,7 +34,7 @@
         />
         <el-table-column align="center" label="logo">
           <template slot-scope="scope">
-            <div>
+            <div class="el-image-ct">
               <el-image
                 style="max-width: 100%; max-height: 100%"
                 :src="scope.row.companyLogoUrl"
@@ -427,6 +427,10 @@ export default {
       max-width: 186px;
       max-height: 36px;
     }
+  }
+  .el-image-ct{
+    max-width: 150px;
+    max-height: 150px;
   }
   .tree-ct{
     border:1px solid #ddd;
