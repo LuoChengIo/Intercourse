@@ -119,6 +119,7 @@
     <!-- 弹框 -->
     <el-dialog
       :title="dialogTitle"
+      :close-on-click-modal="false"
       :visible.sync="dialogVisible"
       width="830px"
     >
@@ -139,7 +140,7 @@
         <div class="dg-left-ct">
           <el-form class="dialog-boder-card mb15 demo-form-inline pt15" style="min-height: 191px;" :inline="true" :model="formInline" :disabled="formInline.disabled" label-width="90px">
             <el-form-item v-if="dialogType==1||dialogType==2" label="账户ID">
-              <el-input v-model="formInline.operatorId" disabled placeholder="" />
+              <el-input v-model="formInline.userId" disabled placeholder="" />
             </el-form-item>
             <el-form-item label="用户名称">
               <el-input v-model="formInline.loginId" placeholder="" />
@@ -174,7 +175,7 @@
             </el-form-item>
           </el-form>
           <div class="dialog-boder-card p10">
-            <el-transfer v-model="formInline.transfer" :data="transferData" @right-check-change="transferChange" />
+            <el-transfer v-model="formInline.transfer" :data="transferData" :right-default-checked="rightDefaultchecked" @right-check-change="transferChange" />
           </div>
         </div>
 
@@ -188,7 +189,7 @@
 </template>
 
 <script>
-import { getUserList, getCompanyList, midifyUserStatus, passwordReset, getRoleFunction, getUserInformation, addUser, modifyUserInformation, getRoleList } from '@/api/user.js'
+import { getUserList, getCompanyList, midifyUserStatus, passwordReset, getFunctionListByRoleList, getUserInformation, addUser, modifyUserInformation, getRoleList } from '@/api/user.js'
 import { validUsername } from '@/utils/validate'
 import { encryptedData } from '@/utils/index'
 export default {
@@ -213,12 +214,12 @@ export default {
       dialogVisible: false,
       dialogTitle: '',
       formInline: {
-        operatorId: '',
+        userId: '',
         loginId: '',
         ascriptionCompanyId: '',
         ascriptionCompanyName: '',
         subOperatorNum: '',
-        roleIdString: '',
+        roleString: '',
         transfer: [],
         disabled: false,
         checkAll: false
@@ -228,7 +229,8 @@ export default {
       defaultProps: {
         children: 'twoLevelFunctionList',
         label: 'functionName'
-      }
+      },
+      rightDefaultchecked: []
     }
   },
   computed: {},
@@ -300,23 +302,22 @@ export default {
         this.treeDialogData = []
         return
       }
-      val.forEach(element => {
-        getRoleFunction({
-          roleId: element
-        }).then((res) => {
-          const data = res.roleFunctionList
-          function dataFor(tree) {
-            tree.forEach(element => {
-              element.id = element.functionId
-              if (element.twoLevelFunctionList && element.twoLevelFunctionList.length) {
-                dataFor(element.twoLevelFunctionList)
-              }
-            })
-          }
-          dataFor(data)
-          this.treeDialogData = data
-        }).catch(() => {
-        })
+      const roleString = val.join('|') + '|'
+      getFunctionListByRoleList({
+        roleString: roleString
+      }).then((res) => {
+        const data = res.functionList
+        function dataFor(tree) {
+          tree.forEach(element => {
+            element.id = element.functionId
+            if (element.twoLevelFunctionList && element.twoLevelFunctionList.length) {
+              dataFor(element.twoLevelFunctionList)
+            }
+          })
+        }
+        dataFor(data)
+        this.treeDialogData = data
+      }).catch(() => {
       })
     },
     addEditSubmit() { // 编辑角色
@@ -348,7 +349,7 @@ export default {
         this.$message.warning('请选择用户角色')
         return
       }
-      this.formInline.roleIdString = this.formInline.transfer.join('|') + '|'
+      this.formInline.roleString = this.formInline.transfer.join('|') + '|'
       actionFuc(this.formInline).then(() => {
         this.$message.success('保存成功！')
         this.dialogVisible = false
@@ -366,9 +367,12 @@ export default {
         ascriptionCompanyId: '',
         ascriptionCompanyName: '',
         subOperatorNum: '',
-        roleIdString: '',
+        roleString: '',
         transfer: []
       })
+      this.transferData = []
+      this.treeDialogData = []
+      this.rightDefaultchecked = []
       if (type === 6) {
         // 添加用户
         this.dialogTitle = '添加用户'
@@ -380,7 +384,7 @@ export default {
         }).then((res) => {
           const data = res.userInformation
           data.subOperatorNum = data.subUserNum
-          data.operatorId = data.userId
+          // data.operatorId = data.userId
           this.formInline = Object.assign(this.formInline, data)
           this.companyChange({
             companyId: data.ascriptionCompanyId,
@@ -391,6 +395,8 @@ export default {
               transfer.push(element.roleId)
             })
             this.formInline.transfer = transfer
+            this.rightDefaultchecked = [...transfer]
+            this.transferChange(transfer)
           })
         }).catch(() => {
         })
@@ -405,6 +411,9 @@ export default {
         midifyUserStatus({
           userId: item.userId,
           operateFlag: 0
+        }).then(() => {
+          this.$message.success('操作成功')
+          item.status = '0'
         })
       } else if (type === 3) {
         // 停用
@@ -416,6 +425,9 @@ export default {
           midifyUserStatus({
             userId: item.userId,
             operateFlag: 1
+          }).then(() => {
+            this.$message.success('操作成功')
+            item.status = '1'
           })
         }).catch(() => {
         })

@@ -43,6 +43,7 @@ const actions = {
       login(userInfo).then(response => {
         const data = response
         data.username = userInfo.loginId
+        // data.companyLogoUrl = process.env.VUE_APP_BASE_IMAGE + data.companyLogoUrl
         sessionStorage.setItem('userInfo', JSON.stringify(data))
         sessionStorage.setItem('isLogin', true)
         commit('SET_USERINFO', data)
