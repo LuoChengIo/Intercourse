@@ -1,3 +1,4 @@
+
 <template>
   <div>
     <div class="text-red">上传成功，为Bata版，只推送标记为测试设备；如需推广全部设备，需要手工操作，设置为正式版。</div>
@@ -13,7 +14,7 @@
             <span v-if="scope.row.state == 2">正式版</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="addtime" sortable label="操作时间" />
+        <el-table-column align="center" prop="addtime" sortable label="操作时间" :formatter="dateFormat" />
         <el-table-column align="center" prop="data1" label="操作">
           <template slot-scope="scope">
             <el-upload
@@ -23,7 +24,7 @@
               list-type="text"
               :show-file-list="false"
               :before-upload="beforeUpload"
-              action=''
+              action=""
               :on-exceed="handleExceed"
               :http-request="uploadFile"
             >
@@ -36,7 +37,7 @@
       <div class="pt20 pr30 pl30 tr">
         <span
           class="l f13 text-primary"
-        >当前显示 {{ searchFrom.currentSize }} 条，共 {{ searchFrom.totalPages }} 条记录</span>
+        >当前显示 {{ searchFrom.currentSize }} 条，共 {{ searchFrom.total }} 条记录</span>
         <el-pagination
           background
           class="dib"
@@ -61,6 +62,7 @@ import {
   programPublish,
   programUpload
 } from '@/api/program-management.js'
+import moment from 'moment'
 export default {
   components: {},
   props: {},
@@ -73,39 +75,9 @@ export default {
         totalPages: 0, // 总页数
         pageNo: 0 // 页码
       },
-      version: ' beta-内测版 ', // beta-内测版 online-生产版
+      version: ' beta ', // beta-内测版 online-生产版
       listLoading: false,
-      tableData: [
-        // {
-        //   id: '1',
-        //   equipmentProgramName: '程序名称',
-        //   equipmentSoftVersion: '软件版本',
-        //   equipmentHardwareVersion: '硬件版本',
-        //   state: '程序状态',
-        //   addtime: '2014-12-12'
-        // }, {
-        //   id: '2',
-        //   equipmentProgramName: '程序名称',
-        //   equipmentSoftVersion: '软件版本',
-        //   equipmentHardwareVersion: '硬件版本',
-        //   state: '程序状态',
-        //   addtime: '2014-12-12'
-        // }, {
-        //   id: '3',
-        //   equipmentProgramName: '程序名称',
-        //   equipmentSoftVersion: '软件版本',
-        //   equipmentHardwareVersion: '硬件版本',
-        //   state: '程序状态',
-        //   addtime: '2014-12-12'
-        // }, {
-        //   id: '4',
-        //   equipmentProgramName: '程序名称',
-        //   equipmentSoftVersion: '软件版本',
-        //   equipmentHardwareVersion: '硬件版本',
-        //   state: '程序状态',
-        //   addtime: '2014-12-12'
-        // }
-      ],
+      tableData: [],
       fileSaveUrl: process.env.VUE_APP_BASE_API + ' /equipment/program/upload ',
       uploadData: {}
     }
@@ -128,8 +100,8 @@ export default {
       programList(this.searchFrom)
         .then(res => {
           this.tableData = res.data.list
-          this.searchFrom.currentSize = res.data.size
-          this.searchFrom.totalPages = res.data.totalPages
+          this.searchFrom.currentSize = res.data.totalPages
+          this.searchFrom.total = res.data.total
         })
         .catch(err => {
           this.$message.error(err.message)
@@ -151,13 +123,22 @@ export default {
     },
     // 发布版本
     releaseVersion(item) {
+      var version = item.state
+      if (version === 1) {
+        version = 'beta'
+      } else {
+        version = 'online'
+      }
       var data = {
         id: item.id,
-        version: item.state
+        version: version
       }
       programPublish(data)
         .then(res => {
-          this.$message.error('发布成功')
+          this.$message({
+            message: '发布成功',
+            type: 'success'
+          })
         })
         .catch(err => {
           this.$message.error(err.message)
@@ -195,10 +176,17 @@ export default {
         console.log('MediaAPI.upload')
         console.log(response)
         this.$message.info('文件：' + fileObj.name + '上传成功')
-      }).catch( err=> {
-         this.$message(err.message)
+      }).catch(err => {
+        this.$message(err.message)
       })
-      }
+    },
+    dateFormat(row, column) {
+      var date = row[column.property]
+
+      if (date === undefined) { return '' }
+
+      return moment(date).format('YYYY-MM-DD HH:mm:ss')
+    }
     // 上传参数
     // uploadFile(rowData) {
     //   this.uploadData = {

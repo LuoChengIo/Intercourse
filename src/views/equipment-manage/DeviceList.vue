@@ -30,14 +30,14 @@
             <el-option v-for="(item,index) in equipmentStatus" :key="index" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
-        <el-form-item label="出入库状态">
+        <!-- <el-form-item label="出入库状态">
           <el-select v-model="searchFrom.status">
             <el-option label="全部" value="" />
             <el-option label="未入库" value="1" />
             <el-option label="已入库" value="2" />
             <el-option label="已出库" value="3" />
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item>
           <el-button type="primary" @click="resetFrom">重置</el-button>
           <el-button type="success" @click="searchSubmit">搜索</el-button>
@@ -45,33 +45,31 @@
         </el-form-item>
       </el-form>
     </div>
-    <el-dialog title="收货地址" :visible.sync="dialogFormVisible" width="360px" center="true">
-      <div>
-        <el-form :model="formData">
-          <el-form-item label="活动名称" label-width="72px" class="form-inline">
-            <el-input v-model="form.name" autocomplete="off" />
-          </el-form-item>
-        </el-form>
-        <el-form :model="formData">
-          <el-form-item label="活动名称" label-width="72px" class="form-inline">
-            <el-input v-model="form.name" autocomplete="off" />
-          </el-form-item>
-        </el-form>
-        <el-form :model="formData">
-          <el-form-item label="活动名称" label-width="72px" class="form-inline">
-            <el-input v-model="form.name" autocomplete="off" />
-          </el-form-item>
-        </el-form>
-        <el-form :model="formData">
-          <el-form-item label="活动名称" label-width="72px" class="form-inline">
-            <el-input v-model="form.name" autocomplete="off" />
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button type="success" @click="dialogFormVisible = false">确 定</el-button>
-          <el-button @click="dialogFormVisible = false">取 消</el-button>
-        </div>
-      </div>
+    <!-- 新增弹框 -->
+    <el-dialog
+      :title="dialogTitle"
+      :visible.sync="dialogVisible"
+      width="645px"
+    >
+      <el-form :inline="true" label-width="102px" class="demo-form-inline">
+        <el-form-item label="设备编号">
+          <el-input placeholder="" />
+        </el-form-item>
+        <el-form-item label="设备名称">
+          <el-input  maxlength="30" placeholder="" />
+        </el-form-item>
+        
+        <el-form-item label="所属公司">
+          <el-input  maxlength="12" placeholder="" />
+        </el-form-item>
+        <el-form-item label="所属用户">
+          <el-input   maxlength="18" placeholder="" />
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button  type="primary">确 定</el-button>
+        <el-button @click="dialogVisible = false">关闭</el-button>
+      </span>
     </el-dialog>
     <div v-heightAuto class="mt20 pb20 w-card">
       <el-table
@@ -121,11 +119,11 @@
           prop="statename"
           label="设备状态"
         />
-        <el-table-column
+        <!-- <el-table-column
           align="center"
           prop="status"
           label="出入库状态"
-        />
+        /> -->
         <el-table-column
           align="center"
           label="操作"
@@ -184,6 +182,8 @@ export default {
         data1: 1
       }],
       dialogFormVisible: false,
+      dialogVisible: true,
+      dialogTitle: '',
       form: {
         name: '',
         region: '',
