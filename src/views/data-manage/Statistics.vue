@@ -50,6 +50,8 @@
           label="统计日期"
           align="center"
           prop="collectionTime"
+          width="160"
+          :formatter="dateFormat"
         />
         <el-table-column
           align="center"
@@ -152,6 +154,7 @@ const lineChartData = {
   actualData: [120, 82, 91, 154, 162, 140, 145]
 }
 import { dayList } from '@/api/data-manage.js'
+import moment from 'moment'
 export default {
   components: {
     LineChart
@@ -220,6 +223,13 @@ export default {
     },
     exportFrom() { // 导出表格数据
       location.href = '#'
+    },
+    dateFormat(row, column) {
+      var date = row[column.property]
+
+      if (date === undefined) { return '' }
+
+      return moment(date).format('YYYY-MM-DD HH:mm:ss')
     }
   }
 }

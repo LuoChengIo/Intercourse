@@ -170,8 +170,8 @@ export default {
     return {
       defaultSearchFrom: {},
       searchFrom: {
-        startDate: '',
-        endDate: '',
+        startDate: new Date(),
+        endDate: new Date(),
         equipmentId: '',
         equipmentName: '',
         equipmentSoftVersion: '',
@@ -213,7 +213,7 @@ export default {
       inquireList(this.searchFrom)
         .then(res => {
           this.tableData = res.data.list
-          this.searchFrom.currentSize = res.data.size
+          this.searchFrom.currentSize = res.data.totalPages
           this.searchFrom.total = res.data.total
         })
         .catch(err => {
@@ -238,7 +238,11 @@ export default {
     },
     exportFrom() { // 导出表格数据
       debugger
-      location.href = exportData(this.searchFrom)
+      // location.href = exportData(this.searchFrom)
+      // + this.searchFrom
+      location.href = process.env.VUE_APP_BASE_API + '/data/month/export' + '?startDate=' + this.searchFrom.startDate + '&endDate=' + this.searchFrom.endDate +
+       +'&equipmentId=' + this.searchFrom.equipmentId + '&equipmentName=' + this.searchFrom.equipmentName + '&companId=' + this.searchFrom.companId + '&oneBatteryVoltageHigh=' + this.searchFrom.oneBatteryVoltageHigh + '&oneBatteryVoltageLow=' + this.searchFrom.oneBatteryVoltageLow + '&highTemperature=' + this.searchFrom.highTemperature + '&lowTemperature=' +
+       this.searchFrom.lowTemperature + '&voltageDifference=' + this.searchFrom.voltageDifference + '&endDvoltageDifferenceate=' + this.searchFrom.voltageDifference + '&status=' + this.searchFrom.status + '&statusCode=' + this.searchFrom.statusCode + '&failure=' + this.searchFrom.failure + '&pageNo=' + this.searchFrom.pageNo + '&pageRows=' + this.searchFrom.pageRows
     }
   }
 }
