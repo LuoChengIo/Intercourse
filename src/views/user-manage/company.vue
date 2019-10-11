@@ -214,10 +214,18 @@ export default {
       const fd = new FormData()
       fd.append('file', content.file)
       uploadImage(fd).then(res => {
-        content.onSuccess(res)
-      }).catch(err => {
+        const data = res.data
+        // eslint-disable-next-line eqeqeq
+        if (data.code == 1) {
+          content.onSuccess(data)
+        } else {
+          content.onError(data)
+          this.$message.error(data.msg)
+        }
+      }).catch((res) => {
         // content.onSuccess(err)
-        content.onError(err)
+        content.onError(res)
+        this.$message.error('上传失败！')
       })
     },
     getFunctionList() {

@@ -19,16 +19,13 @@
           <template slot-scope="scope">
             <el-upload
               class="upload-demo"
-              :multiple="false"
-              :auto-upload="true"
-              list-type="text"
-              :show-file-list="false"
-              :before-upload="beforeUpload"
               action=""
-              :on-exceed="handleExceed"
-              :http-request="uploadFile"
+              :http-request="(content)=>uploadFile(scope.row,content)"
+              :show-file-list="false"
+              :on-success="handleSuccess"
+              :before-upload="beforeUpload"
             >
-              <el-button type="primary" size="small" @click="uploadFile(scope.row)">上传书单</el-button>
+              <el-button type="primary" size="small">上传</el-button>
             </el-upload>
             <el-button type="success" size="small" @click="releaseVersion(scope.row)">发布正式版</el-button>
           </template>
@@ -147,45 +144,49 @@ export default {
     },
     // 上传文件之前的钩子
     beforeUpload(file) {
-      console.log('beforeUpload')
-      console.log(file.type)
       const isText = file.type === 'application/vnd.ms-excel'
       const isTextComputer = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-      if (!isText && !isTextComputer) {
+      if (isText || isTextComputer) {
+        return true
+      } else {
         this.$message.error('上传表格只能是.xls 和.xlsx格式!')
+        return false
       }
-      return (isText | isTextComputer)
+    },
+    handleSuccess(res, file) {
+      this.$message.success('上传成功')
     },
     // 上传文件个数超过定义的数量
     handleExceed(files, fileList) {
       this.$message.warning(`当前限制选择 1 个文件，请删除后继续上传`)
     },
     // 上传文件
-    uploadFile(item) {
-      debugger
-      console.log(item)
-      const fileObj = item.file
-      // FormData 对象
+    uploadFile(item, content) {
       const form = new FormData()
-      // 文件对象
-      form.append('file', fileObj)
-      form.append('comId', this.comId)
-      console.log(JSON.stringify(form))
-      // let formTwo = JSON.stringify(form)
-      programUpload(form).then(response => {
-        console.log('MediaAPI.upload')
-        console.log(response)
-        this.$message.info('文件：' + fileObj.name + '上传成功')
-      }).catch(err => {
-        this.$message(err.message)
+      form.append('multiRequest', content.file)
+      form.append('id', item.id)
+      programUpload(form).then(res => {
+        const data = res.data
+        // eslint-disable-next-line eqeqeq
+        if (data.code == 1) {
+          content.onSuccess(data)
+        } else {
+          content.onError(data)
+          this.$message.error(data.msg)
+        }
+      }).catch((res) => {
+        // content.onSuccess(err)
+        console.log(res)
+        content.onError(res)
+        this.$message.error('上传失败！')
       })
     },
     dateFormat(row, column) {
       var date = row[column.property]
 
-      if (date === undefined) { return '' }
+      if (!date) { return '' }
 
-      return moment(date).format('YYYY-MM-DD HH:mm:ss')
+      return moment(date, 'YYYYMMDDHHmmss').format('YYYY-MM-DD HH:mm:ss')
     }
     // 上传参数
     // uploadFile(rowData) {
