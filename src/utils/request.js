@@ -13,6 +13,7 @@ const service = axios.create({
   transformRequest: [
     function(data) {
       // Do whatever you want to transform the data
+      data = Object.assign({}, data)
       for (const key in data) {
         if (data.hasOwnProperty(key)) {
           if (data[key] === '') {

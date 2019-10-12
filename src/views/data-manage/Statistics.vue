@@ -17,7 +17,7 @@
             :picker-options="pickerOptions0"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            @click="handClick"
+            value-format="yyyy-MM-dd"
             @change="changeDate0"
           />
         </el-form-item>
@@ -167,6 +167,7 @@ export default {
       searchFrom: {
         equipmentId: '',
         equipmentName: '',
+        timeRange: [],
         startDate: '',
         endDate: '',
         pageNo: 1, // 当前页
@@ -184,15 +185,23 @@ export default {
   created() {
     this.searchFrom.pageRows = this.page.pageSize
     this.defaultSearchFrom = Object.assign({}, this.searchFrom)
-    this.searchSubmit()
   },
   methods: {
-    handClick() {
-      // 分割时间
-    },
     searchSubmit() { // 搜索查询
       if (this.listLoading) {
         return
+      }
+      if (!this.searchFrom.equipmentId && !this.searchFrom.equipmentName) {
+        this.$message.info('请输入搜索设备id或设备名称')
+        return
+      }
+      if (!this.searchFrom.timeRange.length) {
+        this.$message.info('请输入搜索时间范围')
+        return
+      }
+      if (this.searchFrom.timeRange.length) {
+        this.searchFrom.startDate = this.searchFrom.timeRange[0]
+        this.searchFrom.endDate = this.searchFrom.timeRange[1]
       }
       this.listLoading = true
       dayList(this.searchFrom)

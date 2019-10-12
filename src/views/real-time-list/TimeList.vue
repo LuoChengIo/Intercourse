@@ -165,7 +165,7 @@ export default {
         equipmentId: '',
         statusName: '',
         status: '',
-        failure: '',
+        failure: this.$route.query.failure || '',
         startDate: '',
         endDate: '',
         rangeDate: [],

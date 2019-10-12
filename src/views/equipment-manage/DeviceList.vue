@@ -131,7 +131,7 @@
           width="450"
         >
           <template>
-            <el-button type="info" size="mini">查看</el-button>
+            <el-button type="info" size="mini">新增</el-button>
             <el-button type="primary" size="mini">编辑</el-button>
             <el-button type="success" size="mini">查看详情</el-button>
             <el-button type="warning" size="mini">命令下发</el-button>

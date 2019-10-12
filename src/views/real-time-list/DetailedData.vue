@@ -28,7 +28,7 @@
     </div>
     <!-- tab栏 -->
     <ul class="tab-ul">
-      <li v-for="(item,index) in tabList" :key="index" class="tab-item" :class="{'active':activeTab==item}" @click="activeTab=item">{{ item.name }}</li>
+      <li v-for="(item,index) in tabList" :key="index" class="tab-item" :class="{'active':activeTab==item}" @click="activeTabHandle(item)">{{ item.name }}</li>
     </ul>
     <div>
       <component :is="currentTabComponent" />
@@ -80,7 +80,7 @@ export default {
       queryLoading: false,
       activeTab: {},
       searchFrom: {
-        equipmentId: '',
+        equipmentId: this.$route.query.id || '',
         equipmentName: '',
         companyname: '',
         statename: '',
@@ -97,18 +97,23 @@ export default {
   watch: {},
   mounted() {},
   created() {
-    this.activeTab = this.tabList[0]
+    if (this.searchFrom.equipmentId) {
+      this.querySearch(() => {
+        this.activeTab = this.tabList[0]
+      })
+    }
   },
   methods: {
-    querySearch() {
-      this.queryLoading = true
+    querySearch(callback) {
       if (!this.searchFrom.equipmentId) {
         this.$message.warning('请输入设备id~')
         return
       }
+      this.queryLoading = true
       equipmentid(this.searchFrom)
         .then(res => {
           this.searchFrom = Object.assign(this.searchFrom, res.data)
+          callback && callback()
         })
         .catch(err => {
           this.$message.error(err.message)
@@ -116,6 +121,12 @@ export default {
         .finally(() => {
           this.queryLoading = false
         })
+    },
+    activeTabHandle(item) {
+      if (!this.searchFrom.equipmentName) {
+        return
+      }
+      this.activeTab = item
     },
     searchSubmit() {
       // listDetails(this.searchFrom)
