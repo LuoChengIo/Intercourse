@@ -206,7 +206,7 @@ export default {
       // if (this.$refs.vuetree.getCheckedKeys(false).length) {
       //   this.formInline.checkAll = false
       // } else {
-      //   this.formInline.checkAll = true
+      //   this.formInline.checkAll = true  提交
       // }
     },
     uploadFile(content) { // 上传文件
