@@ -29,12 +29,9 @@
         </el-form-item>
         <br>
         <el-form-item label="故障等级">
-          <el-checkbox-group v-model="searchFrom.failureName">
-            <el-checkbox label="一级警报">一级警报</el-checkbox>
-            <el-checkbox label="二级警报">二级警报</el-checkbox>
-            <el-checkbox label="三级警报">三级警报</el-checkbox>
-            <el-checkbox label="正常">正常</el-checkbox>
-          </el-checkbox-group>
+          <el-radio-group v-model="searchFrom.failure">
+            <el-radio v-for="item in faultLevel" :key="item.value" :label="item.value">{{ item.label }}</el-radio>
+          </el-radio-group>
         </el-form-item>
       </el-form>
     </div>
