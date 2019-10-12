@@ -1,5 +1,5 @@
 import axios from 'axios'
-import qs from 'Qs'
+import qs from 'qs'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'

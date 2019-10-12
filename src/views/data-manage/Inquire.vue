@@ -4,15 +4,17 @@
       <el-form :inline="true" :model="searchFrom" label-width="72px" class="form-inline">
         <el-form-item label="开始时间">
           <el-date-picker
-            v-model="searchFrom.startDate"
+            v-model="searchFrom.startDateBak"
             type="date"
             placeholder="选择日期"
+            @change="changeStartDate"
           />
         </el-form-item>
         <el-form-item label="结束时间">
           <el-date-picker
-            v-model="searchFrom.endDate"
+            v-model="searchFrom.endDateBak"
             type="date"
+            :picker-options="pickerEndOptions"
             placeholder="选择日期"
           />
         </el-form-item>
@@ -162,7 +164,8 @@
 </template>
 
 <script>
-import { inquireList, exportData } from '@/api/data-manage.js'
+import { inquireList } from '@/api/data-manage.js'
+import { parseTime } from '@/utils'
 export default {
   components: {},
   props: {},
@@ -170,8 +173,10 @@ export default {
     return {
       defaultSearchFrom: {},
       searchFrom: {
-        startDate: new Date(),
-        endDate: new Date(),
+        startDateBak: new Date(),
+        endDateBak: new Date(),
+        startDate: '',
+        endDate: '',
         equipmentId: '',
         equipmentName: '',
         equipmentSoftVersion: '',
@@ -196,12 +201,32 @@ export default {
       tableData: []
     }
   },
-  computed: {},
+  computed: {
+    pickerEndOptions() {
+      // 结束时间配置
+      return {
+        disabledDate: (time) => {
+          if (this.searchFrom.startDateBak) {
+            var nowMonth = this.searchFrom.startDateBak.getMonth() // 当前月
+            var nowYear = this.searchFrom.startDateBak.getFullYear() // 当前年
+            var monthStartDate = this.searchFrom.startDateBak.getTime() // 本月的开始时间
+            var monthEndDate = new Date(nowYear, nowMonth + 1, 0).getTime() // 本月的结束时间
+            return time.getTime() < monthStartDate || time.getTime() > monthEndDate || time.getTime() > Date.now()
+          } else {
+            return time.getTime() > Date.now()
+          }
+        }
+      }
+    }
+  },
   watch: {},
   mounted() {},
   created() {
     this.searchFrom.pageRows = this.page.pageSize
     this.defaultSearchFrom = Object.assign({}, this.searchFrom)
+    const nowMonth = this.searchFrom.startDateBak.getMonth() // 当前月
+    const nowYear = this.searchFrom.startDateBak.getFullYear() // 当前年
+    this.searchFrom.startDateBak = new Date(nowYear, nowMonth, 1) // 本月的开始时间
     this.searchSubmit()
   },
   methods: {
@@ -209,6 +234,8 @@ export default {
       if (this.listLoading) {
         return
       }
+      this.searchFrom.startDate = parseTime(this.searchFrom.startDateBak, '{y}-{m}-{d}')
+      this.searchFrom.endDate = parseTime(this.searchFrom.startDateBak, '{y}-{m}-{d}')
       this.listLoading = true
       inquireList(this.searchFrom)
         .then(res => {
@@ -223,6 +250,21 @@ export default {
           this.listLoading = false
         })
     },
+    changeStartDate(val) {
+      // 开始时间改变
+      const nowMonth = val.getMonth() // 当前月
+      const nowYear = val.getFullYear() // 当前年
+      const currDate = this.searchFrom.endDateBak.getTime()
+      const monthStartDate = new Date(nowYear, nowMonth, 1).getTime() // 本月的开始时间
+      const monthEndDate = new Date(nowYear, nowMonth + 1, 0).getTime() // 本月的结束时间
+      if (currDate < monthStartDate || currDate > monthEndDate) {
+        if (monthEndDate > Date.now()) {
+          this.searchFrom.endDateBak = new Date()
+        }
+        this.searchFrom.endDateBak = new Date(nowYear, nowMonth + 1, 0)
+      }
+    },
+
     handleSizeChange(val) { // 切换每页显示数
       this.searchFrom.pageNo = 1
       this.searchFrom.pageRows = val
@@ -237,10 +279,9 @@ export default {
       this.searchSubmit()
     },
     exportFrom() { // 导出表格数据
-      debugger
       // location.href = exportData(this.searchFrom)
       // + this.searchFrom
-      location.href = process.env.VUE_APP_BASE_API + '/data/month/export' + '?startDate=' + this.searchFrom.startDate + '&endDate=' + this.searchFrom.endDate +
+      location.href = process.env.VUE_APP_BASE_API + '/data/month/export' + '?startDateBak=' + this.searchFrom.startDateBak + '&endDateBak=' + this.searchFrom.endDateBak +
        +'&equipmentId=' + this.searchFrom.equipmentId + '&equipmentName=' + this.searchFrom.equipmentName + '&companId=' + this.searchFrom.companId + '&oneBatteryVoltageHigh=' + this.searchFrom.oneBatteryVoltageHigh + '&oneBatteryVoltageLow=' + this.searchFrom.oneBatteryVoltageLow + '&highTemperature=' + this.searchFrom.highTemperature + '&lowTemperature=' +
        this.searchFrom.lowTemperature + '&voltageDifference=' + this.searchFrom.voltageDifference + '&endDvoltageDifferenceate=' + this.searchFrom.voltageDifference + '&status=' + this.searchFrom.status + '&statusCode=' + this.searchFrom.statusCode + '&failure=' + this.searchFrom.failure + '&pageNo=' + this.searchFrom.pageNo + '&pageRows=' + this.searchFrom.pageRows
     }

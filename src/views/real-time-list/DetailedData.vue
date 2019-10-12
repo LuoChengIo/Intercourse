@@ -21,7 +21,7 @@
           <el-input v-model="searchFrom.equipmentHardwareVersion" disabled placeholder="" />
         </el-form-item>
         <el-form-item>
-          <el-button type="success" :loading="queryLoading" @click="searchSubmit">搜索</el-button>
+          <el-button type="success" :loading="queryLoading" @click="querySearch">搜索</el-button>
           <el-button type="success" @click="searchSubmit">命令下发</el-button>
         </el-form-item>
       </el-form>
@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import { dataList } from '@/api/real-time-list.js'
+import { equipmentid } from '@/api/real-time-list.js'
 import Battery from './components/Battery'
 import Extremum from './components/Extremum'
 import Police from './components/Police'
@@ -106,13 +106,9 @@ export default {
         this.$message.warning('请输入设备id~')
         return
       }
-      dataList({
-        equipmentId: this.searchFrom.equipmentId,
-        pageNo: 1,
-        pageRows: 1000
-      })
+      equipmentid(this.searchFrom)
         .then(res => {
-          this.searchFrom = Object.assign(this.searchFrom, res.data[0])
+          this.searchFrom = Object.assign(this.searchFrom, res.data)
         })
         .catch(err => {
           this.$message.error(err.message)
@@ -122,7 +118,16 @@ export default {
         })
     },
     searchSubmit() {
-
+      // listDetails(this.searchFrom)
+      //   .then(res => {
+      //     this.searchFrom = Object.assign(this.searchFrom, res.data[0])
+      //   })
+      //   .catch(err => {
+      //     this.$message.error(err.message)
+      //   })
+      //   .finally(() => {
+      //     this.queryLoading = false
+      //   })
     }
   }
 }

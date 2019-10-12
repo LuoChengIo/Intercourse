@@ -56,18 +56,18 @@
           <el-input placeholder="" />
         </el-form-item>
         <el-form-item label="设备名称">
-          <el-input  maxlength="30" placeholder="" />
+          <el-input maxlength="30" placeholder="" />
         </el-form-item>
-        
+
         <el-form-item label="所属公司">
-          <el-input  maxlength="12" placeholder="" />
+          <el-input maxlength="12" placeholder="" />
         </el-form-item>
         <el-form-item label="所属用户">
-          <el-input   maxlength="18" placeholder="" />
+          <el-input maxlength="18" placeholder="" />
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button  type="primary">确 定</el-button>
+        <el-button type="primary">确 定</el-button>
         <el-button @click="dialogVisible = false">关闭</el-button>
       </span>
     </el-dialog>
@@ -113,6 +113,7 @@
           align="center"
           prop="updatetime"
           label="创建时间"
+          :formatter="dateFormat"
         />
         <el-table-column
           align="center"
@@ -159,7 +160,8 @@
 </template>
 
 <script>
-import { equipmentList, equipmentSave, equipmentDel, equipmentView, equipmentStatics, equipmentOut, equipmentIn } from '@/api/equipment-manage.js'
+import { equipmentList } from '@/api/equipment-manage.js'
+import moment from 'moment'
 export default {
   components: {},
   props: {},
@@ -182,7 +184,7 @@ export default {
         data1: 1
       }],
       dialogFormVisible: false,
-      dialogVisible: true,
+      dialogVisible: false,
       dialogTitle: '',
       form: {
         name: '',
@@ -207,6 +209,11 @@ export default {
     this.searchSubmit()
   },
   methods: {
+    dateFormat(row, column) {
+      var date = row[column.property]
+      if (!date) { return '' }
+      return moment(date, 'YYYYMMDDHHmmss').format('YYYY-MM-DD HH:mm:ss')
+    },
     searchSubmit() { // 搜索查询
       if (this.listLoading) {
         return

@@ -2,13 +2,13 @@
   <div>
     <div class="w-card search-card">
       <el-form :inline="true" :model="searchFrom" label-width="72px" class="form-inline">
-        <el-form-item label="是否掉线">
+        <!-- <el-form-item label="是否掉线">
           <el-select v-model="searchFrom.statusName">
             <el-option label="全部" value="" />
             <el-option label="正常" value="1" />
             <el-option label="掉线" value="0" />
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="时间范围">
           <el-date-picker
             v-model="searchFrom.rangeDate"
@@ -54,16 +54,19 @@
         <el-table-column
           align="center"
           prop="equipmentId"
+          width="120"
           label="设备ID"
         />
         <el-table-column
           align="center"
           prop="equipmentName"
+          width="140px"
           label="设备名称"
         />
         <el-table-column
           align="center"
           prop="soc"
+          width="80px"
           label="soc(%)"
         />
         <el-table-column
@@ -83,6 +86,7 @@
         <el-table-column
           align="center"
           prop="statusCodeFormat"
+          width="120"
           label="状态功能码"
         />
         <el-table-column align="center" width="140px" label="电压（最高|最低）">
@@ -120,11 +124,14 @@
         <el-table-column
           align="center"
           prop="temperatureDifference"
+          width="120px"
           label="温差（°C）"
         />
         <el-table-column
           align="center"
           prop="collectionTime"
+          width="160px"
+          :formatter="dateFormat"
           label="信息采集时间"
         />
       </el-table>
@@ -150,6 +157,7 @@
 
 <script>
 import { dataList } from '@/api/real-time-list.js'
+import moment from 'moment'
 export default {
   components: {},
   props: {},
@@ -159,6 +167,8 @@ export default {
       searchFrom: {
         equipmentId: '',
         statusName: '',
+        status: '',
+        failure: '',
         startDate: '',
         endDate: '',
         rangeDate: [],
@@ -178,6 +188,7 @@ export default {
   created() {
     this.searchFrom.pageRows = this.page.pageSize
     this.defaultSearchFrom = Object.assign({}, this.searchFrom)
+    this.searchSubmit()
   },
   methods: {
     searchSubmit() { // 搜索查询
@@ -187,7 +198,9 @@ export default {
       this.listLoading = true
       dataList(this.searchFrom)
         .then(res => {
-          this.tableData = res.data
+          this.tableData = res.data.list
+          this.searchFrom.currentSize = res.data.list.length
+          this.searchFrom.total = res.data.total
         })
         .catch(err => {
           this.$message.error(err.message)
@@ -208,6 +221,11 @@ export default {
     resetFrom() { // 重置搜索条件
       this.searchFrom = Object.assign({}, this.defaultSearchFrom)
       this.searchSubmit()
+    },
+    dateFormat(row, column) {
+      var date = row[column.property]
+      if (!date) { return '' }
+      return moment(date, 'YYYYMMDDHHmmss').format('YYYY-MM-DD HH:mm:ss')
     }
   }
 }

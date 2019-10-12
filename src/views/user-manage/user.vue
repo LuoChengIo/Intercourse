@@ -440,6 +440,7 @@ export default {
         }).then(({ value }) => {
           if (value.length !== 6) {
             this.$message.warning('请输入6位以上密码')
+            return
           }
           passwordReset({
             loginId: item.loginId,

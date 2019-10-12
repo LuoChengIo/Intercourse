@@ -229,7 +229,7 @@ export default {
 
       if (!date) { return '' }
 
-      return moment(date).format('YYYY-MM-DD HH:mm:ss')
+      return moment(date, 'YYYYMMDDHHmmss').format('YYYY-MM-DD HH:mm:ss')
     }
   }
 }
