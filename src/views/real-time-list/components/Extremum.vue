@@ -9,56 +9,56 @@
         最高单体电压电池箱编号
       </div>
       <div class="text-primary item bb br pct25 tc">
-        10
+        {{ equipmenlimitPo.highVoltageSysNo }}
       </div>
       <div class="item bb br pct25 tr">
         最低单体电压电池单体编号
       </div>
       <div class="text-primary item bb pct25 tc">
-        2
+        {{ equipmenlimitPo.lowVoltageSysNo }}
       </div>
       <!-- 行 -->
       <div class="item bb br pct25 tr">
         最高单体电压电池单体编号
       </div>
       <div class="text-primary item bb br pct25 tc">
-        2
+        {{ equipmenlimitPo.highVoltageOneBatteryNo }}
       </div>
       <div class="item bb br pct25 tr">
         最低单体电压值
       </div>
       <div class="text-primary item bb pct25 tc">
-        3.346 V
+        {{ equipmenlimitPo.oneBatteryVoltageLow }} V
       </div>
       <!-- 行 -->
       <div class="item bb br pct25 tr">
         最高单体电压值
       </div>
       <div class="text-primary item bb br pct25 tc">
-        3.411 V
+        {{ equipmenlimitPo.oneBatteryVoltageHigh }} V
       </div>
       <div class="item bb br pct25 tr">
         最高单体温度电池箱编号
       </div>
       <div class="text-primary item bb pct25 tc">
-        10
+        {{ equipmenlimitPo.highTemperatureSysNo }}
       </div>
       <!-- 行 -->
       <div class="item bb br pct25 tr">
         最低单体电压电池箱编号
       </div>
       <div class="text-primary item bb br pct25 tc">
-        2
+        {{ equipmenlimitPo.lowVoltageSysNo }}
       </div>
       <div class="item bb br pct25 tr">
         最高单体温度电池单体编号
       </div>
       <div class="text-primary item bb pct25 tc">
-        1
+        {{ equipmenlimitPo.highTemperatureProbeNo }}
       </div>
       <!-- 行 -->
       <div class=" item bb br pct25 tc">压差值</div>
-      <div class="text-primary item bb pct75 tc">0.065 V</div>
+      <div class="text-primary item bb pct75 tc">{{ equipmenlimitPo.voltageDifference }} V</div>
       <!-- 行 -->
       <div class="text-primary item bb pct100 tc">温度极值</div>
       <div class="text-primary item bb br pct50 tc">最高温度</div>
@@ -68,30 +68,30 @@
         最高单体温度电池单体编号
       </div>
       <div class="text-primary item bb br pct25 tc">
-        10
+        {{ equipmenlimitPo.highTemperatureSysNo }}
       </div>
       <div class="item bb br pct25 tr">
         最低单体温度电池箱编号
       </div>
       <div class="text-primary item bb pct25 tc">
-        2
+        {{ equipmenlimitPo.lowTemperatureSysNo }}
       </div>
       <!-- 行 -->
       <div class="item bb br pct25 tr">
         最高单体温度值
       </div>
       <div class="text-primary item bb br pct25 tc">
-        29.4 ℃
+        {{ equipmenlimitPo.highTemperature }} ℃
       </div>
       <div class="item bb br pct25 tr">
         最低单体温度值
       </div>
       <div class="text-primary item bb pct25 tc">
-        28.3 ℃
+        {{ equipmenlimitPo.lowTemperature }} ℃
       </div>
       <!-- 行 -->
       <div class=" item br pct25 tc">温度差</div>
-      <div class="text-primary item pct75 tc">1.1 ℃</div>
+      <div class="text-primary item pct75 tc">{{ equipmenlimitPo.temperatureDifference }} ℃</div>
     </div>
 
   </div>
@@ -100,12 +100,23 @@
 <script>
 export default {
   components: {},
-  props: {},
+  props: {
+    pageData: {
+      type: Object,
+      default: function() {
+        return { }
+      }
+    }
+  },
   data() {
     return {
     }
   },
-  computed: {},
+  computed: {
+    equipmenlimitPo() {
+      return this.pageData.equipmenlimitPo
+    }
+  },
   watch: {},
   mounted() {},
   created() {},

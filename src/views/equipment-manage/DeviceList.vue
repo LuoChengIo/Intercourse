@@ -9,21 +9,14 @@
           <el-input v-model="searchFrom.equipmentName" placeholder="请输入设备名称" />
         </el-form-item>
         <el-form-item label="所属公司">
-          <el-autocomplete
-            v-model="searchFrom.companyId"
-            popper-class="my-autocomplete"
-            :fetch-suggestions="querySearch"
-            placeholder="请输入内容"
-          >
-            <i
-              slot="suffix"
-              class="el-icon-search el-input__icon"
+          <el-select v-model="searchFrom.companyId" filterable placeholder="请选择">
+            <el-option
+              v-for="item in companyInfo.companyList"
+              :key="item.companyId"
+              :label="item.companyName"
+              :value="item.companyId"
             />
-            <template slot-scope="{ item }">
-              <div class="name">{{ item.value }}</div>
-              <span class="addr">{{ item.address }}</span>
-            </template>
-          </el-autocomplete>
+          </el-select>
         </el-form-item>
         <el-form-item label="设备状态">
           <el-select v-model="searchFrom.state">
@@ -86,9 +79,12 @@
         />
         <el-table-column
           align="center"
-          prop="equipmentId"
           label="设备ID"
-        />
+        >
+          <template slot-scope="scope">
+            <span>{{ scope.row.equipmentId }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           prop="equipmentName"
@@ -96,7 +92,7 @@
         />
         <el-table-column
           align="center"
-          prop="companyname"
+          prop="companyName"
           label="所属公司"
         />
         <el-table-column
@@ -131,7 +127,6 @@
           width="450"
         >
           <template>
-            <el-button type="info" size="mini">新增</el-button>
             <el-button type="primary" size="mini">编辑</el-button>
             <el-button type="success" size="mini">查看详情</el-button>
             <el-button type="warning" size="mini">命令下发</el-button>
@@ -171,7 +166,7 @@ export default {
       searchFrom: {
         equipmentId: '',
         equipmentName: '',
-        companyId: '',
+        companyId: this.$store.getters.companyInfo.defaultCompanyId,
         state: '',
         status: '',
         pageNo: 1, // 当前页
@@ -248,12 +243,6 @@ export default {
     resetFrom() { // 重置搜索条件
       this.searchFrom = Object.assign({}, this.defaultSearchFrom)
       this.searchSubmit()
-    },
-    querySearch(queryString, cb) {
-      var restaurants = this.restaurants
-      var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants
-      // 调用 callback 返回建议列表的数据
-      cb(results)
     }
   }
 }

@@ -1,4 +1,4 @@
-import { login } from '@/api/user'
+import { login, getCompanyList } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 
@@ -9,7 +9,12 @@ const state = {
   name: '',
   avatar: '',
   introduction: '',
-  roles: []
+  roles: [],
+  companyInfo: {
+    companyList: [],
+    defaultCompanyId: '',
+    defaultCompanyName: ''
+  }
 }
 
 const mutations = {
@@ -33,6 +38,9 @@ const mutations = {
   },
   SET_ROLES: (state, roles) => {
     state.roles = roles
+  },
+  SET_COMANY: (state, companyInfo) => {
+    state.companyInfo = companyInfo
   }
 }
 
@@ -65,7 +73,27 @@ const actions = {
       resolve(state.userInfo.functionList)
     })
   },
-
+  // 获取当前用户的公司列表
+  getCompany({ commit }) {
+    return new Promise((resolve, reject) => {
+      getCompanyList({
+        pageNo: 1, // 当前页
+        pageRows: 10000 // 每页显示数
+      }).then(response => {
+        const list = response.companyList.list
+        if (list.length) {
+          commit('SET_COMANY', {
+            companyList: list,
+            defaultCompanyId: list.length === 1 ? list[0].companyId : '',
+            defaultCompanyName: list.length === 1 ? list[0].companyName : ''
+          })
+        }
+        resolve()
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
   // user logout
   logout({ commit, state }) {
     return new Promise((resolve, reject) => {

@@ -17,7 +17,7 @@
             :picker-options="pickerOptions0"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            value-format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd HH:mm:ss"
             @change="changeDate0"
           />
         </el-form-item>
@@ -49,7 +49,7 @@
         <el-table-column
           label="统计日期"
           align="center"
-          prop="collectionTime"
+          prop="addtime"
           width="160"
           :formatter="dateFormat"
         />
@@ -238,7 +238,7 @@ export default {
 
       if (!date) { return '' }
 
-      return moment(date, 'YYYYMMDDHHmmss').format('YYYY-MM-DD HH:mm:ss')
+      return moment(date).format('YYYY-MM-DD')
     }
   }
 }

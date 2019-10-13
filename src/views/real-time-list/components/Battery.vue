@@ -43,7 +43,14 @@
 <script>
 export default {
   components: {},
-  props: {},
+  props: {
+    pageData: {
+      type: Object,
+      default: function() {
+        return { }
+      }
+    }
+  },
   data() {
     return {
     }

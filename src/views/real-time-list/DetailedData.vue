@@ -5,14 +5,24 @@
         <el-form-item label="设备ID">
           <el-input v-model="searchFrom.equipmentId" placeholder="请输入设备ID" />
         </el-form-item>
+        <!-- <el-form-item label="所属公司">
+          <el-select v-model="searchFrom.companyName" filterable placeholder="请选择">
+            <el-option
+              v-for="item in companyInfo.companyList"
+              :key="item.companyId"
+              :label="item.companyName"
+              :value="item.companyName"
+            />
+          </el-select>
+        </el-form-item> -->
         <el-form-item label="设备名称">
           <el-input v-model="searchFrom.equipmentName" disabled placeholder="" />
         </el-form-item>
         <el-form-item label="所属公司">
-          <el-input v-model="searchFrom.companyname" disabled placeholder="" />
+          <el-input v-model="searchFrom.companyName" disabled placeholder="" />
         </el-form-item>
         <el-form-item label="所属用户">
-          <el-input v-model="searchFrom.companyname" disabled placeholder="" />
+          <el-input v-model="searchFrom.adduserid" disabled placeholder="" />
         </el-form-item>
         <el-form-item label="软件版本">
           <el-input v-model="searchFrom.equipmentSoftVersion" disabled placeholder="" />
@@ -21,7 +31,7 @@
           <el-input v-model="searchFrom.equipmentHardwareVersion" disabled placeholder="" />
         </el-form-item>
         <el-form-item>
-          <el-button type="success" :loading="queryLoading" @click="querySearch">搜索</el-button>
+          <el-button type="success" :loading="queryLoading" @click="querySearch()">搜索</el-button>
           <el-button type="success" @click="searchSubmit">命令下发</el-button>
         </el-form-item>
       </el-form>
@@ -31,7 +41,7 @@
       <li v-for="(item,index) in tabList" :key="index" class="tab-item" :class="{'active':activeTab==item}" @click="activeTabHandle(item)">{{ item.name }}</li>
     </ul>
     <div>
-      <component :is="currentTabComponent" />
+      <component :is="currentTabComponent" :page-data="deviceInfo" />
     </div>
   </div>
 </template>
@@ -79,10 +89,11 @@ export default {
       ],
       queryLoading: false,
       activeTab: {},
+      deviceInfo: {},
       searchFrom: {
         equipmentId: this.$route.query.id || '',
         equipmentName: '',
-        companyname: '',
+        companyName: this.$store.getters.companyInfo.defaultCompanyName,
         statename: '',
         equipmentSoftVersion: '',
         equipmentHardwareVersion: ''
@@ -98,13 +109,11 @@ export default {
   mounted() {},
   created() {
     if (this.searchFrom.equipmentId) {
-      this.querySearch(() => {
-        this.activeTab = this.tabList[0]
-      })
+      this.querySearch()
     }
   },
   methods: {
-    querySearch(callback) {
+    querySearch() {
       if (!this.searchFrom.equipmentId) {
         this.$message.warning('请输入设备id~')
         return
@@ -112,8 +121,9 @@ export default {
       this.queryLoading = true
       equipmentid(this.searchFrom)
         .then(res => {
-          this.searchFrom = Object.assign(this.searchFrom, res.data)
-          callback && callback()
+          this.deviceInfo = res.data
+          this.searchFrom = Object.assign(this.searchFrom, res.data.equipmentPo)
+          this.activeTab = this.tabList[0]
         })
         .catch(err => {
           this.$message.error(err.message)

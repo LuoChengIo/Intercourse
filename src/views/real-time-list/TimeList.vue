@@ -50,10 +50,15 @@
         />
         <el-table-column
           align="center"
-          prop="equipmentId"
-          width="120"
           label="设备ID"
-        />
+          width="120"
+        >
+          <template slot-scope="scope">
+            <router-link :to="{ path: '/real/detailed-data', query: { id: scope.row.equipmentId }}">
+              {{ scope.row.equipmentId }}
+            </router-link>
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           prop="equipmentName"
@@ -82,7 +87,7 @@
         />
         <el-table-column
           align="center"
-          prop="statusCodeFormat"
+          prop="statusCode"
           width="120"
           label="状态功能码"
         />

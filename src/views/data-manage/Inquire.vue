@@ -13,6 +13,7 @@
         <el-form-item label="结束时间">
           <el-date-picker
             v-model="searchFrom.endDateBak"
+            :clearable="false"
             type="date"
             :picker-options="pickerEndOptions"
             placeholder="选择日期"
@@ -25,7 +26,14 @@
           <el-input v-model="searchFrom.equipmentName" placeholder="请输入设备名称" />
         </el-form-item>
         <el-form-item label="所属公司">
-          <el-input v-model="searchFrom.companId" placeholder="请输入所属公司" />
+          <el-select v-model="searchFrom.companyId" filterable placeholder="请选择">
+            <el-option
+              v-for="item in companyInfo.companyList"
+              :key="item.companyId"
+              :label="item.companyName"
+              :value="item.companyId"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="所属用户">
           <el-input v-model="searchFrom.userId" placeholder="请输入所属用户" />
@@ -94,7 +102,7 @@
         />
         <el-table-column
           align="center"
-          prop="statusCodeFormat"
+          prop="statusCode"
           label="状态功能码"
         />
         <el-table-column
@@ -141,6 +149,7 @@
           align="center"
           prop="collectionTime"
           label="信息采集时间"
+          :formatter="dateFormat"
         />
       </el-table>
       <div class="pt20 pr30 pl30 tr">
@@ -166,6 +175,7 @@
 <script>
 import { inquireList } from '@/api/data-manage.js'
 import { parseTime } from '@/utils'
+import moment from 'moment'
 export default {
   components: {},
   props: {},
@@ -181,7 +191,7 @@ export default {
         equipmentName: '',
         equipmentSoftVersion: '',
         equipmentHardwareVersion: '',
-        companId: '',
+        companId: this.$store.getters.companyInfo.defaultCompanyId,
         userId: '',
         oneBatteryVoltageHigh: '',
         oneBatteryVoltageLow: '',
@@ -230,17 +240,22 @@ export default {
     this.searchSubmit()
   },
   methods: {
+    dateFormat(row, column) {
+      var date = row[column.property]
+      if (!date) { return '' }
+      return moment(date, 'YYYYMMDDHHmmss').format('YYYY-MM-DD HH:mm:ss')
+    },
     searchSubmit() { // 搜索查询
       if (this.listLoading) {
         return
       }
       this.searchFrom.startDate = parseTime(this.searchFrom.startDateBak, '{y}-{m}-{d}')
-      this.searchFrom.endDate = parseTime(this.searchFrom.startDateBak, '{y}-{m}-{d}')
+      this.searchFrom.endDate = parseTime(this.searchFrom.endDateBak, '{y}-{m}-{d}')
       this.listLoading = true
       inquireList(this.searchFrom)
         .then(res => {
           this.tableData = res.data.list
-          this.searchFrom.currentSize = res.data.totalPages
+          this.searchFrom.currentSize = res.data.list.length
           this.searchFrom.total = res.data.total
         })
         .catch(err => {

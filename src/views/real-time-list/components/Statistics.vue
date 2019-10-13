@@ -55,7 +55,14 @@ export default {
     LineChart,
     PieChart
   },
-  props: {},
+  props: {
+    pageData: {
+      type: Object,
+      default: function() {
+        return { }
+      }
+    }
+  },
   data() {
     return {
       lineChartData,
