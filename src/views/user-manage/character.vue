@@ -69,8 +69,8 @@
                 width="250"
               >
                 <template slot-scope="scope">
-                  <el-button type="primary" size="mini" @click="dialogAddEdit(2,scope.row)">编辑</el-button>
-                  <el-button type="danger" size="mini" @click="dialogDdelete(scope.row)">删除</el-button>
+                  <el-button type="primary" size="mini" @click.stop="dialogAddEdit(2,scope.row)">编辑</el-button>
+                  <el-button type="danger" size="mini" @click="dialogDdelete(scope.row,scope.$index)">删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -93,7 +93,7 @@
           </div></el-col>
         <el-col :span="6">
           <div v-heightAuto v-loading="treeLoading" class="w-card p20">
-            <h4 class="n pb10 f14">角色权限列表</h4>
+            <h4 class="n pb10 f14 ell" :title="activeRowTItle">角色权限列表【{{ activeRowTItle }}】</h4>
             <el-tree :data="treeData" :default-expand-all="true" :props="defaultProps" />
           </div>
         </el-col>
@@ -132,7 +132,7 @@
           </el-autocomplete>
         </el-form-item>
         <div class="mb5">
-          <el-checkbox @change="checkedAll">全选角色权限</el-checkbox>
+          <el-checkbox v-model="checkedAll" @change="checkedAllHadle">全选角色权限</el-checkbox>
         </div>
         <div class="tree-ct">
           <el-tree
@@ -189,10 +189,12 @@ export default {
       },
       treeDialogData: [],
       treeData: [],
+      activeRowTItle: '',
       defaultProps: {
         children: 'twoLevelFunctionList',
         label: 'functionName'
       },
+      checkedAll: false,
       treeLoading: false
     }
   },
@@ -205,10 +207,10 @@ export default {
     this.searchSubmit()
   },
   methods: {
-    checkedAll(val) {
+    checkedAllHadle(val) {
       if (val) {
         // 全选
-        this.$refs.vuetree.setCheckedNodes(this.treeData)
+        this.$refs.vuetree.setCheckedNodes(this.treeDialogData)
       } else {
         // 取消选中
         this.$refs.vuetree.setCheckedKeys([])
@@ -254,6 +256,7 @@ export default {
         return
       }
       this.treeLoading = true
+      this.activeRowTItle = row.roleName
       this.getRoleFunction(row, (res) => {
         const data = res.roleFunctionList
         function dataFor(tree) {
@@ -304,6 +307,7 @@ export default {
       this.dialogType = type
       this.formInline.disabled = false
       this.treeDialogData = []
+      this.checkedAll = false
       if (type === 1) {
         // 添加角色
         this.formInline = Object.assign(this.formInline, {

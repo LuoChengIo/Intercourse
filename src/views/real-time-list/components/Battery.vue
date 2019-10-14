@@ -1,19 +1,23 @@
 <template>
   <div>
     <div class="w-card battery-ct">
-      <h2 class="tc f18 text-primary mb40">总电压<span class="ml15">13.4V</span></h2>
+      <div class="mb10">
+        <el-tag v-for="(item,index) in equipmenbatterys" :key="item.batterySysNo" :type="activeIndex===index?'success':'info'" class="mr10 poi" @click="tabclick(index)">{{ item.batterySysNo }}</el-tag>
+      </div>
+      <h2 class="tc f18 text-primary mb40">总电压<span class="ml15">{{ VoltageNum }}V</span></h2>
+
       <el-row :gutter="38">
         <el-col :span="12">
           <div class="gray-card">
             <div class="tc battery-num">
-              <div class="f22 text-primary">4</div>
+              <div class="f22 text-primary">{{ activeItem.batteryNumber }}</div>
               <p class="f14 text-secondary">电池数据</p>
             </div>
             <div com class="voltage flex text-primary flex-align-center">
               <div>
-                <div v-for="item in 4" :key="item" class="voltage-item ">
-                  <span class="dib vm battery-icon">{{ item }}</span>
-                  <span class="dib vm f18">3.354 V</span>
+                <div v-for="(item,index) in activeItem.batteryVolages" :key="item.id" class="voltage-item ">
+                  <span class="dib vm battery-icon">{{ index+1 }}</span>
+                  <span class="dib vm f18">{{ item.oneBatteryVolage }}V</span>
                 </div>
               </div>
             </div>
@@ -22,14 +26,14 @@
         <el-col :span="12">
           <div class="gray-card">
             <div class="tc battery-num temperature">
-              <div class="f22 text-primary">4</div>
+              <div class="f22 text-primary">{{ activeItem.probeNumber }}</div>
               <p class="f14 text-secondary">温度点数</p>
             </div>
             <div com class="voltage flex text-primary flex-align-center">
               <div>
-                <div v-for="item in 4" :key="item" class="voltage-item temperature">
-                  <span class="dib vm battery-icon temperature">{{ item }}</span>
-                  <span class="dib vm f18">3.354 V</span>
+                <div v-for="(item,index) in activeItem.batteryProbes" :key="item.id" class="voltage-item temperature">
+                  <span class="dib vm battery-icon temperature">{{ index+1 }}</span>
+                  <span class="dib vm f18">{{ item.oneProbeTemperature }}℃</span>
                 </div>
               </div>
             </div>
@@ -53,13 +57,33 @@ export default {
   },
   data() {
     return {
+      activeItem: {},
+      activeIndex: 0
     }
   },
-  computed: {},
+  computed: {
+    VoltageNum() {
+      let num = 0
+      this.activeItem.batteryVolages.forEach(element => {
+        num += element.oneBatteryVolage
+      })
+      return num
+    },
+    equipmenbatterys() {
+      return this.pageData.equipmenbatterys
+    }
+  },
   watch: {},
   mounted() {},
-  created() {},
-  methods: {}
+  created() {
+    this.activeItem = this.equipmenbatterys[0]
+  },
+  methods: {
+    tabclick(index) {
+      this.activeIndex = index
+      this.activeItem = this.equipmenbatterys[index]
+    }
+  }
 }
 </script>
 <style lang="scss" scoped>

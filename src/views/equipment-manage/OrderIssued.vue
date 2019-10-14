@@ -90,7 +90,7 @@ export default {
   data() {
     return {
       searchFrom: {
-        equipmentNo: this.$route.query.equipmentNo || '',
+        equipmentNo: this.$route.query.id || '',
         equipmentName: '',
         companyName: '',
         companyId: ''
