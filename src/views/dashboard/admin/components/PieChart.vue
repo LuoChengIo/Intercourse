@@ -76,7 +76,7 @@ export default {
           }
         },
         title: {
-          text: '时间',
+          text: '数量',
           x: '31%',
           y: 'center',
           textStyle: {
@@ -128,7 +128,7 @@ export default {
             ]
           },
           {
-            name: '时间',
+            name: '数量',
             type: 'pie',
             clockWise: true,
             radius: ['50%', '60%'],

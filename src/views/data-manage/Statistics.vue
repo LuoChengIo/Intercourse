@@ -30,12 +30,11 @@
     <div class="w-card mt20 p10 pb20">
       <h5 class="f14 n title">
         <span class="mr10">设备数据日趋势</span>
-        <el-button-group>
-          <el-button type="success" plain>充放电数据</el-button>
-          <el-button type="success">极值数据</el-button>
-        </el-button-group>
+        <el-radio-group v-model="chartType" slot-scope="">
+          <el-radio-button label="1">充放电数据</el-radio-button>
+          <el-radio-button label="2">极值数据</el-radio-button>
+        </el-radio-group>
       </h5>
-
       <line-chart :chart-data="lineChartData" />
     </div>
     <!-- 列表 -->
@@ -149,10 +148,10 @@
 
 <script>
 import LineChart from './chart/LineChart'
-const lineChartData = {
-  expectedData: [100, 120, 161, 134, 105, 160, 165],
-  actualData: [120, 82, 91, 154, 162, 140, 145]
-}
+// const lineChartData = {
+//   expectedData: [100, 120, 161, 134, 105, 160, 165],
+//   actualData: [120, 82, 91, 154, 162, 140, 145]
+// }
 import { dayList } from '@/api/data-manage.js'
 import moment from 'moment'
 export default {
@@ -162,7 +161,6 @@ export default {
   props: {},
   data() {
     return {
-      lineChartData,
       defaultSearchFrom: {},
       searchFrom: {
         equipmentId: '',
@@ -176,10 +174,51 @@ export default {
         total: 0 // 总页数
       },
       listLoading: false,
-      tableData: []
+      tableData: [],
+      chartType: '1'
     }
   },
-  computed: {},
+  computed: {
+    lineChartData() {
+      const chartdata = {
+        xAxisData: [],
+        seriesData: [],
+        formatter: ''
+      }
+      let arrName = [{ key: 'charge', value: '充电功率' }, { key: 'discharge', value: '放电功率' }, { key: 'chargeTime', value: '充电总时长' }, { key: 'dischargeTime', value: '放电总时长' }, { key: 'chargeProbe', value: '最大充电电流' }, { key: 'dischargeProbe', value: '最大放电电流' }]
+      chartdata.formatter = '{b}<br />{a0}: {c0}W<br />{a1}: {c1}W<br />{a2}: {c2}h<br />{a3}: {c3}h<br />{a4}: {c4}A<br />{a5}: {c5}A'
+      if (this.chartType === '2') {
+        arrName = [{ key: 'voltageDifference', value: '最大压差' }, { key: 'temperatureDifference', value: '最大温差' }, { key: 'oneBatteryVoltageHigh', value: '最高单体电压' }, { key: 'lowVoltageOneBatteryNo', value: '最低单体电压' }, { key: 'highTemperature', value: '最高单体温度' }, { key: 'lowTemperature', value: '最低单体温度' }]
+        chartdata.formatter = '{b}<br />{a0}: {c0}V<br />{a1}: {c1}°C<br />{a2}: {c2}V<br />{a3}: {c3}V<br />{a4}: {c4}°C<br />{a5}: {c5}°C'
+      }
+      this.tableData.forEach(ele => {
+        chartdata.xAxisData.push(moment(ele.addtime).format('YYYY/MM/DD'))
+      })
+      arrName.forEach(element => {
+        const obj = {
+          name: element.value,
+          itemStyle: {
+            normal: {
+              lineStyle: {
+                width: 1
+              }
+            }
+          },
+          symbol: 'none',
+          smooth: false,
+          type: 'line',
+          data: [],
+          animationDuration: 2800,
+          animationEasing: 'cubicInOut'
+        }
+        this.tableData.forEach(ele => {
+          obj.data.push(ele[element.key])
+        })
+        chartdata.seriesData.push(obj)
+      })
+      return chartdata
+    }
+  },
   watch: {},
   mounted() {},
   created() {
@@ -207,7 +246,7 @@ export default {
       dayList(this.searchFrom)
         .then(res => {
           this.tableData = res.data.list
-          this.searchFrom.currentSize = res.data.size
+          this.searchFrom.currentSize = res.data.list.length
           this.searchFrom.total = res.data.total
         })
         .catch(err => {
@@ -235,9 +274,7 @@ export default {
     },
     dateFormat(row, column) {
       var date = row[column.property]
-
       if (!date) { return '' }
-
       return moment(date).format('YYYY-MM-DD')
     }
   }

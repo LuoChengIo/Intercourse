@@ -89,6 +89,15 @@
         />
         <el-table-column
           align="center"
+          label="在线状态"
+        >
+          <template slot-scope="scope">
+            <el-tag v-if="scope.row.isOnline==1" type="success">在线</el-tag>
+            <el-tag v-else type="danger">离线</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
           prop="statename"
           label="设备状态"
         />
@@ -251,6 +260,15 @@ export default {
       this.listLoading = true
       equipmentList(this.searchFrom)
         .then(res => {
+          res.data.list.forEach(element => {
+            if (element.status) {
+              var arr = this.equipmentStatus.filter(ele => {
+                // eslint-disable-next-line eqeqeq
+                return ele.value == element.status
+              })
+              element.statename = arr[0].label
+            }
+          })
           this.tableData = res.data.list
           this.searchFrom.currentSize = res.data.list.length
           this.searchFrom.total = res.data.total
@@ -279,13 +297,19 @@ export default {
         this.formInline = {
           id: '',
           equipmentId: '',
-          companyId: '',
+          companyName: '',
           equipmentName: '',
           adduserid: ''
         }
         this.dialogTitle = '新建设备'
       } else if (type === 2) {
-        this.formInline = Object.assign(this.formInline, item)
+        this.formInline = {
+          id: item.id,
+          equipmentId: item.equipmentId,
+          companyName: item.companyName,
+          equipmentName: item.equipmentName,
+          adduserid: item.adduserid
+        }
         this.dialogTitle = '编辑设备'
         getUserList({
           ascriptionCompanyName: this.formInline.companyName,

@@ -81,10 +81,10 @@ export default {
         this.__resizeHandler()
       }
     },
-    setOptions({ expectedData, actualData } = {}) {
+    setOptions({ xAxisData, seriesData, formatter } = {}) {
       this.chart.setOption({
         xAxis: {
-          data: ['9:00', '9:30', '10:00', '10:30', '11:00', '11:30', '12:00'],
+          data: xAxisData,
           axisLabel: { // 刻度样式
             show: true,
             textStyle: {
@@ -102,15 +102,7 @@ export default {
         },
         tooltip: { // 提示框
           trigger: 'axis',
-          formatter: '{b}<br />{a0}: {c0}A<br />{a1}: {c1}C',
-          // formatter: function(params) {
-          //   var html = '';
-          //   for (var i = 0; i < params.length; i++){
-          //       html += ""+params[i].axisValue+"<br />"+params[i].marker+params[i].seriesName+": "+params[i].value+unit(params[i].seriesIndex)+"<br/>";
-          //   }
-          //   console.log(params)
-          //   return html
-          //   },
+          formatter: formatter,
           axisPointer: {
             lineStyle: {
               color: '#57617B'
@@ -152,42 +144,7 @@ export default {
             }
           }
         },
-        series: [{
-          name: '电流', itemStyle: {
-            normal: {
-              color: '#29C03E',
-              lineStyle: {
-                color: '#29C03E',
-                width: 1
-              }
-            }
-          },
-          symbol: 'none',
-          smooth: false,
-          type: 'line',
-          data: expectedData,
-          animationDuration: 2800,
-          animationEasing: 'cubicInOut'
-        },
-        {
-          name: '电压',
-          symbol: 'none',
-          smooth: false,
-          type: 'line',
-          itemStyle: {
-            normal: {
-              color: '#FFC12F',
-              lineStyle: {
-                color: '#FFC12F',
-                width: 1
-              }
-            }
-          },
-          data: actualData,
-          animationDuration: 2800,
-          animationEasing: 'quadraticOut'
-        }
-        ]
+        series: seriesData
       })
     },
     initChart() {

@@ -92,8 +92,8 @@ const lineChartData = {
   data4: [10, 30, 40, 60, 60, 70, 90]
 }
 const pieChartData1 = [
-  { value: 320, legendname: '在线', name: '开机时间 71%', itemStyle: { color: '#3FAFFF' }},
-  { value: 240, legendname: '离线', name: '关机时间 72%', itemStyle: { color: '#4C4C4C' }}
+  { value: 320, legendname: '在线', name: '在线 71%', itemStyle: { color: '#3FAFFF' }},
+  { value: 240, legendname: '离线', name: '离线 72%', itemStyle: { color: '#4C4C4C' }}
 ]
 const pieChartData2 = [
   { value: 27, legendname: '放电', name: '放电 27%', itemStyle: { color: '#3FAFFF' }},
