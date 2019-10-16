@@ -1,6 +1,6 @@
 <template>
   <div class="dashboard-editor-container">
-    <panel-group @handleSetLineChartData="handleSetLineChartData" />
+    <panel-group :numobj="equipmentChargeSum" />
     <div class="mt10">
       <div class="w-card left-ct p10">
         <h5 class="f14 n title">警告数量</h5>
@@ -56,6 +56,7 @@
 </template>
 
 <script>
+import { homeCount } from '@/api/home.js'
 import PanelGroup from './components/PanelGroup'
 import LineChart from './components/LineChart'
 import BarChart from './components/BarChart'
@@ -115,10 +116,27 @@ export default {
       warningData,
       lineChartData,
       pieChartData1,
-      pieChartData2
+      pieChartData2,
+      equipmentChargeSum: {
+        equipmentCounts: 0,
+        disChargeSum: 0,
+        chargeSum: 0,
+        carbonReduction: 0
+      }
     }
   },
+  created() {
+    this.getPageData()
+  },
   methods: {
+    getPageData() {
+      homeCount().then(res => {
+        console.log(res)
+        this.equipmentChargeSum = res.equipmentChargeSum
+      }).catch(() => {
+
+      })
+    },
     handleSetLineChartData(type) {
       this.lineChartData = lineChartData[type]
     }
