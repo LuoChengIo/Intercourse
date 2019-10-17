@@ -62,9 +62,20 @@ export default {
       this.chart = echarts.init(this.$el)
       this.setOptions(this.chartData)
     },
-    setOptions(data) {
+    setOptions(rData) {
       const legendArr = []
+      let allCount = 0
+      const data = []
+      rData.forEach(element => {
+        data.push(Object.assign({}, element))
+        allCount += element.value
+      })
       data.forEach(element => {
+        let num = 0
+        if (allCount) {
+          num = Math.floor(element.value / allCount * 100)
+        }
+        element.name = `${element.name} ${num}%`
         legendArr.push(element.name)
       })
       this.chart.setOption({

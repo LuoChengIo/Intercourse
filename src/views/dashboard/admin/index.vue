@@ -17,8 +17,10 @@
         </el-row>
         <el-row v-for="(item,index) in warningData" :key="index" class="mt20 mb20 f13">
           <el-col :span="12" class="text-primary">
-            <img class="warn-icon" :src="item.imgsrc" alt="" srcset="">
-            {{ item.title }}
+            <router-link :to="{ path: '/real/time-list', query: { failure: item.value }}">
+              <img class="warn-icon" :src="item.imgsrc" alt="" srcset="">
+              {{ item.title }}
+            </router-link>
           </el-col>
           <el-col :span="12" :class="item.myclass" class="tc">
             {{ item.quantity }}
@@ -64,27 +66,35 @@ import PieChart from './components/PieChart'
 const warningData = [{
   imgsrc: require('@/assets/icon_warning01@2x.png'),
   title: '一级警告',
-  quantity: '200',
+  key: 'Level1',
+  value: '1',
+  quantity: '0',
   yearonyear: '10.85↑',
   myclass: 'text-danger'
 }, {
   imgsrc: require('@/assets/icon_warning02@2x.png'),
   title: '二级警告',
-  quantity: '200',
+  key: 'Level2',
+  value: '2',
+  quantity: '0',
   yearonyear: '10.85↑',
   myclass: 'text-danger'
 }, {
   imgsrc: require('@/assets/icon_warning03@2x.png'),
   title: '三级警告',
-  quantity: '200',
+  key: 'Level3',
+  value: '3',
+  quantity: '0',
   yearonyear: '10.85↓',
-  myclass: 'text-success'
+  myclass: 'text-danger'
 }, {
   imgsrc: require('@/assets/icon_warning04@2x.png'),
   title: '正常',
-  quantity: '220',
+  key: 'Level4',
+  value: '0',
+  quantity: '0',
   yearonyear: '10.85↑',
-  myclass: 'text-danger'
+  myclass: 'text-success'
 }]
 const lineChartData = {
   data1: [20, 30, 40, 50, 60, 70, 80],
@@ -92,17 +102,6 @@ const lineChartData = {
   data3: [10, 30, 50, 50, 62, 75, 85],
   data4: [10, 30, 40, 60, 60, 70, 90]
 }
-const pieChartData1 = [
-  { value: 320, legendname: '在线', name: '在线 71%', itemStyle: { color: '#3FAFFF' }},
-  { value: 240, legendname: '离线', name: '离线 72%', itemStyle: { color: '#4C4C4C' }}
-]
-const pieChartData2 = [
-  { value: 27, legendname: '放电', name: '放电 27%', itemStyle: { color: '#3FAFFF' }},
-  { value: 45, legendname: '保护', name: '保护 45%', itemStyle: { color: '#F37272' }},
-  { value: 11, legendname: '直流充电', name: '直流充电 11%', itemStyle: { color: '#3366F3' }},
-  { value: 10, legendname: '交流充电', name: '交流充电 10%', itemStyle: { color: '#FFC12F' }},
-  { value: 7, legendname: '自检', name: '开机时间 7%', itemStyle: { color: '#8D64FF' }}
-]
 export default {
   name: 'DashboardAdmin',
   components: {
@@ -115,8 +114,8 @@ export default {
     return {
       warningData,
       lineChartData,
-      pieChartData1,
-      pieChartData2,
+      pieChartData1: [],
+      pieChartData2: [],
       equipmentChargeSum: {
         equipmentCounts: 0,
         disChargeSum: 0,
@@ -131,8 +130,29 @@ export default {
   methods: {
     getPageData() {
       homeCount().then(res => {
-        console.log(res)
+        for (const key in res.equipmentChargeSum) {
+          if (res.equipmentChargeSum.hasOwnProperty(key)) {
+            const element = res.equipmentChargeSum[key]
+            res.equipmentChargeSum[key] = Number(element)
+          }
+        }
         this.equipmentChargeSum = res.equipmentChargeSum
+        // 在线图标
+        this.pieChartData1 = [
+          { value: res.equipmentOnLine || 0, legendname: '在线', name: '在线', itemStyle: { color: '#3FAFFF' }},
+          { value: res.equipmentOffLine || 0, legendname: '离线', name: '离线', itemStyle: { color: '#4C4C4C' }}
+        ]
+        this.pieChartData2 = [
+          { value: res.equipmentState && res.equipmentState.chargeState || 0, legendname: '充电状态', name: '充电状态', itemStyle: { color: '#3FAFFF' }},
+          { value: res.equipmentState && res.equipmentState.protectState || 0, legendname: '保护状态', name: '保护状态', itemStyle: { color: '#F37272' }},
+          { value: res.equipmentState && res.equipmentState.disChargeState || 0, legendname: '放电状态', name: '放电状态', itemStyle: { color: '#3366F3' }},
+          { value: res.equipmentState && res.equipmentState.selfCheckState || 0, legendname: '自检', name: '自检状态', itemStyle: { color: '#8D64FF' }}
+        ]
+        if (res.warningLevelCounts) {
+          this.warningData.forEach(element => {
+            element.quantity = res.warningLevelCounts[element.key] || 0
+          })
+        }
       }).catch(() => {
 
       })
