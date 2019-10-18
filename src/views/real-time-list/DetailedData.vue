@@ -32,7 +32,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="success" :loading="queryLoading" @click="querySearch()">搜索</el-button>
-          <el-button type="success" @click="searchSubmit">命令下发</el-button>
+          <el-button type="success" @click="goToPage">命令下发</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -113,6 +113,9 @@ export default {
     }
   },
   methods: {
+    goToPage() {
+      this.$router.push({ path: '/equipment/order-issuedt', query: { id: this.searchFrom.equipmentId }})
+    },
     querySearch() {
       if (!this.searchFrom.equipmentId) {
         this.$message.warning('请输入设备id~')

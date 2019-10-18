@@ -261,13 +261,12 @@ export default {
       equipmentList(this.searchFrom)
         .then(res => {
           res.data.list.forEach(element => {
-            if (element.status) {
-              var arr = this.equipmentStatus.filter(ele => {
-                // eslint-disable-next-line eqeqeq
-                return ele.value == element.status
-              })
-              element.statename = arr[0].label
-            }
+            var arr = this.equipmentStatus.filter(ele => {
+              // eslint-disable-next-line eqeqeq
+              return ele.value == (element.status + '')
+            })
+            element.statename = arr[0].label
+            console.log(element.statename)
           })
           this.tableData = res.data.list
           this.searchFrom.currentSize = res.data.list.length
