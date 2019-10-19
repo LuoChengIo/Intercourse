@@ -19,7 +19,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="设备状态">
-          <el-select v-model="searchFrom.state">
+          <el-select v-model="searchFrom.status">
             <el-option v-for="(item,index) in equipmentStatus" :key="index" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
@@ -261,12 +261,13 @@ export default {
       equipmentList(this.searchFrom)
         .then(res => {
           res.data.list.forEach(element => {
-            var arr = this.equipmentStatus.filter(ele => {
+            if (element.status != null) {
+              var arr = this.equipmentStatus.filter(ele => {
               // eslint-disable-next-line eqeqeq
-              return ele.value == (element.status + '')
-            })
-            element.statename = arr[0].label
-            console.log(element.statename)
+                return ele.value == (element.status + '')
+              })
+              element.statename = arr[0].label
+            }
           })
           this.tableData = res.data.list
           this.searchFrom.currentSize = res.data.list.length

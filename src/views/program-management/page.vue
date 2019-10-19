@@ -155,6 +155,7 @@ export default {
     },
     handleSuccess(res, file) {
       this.$message.success('上传成功')
+      this.searchSubmit()
     },
     // 上传文件个数超过定义的数量
     handleExceed(files, fileList) {

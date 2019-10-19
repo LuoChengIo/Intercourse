@@ -13,16 +13,16 @@ const userRouter = {
   },
   children: [
     {
-      path: 'character',
-      component: () => import('@/views/user-manage/character.vue'), // Parent router-view
-      name: 'Character',
-      meta: { title: '角色管理' }
-    },
-    {
       path: 'user',
       component: () => import('@/views/user-manage/user.vue'), // Parent router-view
       name: 'User',
       meta: { title: '用户管理' }
+    },
+    {
+      path: 'character',
+      component: () => import('@/views/user-manage/character.vue'), // Parent router-view
+      name: 'Character',
+      meta: { title: '角色管理' }
     },
     {
       path: 'company',
