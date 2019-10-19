@@ -66,8 +66,10 @@ export default {
       let num = 0
       this.activeItem.batteryVolages.forEach(element => {
         num += element.oneBatteryVolage
+        console.log(num)
       })
-      return num
+      console.log(num)
+      return Math.floor(num * 100) / 100
     },
     equipmenbatterys() {
       return this.pageData.equipmenbatterys

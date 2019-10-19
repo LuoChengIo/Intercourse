@@ -15,7 +15,7 @@
           </template>
         </el-table-column>
         <el-table-column align="center" prop="addtime" sortable label="操作时间" :formatter="dateFormat" />
-        <el-table-column align="center" prop="data1" label="操作">
+        <el-table-column align="center" prop="data1" label="操作" width="200">
           <template slot-scope="scope">
             <el-upload
               class="upload-demo"
@@ -27,7 +27,7 @@
             >
               <el-button type="primary" size="small">上传</el-button>
             </el-upload>
-            <el-button type="success" size="small" @click="releaseVersion(scope.row)">发布正式版</el-button>
+            <el-button type="success" size="small" :disabled="scope.row.state == 2" @click="releaseVersion(scope.row)">发布正式版</el-button>
           </template>
         </el-table-column>
       </el-table>
