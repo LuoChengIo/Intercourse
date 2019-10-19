@@ -132,6 +132,7 @@ export default {
       }
       programPublish(data)
         .then(res => {
+          item.state = 2
           this.$message({
             message: '发布成功',
             type: 'success'
@@ -144,12 +145,15 @@ export default {
     },
     // 上传文件之前的钩子
     beforeUpload(file) {
-      const isText = file.type === 'application/vnd.ms-excel'
-      const isTextComputer = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-      if (isText || isTextComputer) {
+      // 获取最后一个.的位置
+      const index = file.name.lastIndexOf('.')
+      // 获取后缀
+      const ext = file.name.substr(index + 1)
+      const ArrType = ['srec', 'xls', 'xlsx', 'doc', 'docx', 'txt']
+      if (ArrType.indexOf(ext) > -1) {
         return true
       } else {
-        this.$message.error('上传表格只能是.xls 和.xlsx格式!')
+        this.$message.error('文件格式不支持')
         return false
       }
     },

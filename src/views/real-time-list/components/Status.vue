@@ -14,15 +14,15 @@
         <el-row class="malfunction">
           <el-col :span="8">
             <p class="f13 mb12 text-secondary">设备故障等级</p>
-            <div class="f18 text-primary">{{ equipmenstatusPo.failureName }}</div>
+            <div class="f14 mt10 text-primary">{{ equipmenstatusPo.failureName }}</div>
           </el-col>
           <el-col :span="8">
             <p class="f13 mb12 text-secondary">设备状态</p>
-            <div class="f18 text-primary">{{ equipmenstatusPo.statusName }}</div>
+            <div class="f14 mt10 text-primary">{{ equipmenstatusPo.statusName }}</div>
           </el-col>
           <el-col :span="8">
             <p class="f13 mb12 text-secondary">状态功能码</p>
-            <div class="f18 text-primary">{{ equipmenstatusPo.statusCode }}</div>
+            <div class="f14 mt10 text-primary">{{ equipmenstatusPo.statusCode }}</div>
           </el-col>
         </el-row>
       </div>

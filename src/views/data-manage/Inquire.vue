@@ -25,7 +25,7 @@
         <el-form-item label="设备名称">
           <el-input v-model="searchFrom.equipmentName" placeholder="请输入设备名称" />
         </el-form-item>
-        <el-form-item label="所属公司">
+        <!-- <el-form-item label="所属公司">
           <el-select v-model="searchFrom.companyId" filterable placeholder="请选择">
             <el-option
               v-for="item in companyInfo.companyList"
@@ -34,9 +34,10 @@
               :value="item.companyId"
             />
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="所属用户">
-          <el-input v-model="searchFrom.userId" placeholder="请输入所属用户" />
+          <el-cascader v-model="searchFrom.userArr" :show-all-levels="false" :props="casprops" />
+          <!-- <el-input v-model="searchFrom.userId" placeholder="请输入所属用户" /> -->
         </el-form-item>
         <el-form-item label="硬件版本">
           <el-input v-model="searchFrom.equipmentSoftVersion" placeholder="硬件版本" />
@@ -173,6 +174,7 @@
 </template>
 
 <script>
+import { getUserList } from '@/api/user.js'
 import { inquireList } from '@/api/data-manage.js'
 import { parseTime } from '@/utils'
 import moment from 'moment'
@@ -187,6 +189,7 @@ export default {
         endDateBak: new Date(),
         startDate: '',
         endDate: '',
+        userArr: [],
         equipmentId: '',
         equipmentName: '',
         equipmentSoftVersion: '',
@@ -208,7 +211,38 @@ export default {
         total: 0 // 总页数
       },
       listLoading: false,
-      tableData: []
+      tableData: [],
+      casprops: {
+        lazy: true,
+        lazyLoad: (node, resolve) => {
+          const { level } = node
+          if (level === 0) {
+            const nodes = Array.from(this.companyInfo.companyList)
+              .map(item => ({
+                value: item.companyName,
+                label: item.companyName,
+                leaf: level >= 2
+              }))
+            resolve(nodes)
+            return
+          }
+          getUserList({
+            ascriptionCompanyName: node.value,
+            pageNo: 1, // 当前页
+            pageRows: 10000 // 每页显示数
+          }).then((res) => {
+            const nodes = Array.from(res.userList.list)
+              .map(item => ({
+                value: item.userId,
+                label: item.loginId,
+                leaf: level >= 1
+              }))
+              // 通过调用resolve将子节点数据返回，通知组件数据加载完成
+            resolve(nodes)
+          }).catch(() => {
+          })
+        }
+      }
     }
   },
   computed: {
@@ -240,6 +274,16 @@ export default {
     this.searchSubmit()
   },
   methods: {
+    getUserList() {
+      getUserList({
+        ascriptionCompanyName: this.formInline.companyName,
+        pageNo: 1, // 当前页
+        pageRows: 10000 // 每页显示数
+      }).then((res) => {
+        this.userList = res.userList.list
+      }).catch(() => {
+      })
+    },
     dateFormat(row, column) {
       var date = row[column.property]
       if (!date) { return '' }
@@ -251,6 +295,7 @@ export default {
       }
       this.searchFrom.startDate = parseTime(this.searchFrom.startDateBak, '{y}-{m}-{d}')
       this.searchFrom.endDate = parseTime(this.searchFrom.endDateBak, '{y}-{m}-{d}')
+      this.searchFrom.userId = this.searchFrom.userArr[1]
       this.listLoading = true
       inquireList(this.searchFrom)
         .then(res => {
