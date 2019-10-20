@@ -74,7 +74,7 @@ export function getEquipment(params) {
 // 设备管理- 读取设备信息
 export function readDevice(params) {
   return request({
-    url: '/equipmentManage/readDevice',
+    url: '/equipmentManage/paramsRead',
     method: 'get',
     params
   })
@@ -82,7 +82,7 @@ export function readDevice(params) {
 // 设备管理- 命令下发
 export function downCode(data) {
   return request({
-    url: '/equipmentManage/downCode',
+    url: '/equipmentManage/paramsDown',
     method: 'post',
     data
   })
