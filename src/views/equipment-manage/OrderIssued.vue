@@ -210,6 +210,7 @@ export default {
     if (this.$route.query.id) {
       this.searchSubmit()
     }
+    this.$root.enterDown = this.searchSubmit
   },
   methods: {
     searchSubmit() {

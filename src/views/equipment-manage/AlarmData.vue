@@ -93,6 +93,7 @@ export default {
   created() {
     this.defaultSearchFrom = Object.assign({}, this.searchFrom)
     this.searchFrom.pageRows = this.page.pageSize
+    this.$root.enterDown = this.searchSubmit
   },
   methods: {
     searchSubmit() { // 搜索查询

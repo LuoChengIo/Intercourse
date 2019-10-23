@@ -52,6 +52,7 @@
           align="center"
           prop="createTime"
           label="创建时间"
+          :formatter="dateFormat"
         />
         <el-table-column
           align="center"
@@ -86,7 +87,7 @@
     <el-dialog
       :title="dialogTitle"
       :visible.sync="dialogVisible"
-      width="645px"
+      width="655px"
     >
       <el-form :inline="true" :model="formInline" :disabled="formInline.disabled" label-width="102px" class="demo-form-inline">
         <el-form-item v-if="dialogType!==1" label="公司ID">
@@ -142,6 +143,7 @@
 // addCompany, deleteCompany, modifyCompanyInformation, getCompanyInformation,
 import { getCompanyList, uploadImage, deleteCompany, modifyCompanyInformation, addCompany, getFunctionList, getCompanyInformation } from '@/api/user.js'
 import { encryptedData } from '@/utils/index'
+import moment from 'moment'
 export default {
   components: {},
   props: {},
@@ -190,8 +192,14 @@ export default {
     this.defaultSearchFrom = Object.assign({}, this.searchFrom)
     this.searchSubmit()
     this.getFunctionList()
+    this.$root.enterDown = this.searchSubmit
   },
   methods: {
+    dateFormat(row, column) {
+      var date = row[column.property]
+      if (!date) { return '' }
+      return moment(date, 'YYYYMMDDHHmmss').format('YYYY-MM-DD HH:mm:ss')
+    },
     checkedAll(val) {
       if (val) {
         // 全选
@@ -214,14 +222,7 @@ export default {
       const fd = new FormData()
       fd.append('file', content.file)
       uploadImage(fd).then(res => {
-        const data = res.data
-        // eslint-disable-next-line eqeqeq
-        if (data.code == 1) {
-          content.onSuccess(data)
-        } else {
-          content.onError(data)
-          this.$message.error(data.msg)
-        }
+        content.onSuccess(res.data.path)
       }).catch((res) => {
         // content.onSuccess(err)
         content.onError(res)
@@ -249,7 +250,7 @@ export default {
     handleAvatarSuccess(res, file) {
       console.log(res, file)
       // this.formInline.companyLogoUrl = URL.createObjectURL(file.raw)
-      this.formInline.companyLogoUrl = res.data.path
+      this.formInline.companyLogoUrl = res
       // this.formInline.companyLogoUrl = process.env.VUE_APP_BASE_IMAGE + res.data.path
     },
     beforeAvatarUpload(file) {

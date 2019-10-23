@@ -40,7 +40,6 @@ Vue.use(Element, {
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
 })
-
 Vue.config.productionTip = false
 import commonInfo from '@/mixins/common.js'
 Vue.mixin(commonInfo)
@@ -50,5 +49,10 @@ new Vue({
   el: '#app',
   router,
   store,
+  data() {
+    return {
+      enterDown: function() { console.log('23213213') }
+    }
+  },
   render: h => h(App)
 })

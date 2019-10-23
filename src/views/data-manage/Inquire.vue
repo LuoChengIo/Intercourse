@@ -272,6 +272,7 @@ export default {
     const nowYear = this.searchFrom.startDateBak.getFullYear() // 当前年
     this.searchFrom.startDateBak = new Date(nowYear, nowMonth, 1) // 本月的开始时间
     this.searchSubmit()
+    this.$root.enterDown = this.searchSubmit
   },
   methods: {
     getUserList() {

@@ -61,6 +61,7 @@
               <el-table-column
                 align="center"
                 prop="createTime"
+                :formatter="dateFormat"
                 label="创建时间"
               />
               <el-table-column
@@ -103,7 +104,7 @@
     <el-dialog
       :title="dialogTitle"
       :visible.sync="dialogVisible"
-      width="660px"
+      width="670px"
     >
       <el-form :inline="true" :model="formInline" :disabled="formInline.disabled" label-width="102px" class="demo-form-inline">
         <el-form-item v-if="dialogType===2" label="角色ID">
@@ -156,6 +157,7 @@
 
 <script>
 import { getRoleList, getCompanyList, addRole, modifyRoleInformation, deleteRole, getRoleFunction, getCompanyInformation } from '@/api/user.js'
+import moment from 'moment'
 export default {
   components: {},
   props: {},
@@ -205,8 +207,14 @@ export default {
     this.searchFrom.pageRows = this.page.pageSize
     this.defaultSearchFrom = Object.assign({}, this.searchFrom)
     this.searchSubmit()
+    this.$root.enterDown = this.searchSubmit
   },
   methods: {
+    dateFormat(row, column) {
+      var date = row[column.property]
+      if (!date) { return '' }
+      return moment(date, 'YYYYMMDDHHmmss').format('YYYY-MM-DD HH:mm:ss')
+    },
     checkedAllHadle(val) {
       if (val) {
         // 全选

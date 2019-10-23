@@ -84,6 +84,7 @@
           align="center"
           prop="createTime"
           label="创建时间"
+          :formatter="dateFormat"
         />
         <el-table-column
           align="center"
@@ -192,6 +193,7 @@
 import { getUserList, getCompanyList, midifyUserStatus, passwordReset, getFunctionListByRoleList, getUserInformation, addUser, modifyUserInformation, getRoleList } from '@/api/user.js'
 import { validUsername } from '@/utils/validate'
 import { encryptedData } from '@/utils/index'
+import moment from 'moment'
 export default {
   components: {},
   props: {},
@@ -240,14 +242,14 @@ export default {
     this.searchFrom.pageRows = this.page.pageSize
     this.defaultSearchFrom = Object.assign({}, this.searchFrom)
     this.searchSubmit()
-    document.onkeydown = function(event) {
-      var e = event || window.event
-      if (e && e.keyCode == 13) { // 回车键的键值为13
-        console.log(e)
-      }
-    }
+    this.$root.enterDown = this.searchSubmit
   },
   methods: {
+    dateFormat(row, column) {
+      var date = row[column.property]
+      if (!date) { return '' }
+      return moment(date, 'YYYYMMDDHHmmss').format('YYYY-MM-DD HH:mm:ss')
+    },
     querySearch(queryString, cb) {
       // 公司输入建议
       const results = []

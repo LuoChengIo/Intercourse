@@ -239,6 +239,7 @@ export default {
     this.searchFrom.pageRows = this.page.pageSize
     this.defaultSearchFrom = Object.assign({}, this.searchFrom)
     this.searchSubmit()
+    this.$root.enterDown = this.searchSubmit
   },
   methods: {
     dateFormat(row, column) {
