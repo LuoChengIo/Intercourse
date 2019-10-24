@@ -24,7 +24,7 @@ export default {
       ],
       // 分页每页显示数
       page: {
-        pageSizes: [10, 20, 50, 100, 200],
+        pageSizes: [10, 20],
         pageSize: 10
       },
       // 时间范围选择器
