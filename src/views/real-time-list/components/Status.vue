@@ -71,7 +71,7 @@
             </el-col>
             <el-col :span="8">
               <div class="gray-card">
-                <p class="f13 text-secondary mb10">SCO</p>
+                <p class="f13 text-secondary mb10">SOC</p>
                 <div class="f18 text-primary">{{ equipmenstatusPo.soc }} %</div>
               </div>
             </el-col>
