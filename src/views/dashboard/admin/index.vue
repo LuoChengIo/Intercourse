@@ -36,7 +36,7 @@
       <div class="right-ct">
         <div class="w-card p10">
           <h5 class="f14 n title">设备数量</h5>
-          <bar-chart />
+          <bar-chart :chart-data="barChartData" />
         </div>
         <el-row class="mt10" :gutter="10">
           <el-col :span="12">
@@ -66,7 +66,7 @@ import PieChart from './components/PieChart'
 const warningData = [{
   imgsrc: require('@/assets/icon_warning01@2x.png'),
   title: '一级警告',
-  key: 'Level1',
+  key: 'alarmLevel1',
   value: '1',
   quantity: '0',
   yearonyear: '10.85↑',
@@ -74,7 +74,7 @@ const warningData = [{
 }, {
   imgsrc: require('@/assets/icon_warning02@2x.png'),
   title: '二级警告',
-  key: 'Level2',
+  key: 'alarmLevel2',
   value: '2',
   quantity: '0',
   yearonyear: '10.85↑',
@@ -82,7 +82,7 @@ const warningData = [{
 }, {
   imgsrc: require('@/assets/icon_warning03@2x.png'),
   title: '三级警告',
-  key: 'Level3',
+  key: 'alarmLevel3',
   value: '3',
   quantity: '0',
   yearonyear: '10.85↓',
@@ -90,18 +90,12 @@ const warningData = [{
 }, {
   imgsrc: require('@/assets/icon_warning04@2x.png'),
   title: '正常',
-  key: 'Level4',
+  key: 'normalNum',
   value: '0',
   quantity: '0',
   yearonyear: '10.85↑',
   myclass: 'text-success'
 }]
-const lineChartData = {
-  data1: [20, 30, 40, 50, 60, 70, 80],
-  data2: [30, 30, 45, 50, 60, 70, 100],
-  data3: [10, 30, 50, 50, 62, 75, 85],
-  data4: [10, 30, 40, 60, 60, 70, 90]
-}
 export default {
   name: 'DashboardAdmin',
   components: {
@@ -113,7 +107,8 @@ export default {
   data() {
     return {
       warningData,
-      lineChartData,
+      lineChartData: [],
+      barChartData: [],
       pieChartData1: [],
       pieChartData2: [],
       equipmentChargeSum: {
@@ -121,44 +116,51 @@ export default {
         disChargeSum: 0,
         chargeSum: 0,
         carbonReduction: 0
-      }
+      },
+      timeout: null
     }
   },
   created() {
     this.getPageData()
+    this.timeout = setInterval(() => {
+      this.getPageData()
+    }, 60000)
+  },
+  beforeDestroy() {
+    clearInterval(this.timeout)
   },
   methods: {
     getPageData() {
       homeCount().then(res => {
-        for (const key in res.equipmentChargeSum) {
-          if (res.equipmentChargeSum.hasOwnProperty(key)) {
-            const element = res.equipmentChargeSum[key]
-            res.equipmentChargeSum[key] = Number(element)
+        const equipmentChargeSum = res.equipmentChargeSum
+        for (const key in equipmentChargeSum) {
+          if (equipmentChargeSum.hasOwnProperty(key)) {
+            const element = equipmentChargeSum[key]
+            equipmentChargeSum[key] = Number(element)
           }
         }
-        this.equipmentChargeSum = res.equipmentChargeSum
+        this.equipmentChargeSum = equipmentChargeSum
         // 在线图标
         this.pieChartData1 = [
-          { value: res.equipmentOnLine || 0, legendname: '在线', name: '在线', itemStyle: { color: '#3FAFFF' }},
-          { value: res.equipmentOffLine || 0, legendname: '离线', name: '离线', itemStyle: { color: '#4C4C4C' }}
+          { value: equipmentChargeSum.onLine || 0, legendname: '在线', name: '在线', itemStyle: { color: '#3FAFFF' }},
+          { value: equipmentChargeSum.offLine || 0, legendname: '离线', name: '离线', itemStyle: { color: '#4C4C4C' }}
         ]
         this.pieChartData2 = [
-          { value: res.equipmentState && res.equipmentState.chargeState || 0, legendname: '充电状态', name: '充电状态', itemStyle: { color: '#3FAFFF' }},
-          { value: res.equipmentState && res.equipmentState.protectState || 0, legendname: '保护状态', name: '保护状态', itemStyle: { color: '#F37272' }},
-          { value: res.equipmentState && res.equipmentState.disChargeState || 0, legendname: '放电状态', name: '放电状态', itemStyle: { color: '#3366F3' }},
-          { value: res.equipmentState && res.equipmentState.selfCheckState || 0, legendname: '自检', name: '自检状态', itemStyle: { color: '#8D64FF' }}
+          { value: equipmentChargeSum.chargeState || 0, legendname: '充电状态', name: '充电状态', itemStyle: { color: '#3FAFFF' }},
+          { value: equipmentChargeSum.defendState || 0, legendname: '保护状态', name: '保护状态', itemStyle: { color: '#F37272' }},
+          { value: equipmentChargeSum.disChargeState || 0, legendname: '放电状态', name: '放电状态', itemStyle: { color: '#3366F3' }},
+          { value: equipmentChargeSum.checkState || 0, legendname: '自检', name: '自检状态', itemStyle: { color: '#8D64FF' }}
         ]
-        if (res.warningLevelCounts) {
+        if (res) {
           this.warningData.forEach(element => {
-            element.quantity = res.warningLevelCounts[element.key] || 0
+            element.quantity = res[element.key] || 0
           })
         }
+        this.lineChartData = res.alarmList
+        this.barChartData = res.equipmentList
       }).catch(() => {
 
       })
-    },
-    handleSetLineChartData(type) {
-      this.lineChartData = lineChartData[type]
     }
   }
 }

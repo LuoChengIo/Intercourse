@@ -6,7 +6,7 @@
 import echarts from 'echarts'
 // require('echarts/theme/macarons') // echarts theme
 import { debounce } from '@/utils'
-
+import moment from 'moment'
 export default {
   props: {
     className: {
@@ -24,6 +24,10 @@ export default {
     autoResize: {
       type: Boolean,
       default: true
+    },
+    chartData: {
+      type: Object,
+      required: true
     }
   },
   data() {
@@ -78,9 +82,23 @@ export default {
       }
     },
     setOptions(data) {
+      const xAxisData = []
+      const seriesData = {
+        data1: [],
+        data2: [],
+        data3: []
+      }
+      data.forEach(element => {
+        if (element.staticsDate) {
+          xAxisData.push(moment(element.staticsDate, 'YYYYMMDDHH').format('MM/DD'))
+          seriesData.data1.push(element.equipmentCounts || 0)
+          seriesData.data2.push(element.offLine || 0)
+          seriesData.data3.push(element.onLine || 0)
+        }
+      })
       this.chart.setOption({
         xAxis: {
-          data: ['SUN', 'MON', 'TUE', 'WED', 'TUH', 'FRI', 'SAT'],
+          data: xAxisData,
           axisLabel: { // 刻度样式
             show: true,
             textStyle: {
@@ -138,7 +156,7 @@ export default {
           }
         },
         series: [{
-          name: 'warehousing ', itemStyle: {
+          name: '设备总数', itemStyle: {
             normal: {
               color: '#3FAFFF',
               lineStyle: {
@@ -150,12 +168,12 @@ export default {
           symbol: 'none',
           smooth: false,
           type: 'bar',
-          data: [123, 213, 323, 323, 133, 334, 534],
+          data: seriesData.data1,
           animationDuration: 2800,
           animationEasing: 'cubicInOut'
         },
         {
-          name: 'ex_warehouse', itemStyle: {
+          name: '在线设备数', itemStyle: {
             normal: {
               color: '#F37272',
               lineStyle: {
@@ -167,11 +185,11 @@ export default {
           symbol: 'none',
           smooth: false,
           type: 'bar',
-          data: [123, 213, 323, 323, 133, 334, 534],
+          data: seriesData.data2,
           animationDuration: 2800,
           animationEasing: 'cubicInOut'
         }, {
-          name: 'equipped', itemStyle: {
+          name: '离线设备数', itemStyle: {
             normal: {
               color: '#FFC12F',
               lineStyle: {
@@ -183,7 +201,7 @@ export default {
           symbol: 'none',
           smooth: false,
           type: 'bar',
-          data: [123, 213, 323, 323, 133, 334, 534],
+          data: seriesData.data3,
           animationDuration: 2800,
           animationEasing: 'cubicInOut'
         }]

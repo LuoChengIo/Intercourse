@@ -3,6 +3,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 import echarts from 'echarts'
 // require('echarts/theme/macarons') // echarts theme
 import { debounce } from '@/utils'
@@ -82,9 +83,25 @@ export default {
       }
     },
     setOptions(data) {
+      const xAxisData = []
+      const seriesData = {
+        data1: [],
+        data2: [],
+        data3: [],
+        data4: []
+      }
+      data.forEach(element => {
+        if (element.staticsDate) {
+          xAxisData.push(moment(element.staticsDate, 'YYYYMMDDHH').format('MM/DD'))
+          seriesData.data1.push(element.alarmLevel1 || 0)
+          seriesData.data2.push(element.alarmLevel2 || 0)
+          seriesData.data3.push(element.alarmLevel3 || 0)
+          seriesData.data4.push(element.normalNum || 0)
+        }
+      })
       this.chart.setOption({
         xAxis: {
-          data: ['1', '2', '3', '4', '5', '6', '7'],
+          data: xAxisData,
           axisLabel: { // 刻度样式
             show: true,
             textStyle: {
@@ -164,7 +181,7 @@ export default {
           symbol: 'none',
           smooth: false,
           type: 'line',
-          data: data.data1,
+          data: seriesData.data1,
           animationDuration: 2800,
           animationEasing: 'cubicInOut'
         },
@@ -181,7 +198,7 @@ export default {
           symbol: 'none',
           smooth: false,
           type: 'line',
-          data: data.data2,
+          data: seriesData.data2,
           animationDuration: 2800,
           animationEasing: 'cubicInOut'
         }, {
@@ -197,7 +214,7 @@ export default {
           symbol: 'none',
           smooth: false,
           type: 'line',
-          data: data.data3,
+          data: seriesData.data3,
           animationDuration: 2800,
           animationEasing: 'cubicInOut'
         },
@@ -214,7 +231,7 @@ export default {
           symbol: 'none',
           smooth: false,
           type: 'line',
-          data: data.data4,
+          data: seriesData.data4,
           animationDuration: 2800,
           animationEasing: 'cubicInOut'
         }]
