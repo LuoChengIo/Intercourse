@@ -122,9 +122,6 @@ export default {
   },
   created() {
     this.getPageData()
-    this.timeout = setInterval(() => {
-      this.getPageData()
-    }, 60000)
   },
   beforeDestroy() {
     clearInterval(this.timeout)
@@ -158,6 +155,11 @@ export default {
         }
         this.lineChartData = res.alarmList
         this.barChartData = res.equipmentList
+        if (res.interval) {
+          this.timeout = setInterval(() => {
+            this.getPageData()
+          }, Number(res.interval) * 1000)
+        }
       }).catch(() => {
 
       })
