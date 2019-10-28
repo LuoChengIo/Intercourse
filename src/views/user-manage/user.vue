@@ -63,7 +63,7 @@
         />
         <el-table-column
           align="center"
-          prop="parentId"
+          prop="parentName"
           label="父账户"
         />
         <el-table-column
