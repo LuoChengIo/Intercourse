@@ -70,10 +70,15 @@ export default {
         data.push(Object.assign({}, element))
         allCount += element.value
       })
-      data.forEach(element => {
+      let nums = 0
+      data.forEach((element, index) => {
         let num = 0
         if (allCount) {
-          num = Math.floor(element.value / allCount * 100)
+          num = Math.round(element.value / allCount * 10000) / 100.00
+          if (index === data.length - 1) {
+            num = 100 - nums
+          }
+          nums += num
         }
         element.name = `${element.name} ${num}%`
         legendArr.push(element.name)
