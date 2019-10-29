@@ -177,6 +177,7 @@
 import { getUserList } from '@/api/user.js'
 import { inquireList } from '@/api/data-manage.js'
 import { parseTime } from '@/utils'
+import qs from 'qs'
 import moment from 'moment'
 export default {
   components: {},
@@ -342,9 +343,11 @@ export default {
     exportFrom() { // 导出表格数据
       // location.href = exportData(this.searchFrom)
       // + this.searchFrom
-      location.href = process.env.VUE_APP_BASE_API + '/data/month/export' + '?startDateBak=' + this.searchFrom.startDateBak + '&endDateBak=' + this.searchFrom.endDateBak +
-       +'&equipmentId=' + this.searchFrom.equipmentId + '&equipmentName=' + this.searchFrom.equipmentName + '&companId=' + this.searchFrom.companId + '&oneBatteryVoltageHigh=' + this.searchFrom.oneBatteryVoltageHigh + '&oneBatteryVoltageLow=' + this.searchFrom.oneBatteryVoltageLow + '&highTemperature=' + this.searchFrom.highTemperature + '&lowTemperature=' +
-       this.searchFrom.lowTemperature + '&voltageDifference=' + this.searchFrom.voltageDifference + '&endDvoltageDifferenceate=' + this.searchFrom.voltageDifference + '&status=' + this.searchFrom.status + '&statusCode=' + this.searchFrom.statusCode + '&failure=' + this.searchFrom.failure + '&pageNo=' + this.searchFrom.pageNo + '&pageRows=' + this.searchFrom.pageRows
+      this.searchFrom.startDate = parseTime(this.searchFrom.startDateBak, '{y}-{m}-{d}')
+      this.searchFrom.endDate = parseTime(this.searchFrom.endDateBak, '{y}-{m}-{d}')
+      this.searchFrom.userId = this.searchFrom.userArr[1]
+      window.open(process.env.VUE_APP_BASE_DOWN_API + '/data/month/export?' + qs.stringify(this.searchFrom))
+      // location.href = process.env.VUE_APP_BASE_DOWN_API + '/data/month/export?' + qs.stringify(this.searchFrom)
     }
   }
 }
