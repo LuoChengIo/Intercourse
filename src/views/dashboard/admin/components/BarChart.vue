@@ -92,8 +92,8 @@ export default {
         if (element.staticsDate) {
           xAxisData.push(moment(element.staticsDate, 'YYYYMMDDHH').format('MM/DD'))
           seriesData.data1.push(element.equipmentCounts || 0)
-          seriesData.data2.push(element.offLine || 0)
-          seriesData.data3.push(element.onLine || 0)
+          seriesData.data2.push(element.onLine || 0)
+          seriesData.data3.push(element.offLine || 0)
         }
       })
       this.chart.setOption({

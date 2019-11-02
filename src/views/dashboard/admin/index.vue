@@ -155,7 +155,7 @@ export default {
         }
         this.lineChartData = res.alarmList
         this.barChartData = res.equipmentList
-        if (res.interval) {
+        if (res.interval && !this.timeout) {
           this.timeout = setInterval(() => {
             this.getPageData()
           }, Number(res.interval) * 1000)
