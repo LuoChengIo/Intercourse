@@ -64,25 +64,25 @@ export function equipmentIn(data) {
   }
   
 // 设备管理-  设备搜索接口
-export function getEquipment(params) {
+export function getEquipment(data) {
   return request({
-    url: '/equipmentManage/getEquipment',
-    method: 'get',
-    params
+    url: '/paramsManage/query',
+    method: 'post',
+    data
   })
 }
 // 设备管理- 读取设备信息
-export function readDevice(params) {
+export function readDevice(data) {
   return request({
-    url: '/equipmentManage/paramsRead',
-    method: 'get',
-    params
+    url: '/paramsManage/read',
+    method: 'post',
+    data
   })
 }
 // 设备管理- 命令下发
 export function downCode(data) {
   return request({
-    url: '/equipmentManage/paramsDown',
+    url: '/paramsManage/set',
     method: 'post',
     data
   })

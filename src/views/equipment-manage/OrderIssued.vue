@@ -13,7 +13,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="success" :loading="searchLoading" @click="searchSubmit">搜索</el-button>
-          <el-button type="primary">读取</el-button>
+          <el-button type="primary" @click="readDevice">读取</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -23,7 +23,7 @@
         <el-form-item v-for="(item,index) in currentParameter" :key="index">
           <el-checkbox v-model="item.checked" />
           <span class="w150">{{ item.text }}</span>
-          <el-input v-model="item.value" placeholder="请输入内容" />
+          <el-input v-model="item.value" :disabled="!item.checked" placeholder="请输入内容" />
         </el-form-item>
       </el-form>
       <h5 class="title mb20">单体电压参数</h5>
@@ -31,7 +31,7 @@
         <el-form-item v-for="(item,index) in monomerVoltageParameter" :key="index">
           <el-checkbox v-model="item.checked" />
           <span class="w150">{{ item.text }}</span>
-          <el-input v-model="item.value" placeholder="请输入内容" />
+          <el-input v-model="item.value" :disabled="!item.checked" placeholder="请输入内容" />
         </el-form-item>
       </el-form>
       <h5 class="title mb20">总电压参数</h5>
@@ -39,7 +39,7 @@
         <el-form-item v-for="(item,index) in totalVoltageParameter" :key="index">
           <el-checkbox v-model="item.checked" />
           <span class="w150">{{ item.text }}</span>
-          <el-input v-model="item.value" placeholder="请输入内容" />
+          <el-input v-model="item.value" :disabled="!item.checked" placeholder="请输入内容" />
         </el-form-item>
       </el-form>
       <h5 class="title mb20">充电参数</h5>
@@ -47,7 +47,7 @@
         <el-form-item v-for="(item,index) in chargingParameter" :key="index">
           <el-checkbox v-model="item.checked" />
           <span class="w150">{{ item.text }}</span>
-          <el-input v-model="item.value" placeholder="请输入内容" />
+          <el-input v-model="item.value" :disabled="!item.checked" placeholder="请输入内容" />
         </el-form-item>
       </el-form>
       <h5 class="title mb20">放电参数</h5>
@@ -55,7 +55,7 @@
         <el-form-item v-for="(item,index) in dischargeParameter" :key="index">
           <el-checkbox v-model="item.checked" />
           <span class="w150">{{ item.text }}</span>
-          <el-input v-model="item.value" placeholder="请输入内容" />
+          <el-input v-model="item.value" :disabled="!item.checked" placeholder="请输入内容" />
         </el-form-item>
       </el-form>
       <h5 class="title mb20">其他参数</h5>
@@ -63,8 +63,8 @@
         <el-form-item v-for="(item,index) in elseParameter" :key="index">
           <el-checkbox v-model="item.checked" />
           <span class="w150">{{ item.text }}</span>
-          <el-input v-if="!item.type" v-model="item.value" placeholder="请输入内容" />
-          <el-select v-else v-model="item.value" placeholder="请选择">
+          <el-input v-if="!item.type" v-model="item.value" :disabled="!item.checked" placeholder="请输入内容" />
+          <el-select v-else v-model="item.value" :disabled="!item.checked" placeholder="请选择">
             <el-option
               v-for="citem in item.options"
               :key="citem.value"
@@ -75,16 +75,18 @@
         </el-form-item>
       </el-form>
       <div class="mt30 tc">
-        <el-button type="primary" @click="resetFrom">重置</el-button>
-        <el-button type="success" @click="submitFrom">下发</el-button>
+        <el-button type="primary" :loading="searchLoading" @click="searchSubmit">重置</el-button>
+        <el-tooltip content="只对勾选中的值进行命令下发！" placement="top">
+          <el-button type="success" @click="submitFrom">下发</el-button>
+        </el-tooltip>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { equipmentid } from '@/api/real-time-list.js'
-import { readDevice, downCode } from '@/api/equipment-manage.js'
+// import { equipmentid } from '@/api/real-time-list.js'
+import { getEquipment, readDevice, downCode } from '@/api/equipment-manage.js'
 export default {
   components: {},
   props: {},
@@ -184,7 +186,7 @@ export default {
         { checked: false, name: 'Q0002', text: '充电加热开始温度(0.1℃)', value: '' },
         { checked: false, name: 'Q0003', text: '充电加热截止温度(0.1℃)', value: '' },
         { checked: false, name: 'Q0004', text: 'SOC过低三级报警值（‰）', value: '' },
-        { checked: false, name: 'Q0005', text: 'SOC过低二级报警值（‰', value: '' },
+        { checked: false, name: 'Q0005', text: 'SOC过低二级报警值（‰）', value: '' },
         { checked: false, name: 'Q0006', text: 'SOC过低一级报警值(0.001)', value: '' },
         { checked: false, name: 'Q0007', text: '正常充电电流设置值(0.1A)', value: '' },
         { checked: false, name: 'Q0008', text: '充电加热电流设置值(0.1A)', value: '' },
@@ -203,7 +205,23 @@ export default {
       defaultElseParameter: []
     }
   },
-  computed: {},
+  computed: {
+    getParams() {
+      const obj = { equipmentId: this.searchFrom.equipmentId }
+      const setData = (element) => {
+        if (element.checked) {
+          obj[element.name] = element.value
+        }
+      }
+      this.currentParameter.forEach(setData)
+      this.monomerVoltageParameter.forEach(setData)
+      this.totalVoltageParameter.forEach(setData)
+      this.chargingParameter.forEach(setData)
+      this.dischargeParameter.forEach(setData)
+      this.elseParameter.forEach(setData)
+      return obj
+    }
+  },
   watch: {},
   mounted() {},
   created() {
@@ -216,13 +234,38 @@ export default {
     searchSubmit() {
       // 搜索设备
       this.searchLoading = true
-      equipmentid({
+      this.searchFrom.companyName = ''
+      this.searchFrom.equipmentName = ''
+      getEquipment({
         equipmentId: this.searchFrom.equipmentId
       }).then((res) => {
-        this.searchFrom.equipmentName = res.data.equipmentPo.equipmentName
-        this.searchFrom.companyName = res.data.equipmentPo.companyName
-        this.searchFrom.companyId = res.data.equipmentPo.companyId
-        this.activeItem = Object.assign({}, res.data.equipmentPo)
+        if (!res.paramsData) {
+          this.$message.warning('搜索不到该设备id~')
+          return
+        }
+        this.searchFrom.equipmentName = res.equipmentName
+        this.searchFrom.companyName = res.companyName
+        const setData = (element) => {
+          let value = res.paramsData[element.name.toLowerCase()]
+          value = Number(value)
+          if (value || value === 0) {
+            element.checked = false
+            element.value = value
+          }
+        }
+        this.currentParameter.forEach(setData)
+        this.monomerVoltageParameter.forEach(setData)
+        this.totalVoltageParameter.forEach(setData)
+        this.chargingParameter.forEach(setData)
+        this.dischargeParameter.forEach(setData)
+        this.elseParameter.forEach(setData)
+        this.defaultCurrentParameter = [...this.currentParameter]
+        this.defaultMonomerVoltageParameter = [...this.monomerVoltageParameter]
+        this.defaultTotalVoltageParameter = [...this.totalVoltageParameter]
+        this.defaultDischargeParameter = [...this.chargingParameter]
+        this.defaultChargingParameter = [...this.dischargeParameter]
+        this.defaultElseParameter = [...this.elseParameter]
+        this.activeItem = Object.assign({}, this.searchFrom)
       }).catch(() => {
       }).finally(() => {
         this.searchLoading = false
@@ -237,12 +280,7 @@ export default {
       readDevice({
         equipmentId: this.searchFrom.equipmentId
       }).then((res) => {
-        this.defaultCurrentParameter = [...this.currentParameter]
-        this.defaultMonomerVoltageParameter = [...this.monomerVoltageParameter]
-        this.defaultTotalVoltageParameter = [...this.totalVoltageParameter]
-        this.defaultChargingParameter = [...this.chargingParameter]
-        this.defaultDischargeParameter = [...this.dischargeParameter]
-        this.defaultElseParameter = [...this.elseParameter]
+        this.$message.success('操作成功')
       }).catch(() => {
       }).finally(() => {
       })
@@ -261,78 +299,64 @@ export default {
         this.$message.warning('请确保输入正确的设备id~')
         return
       }
-      const currentParameter = this.currentParameter.filter(element => {
-        return element.checked && !element.value
-      })
-      const monomerVoltageParameter = this.monomerVoltageParameter.filter(element => {
-        return element.checked && !element.value
-      })
-      const totalVoltageParameter = this.totalVoltageParameter.filter(element => {
-        return element.checked && !element.value
-      })
-      const chargingParameter = this.chargingParameter.filter(element => {
-        return element.checked && !element.value
-      })
-      const dischargeParameter = this.dischargeParameter.filter(element => {
-        return element.checked && !element.value
-      })
-      const elseParameter = this.elseParameter.filter(element => {
-        return element.checked && !element.value
-      })
+      const filterFun = (element) => {
+        if (element.checked) {
+          if (!element.value.toString()) { // 值为空
+            return true
+          }
+          if (isNaN(element.value)) { // 不是数字
+            return true
+          }
+        }
+        return false
+      }
+      const currentParameter = this.currentParameter.filter(filterFun)
+      const monomerVoltageParameter = this.monomerVoltageParameter.filter(filterFun)
+      const totalVoltageParameter = this.totalVoltageParameter.filter(filterFun)
+      const chargingParameter = this.chargingParameter.filter(filterFun)
+      const dischargeParameter = this.dischargeParameter.filter(filterFun)
+      const elseParameter = this.elseParameter.filter(filterFun)
+      const valueFun = (element) => {
+        setTimeout(() => {
+          this.$message.warning('请输入正确的' + element.text)
+        }, 200)
+      }
       if (currentParameter.length) {
-        currentParameter.forEach(element => {
-          setTimeout(() => {
-            this.$message.warning('请输入' + element.text)
-          }, 200)
-        })
+        currentParameter.forEach(valueFun)
         return
       }
       if (monomerVoltageParameter.length) {
-        monomerVoltageParameter.forEach(element => {
-          setTimeout(() => {
-            this.$message.warning('请输入' + element.text)
-          }, 200)
-        })
+        monomerVoltageParameter.forEach(valueFun)
         return
       }
       if (totalVoltageParameter.length) {
-        totalVoltageParameter.forEach(element => {
-          setTimeout(() => {
-            this.$message.warning('请输入' + element.text)
-          }, 200)
-        })
+        totalVoltageParameter.forEach(valueFun)
         return
       }
       if (chargingParameter.length) {
-        chargingParameter.forEach(element => {
-          setTimeout(() => {
-            this.$message.warning('请输入' + element.text)
-          }, 200)
-        })
+        chargingParameter.forEach(valueFun)
         return
       }
       if (dischargeParameter.length) {
-        dischargeParameter.forEach(element => {
-          setTimeout(() => {
-            this.$message.warning('请输入' + element.text)
-          }, 200)
-        })
+        dischargeParameter.forEach(valueFun)
         return
       }
       if (elseParameter.length) {
-        elseParameter.forEach(element => {
-          setTimeout(() => {
-            this.$message.warning('请输入' + element.text)
-          }, 200)
-        })
+        elseParameter.forEach(valueFun)
         return
       }
-      downCode({
-        equipmentId: this.searchFrom.equipmentId
-      }).then((res) => {
+      this.$confirm('你确定要对选中的值进行命令下发吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        downCode(this.getParams).then((res) => {
 
+        }).catch(() => {
+        }).finally(() => {
+
+        })
       }).catch(() => {
-      }).finally(() => {
 
       })
     }
