@@ -18,50 +18,50 @@
       </el-form>
     </div>
     <div v-heightAuto class="mt20 p20 w-card">
-      <h5 class="title mb20">电流参数</h5>
+      <h5 class="title mb20">电流参数 <el-checkbox v-model="checkAll1" class="ml20" @change="(val)=>checkAllHandle(currentParameter,val)">全选</el-checkbox></h5>
       <el-form :inline="true" class="form-inline my-inline-form">
         <el-form-item v-for="(item,index) in currentParameter" :key="index">
-          <el-checkbox v-model="item.checked" />
+          <el-checkbox v-model="item.checked" @change="checkMousd('checkAll1',currentParameter)" />
           <span class="w150">{{ item.text }}</span>
           <el-input v-model="item.value" :disabled="!item.checked" placeholder="请输入内容" />
         </el-form-item>
       </el-form>
-      <h5 class="title mb20">单体电压参数</h5>
+      <h5 class="title mb20">单体电压参数<el-checkbox v-model="checkAll2" class="ml20" @change="(val)=>checkAllHandle(monomerVoltageParameter,val)">全选</el-checkbox></h5>
       <el-form :inline="true" class="form-inline my-inline-form">
         <el-form-item v-for="(item,index) in monomerVoltageParameter" :key="index">
-          <el-checkbox v-model="item.checked" />
+          <el-checkbox v-model="item.checked" @change="checkMousd('checkAll2',monomerVoltageParameter)" />
           <span class="w150">{{ item.text }}</span>
           <el-input v-model="item.value" :disabled="!item.checked" placeholder="请输入内容" />
         </el-form-item>
       </el-form>
-      <h5 class="title mb20">总电压参数</h5>
+      <h5 class="title mb20">总电压参数<el-checkbox v-model="checkAll3" class="ml20" @change="(val)=>checkAllHandle(totalVoltageParameter,val)">全选</el-checkbox></h5>
       <el-form :inline="true" class="form-inline my-inline-form">
         <el-form-item v-for="(item,index) in totalVoltageParameter" :key="index">
-          <el-checkbox v-model="item.checked" />
+          <el-checkbox v-model="item.checked" @change="checkMousd('checkAll3',totalVoltageParameter)" />
           <span class="w150">{{ item.text }}</span>
           <el-input v-model="item.value" :disabled="!item.checked" placeholder="请输入内容" />
         </el-form-item>
       </el-form>
-      <h5 class="title mb20">充电参数</h5>
+      <h5 class="title mb20">充电参数<el-checkbox v-model="checkAll4" class="ml20" @change="(val)=>checkAllHandle(chargingParameter,val)">全选</el-checkbox></h5>
       <el-form :inline="true" class="form-inline my-inline-form">
         <el-form-item v-for="(item,index) in chargingParameter" :key="index">
-          <el-checkbox v-model="item.checked" />
+          <el-checkbox v-model="item.checked" @change="checkMousd('checkAll4',chargingParameter)" />
           <span class="w150">{{ item.text }}</span>
           <el-input v-model="item.value" :disabled="!item.checked" placeholder="请输入内容" />
         </el-form-item>
       </el-form>
-      <h5 class="title mb20">放电参数</h5>
+      <h5 class="title mb20">放电参数<el-checkbox v-model="checkAll5" class="ml20" @change="(val)=>checkAllHandle(dischargeParameter,val)">全选</el-checkbox></h5>
       <el-form :inline="true" class="form-inline my-inline-form">
         <el-form-item v-for="(item,index) in dischargeParameter" :key="index">
-          <el-checkbox v-model="item.checked" />
+          <el-checkbox v-model="item.checked" @change="checkMousd('checkAll5',dischargeParameter)" />
           <span class="w150">{{ item.text }}</span>
           <el-input v-model="item.value" :disabled="!item.checked" placeholder="请输入内容" />
         </el-form-item>
       </el-form>
-      <h5 class="title mb20">其他参数</h5>
+      <h5 class="title mb20">其他参数<el-checkbox v-model="checkAll6" class="ml20" @change="(val)=>checkAllHandle(elseParameter,val)">全选</el-checkbox></h5>
       <el-form :inline="true" class="form-inline my-inline-form">
         <el-form-item v-for="(item,index) in elseParameter" :key="index">
-          <el-checkbox v-model="item.checked" />
+          <el-checkbox v-model="item.checked" @change="checkMousd('checkAll6',elseParameter)" />
           <span class="w150">{{ item.text }}</span>
           <el-input v-if="!item.type" v-model="item.value" :disabled="!item.checked" placeholder="请输入内容" />
           <el-select v-else v-model="item.value" :disabled="!item.checked" placeholder="请选择">
@@ -101,101 +101,107 @@ export default {
       activeItem: {},
       searchLoading: false,
       valueFrom: {},
+      checkAll1: false,
+      checkAll2: false,
+      checkAll3: false,
+      checkAll4: false,
+      checkAll5: false,
+      checkAll6: false,
       currentParameter: [ // 电流参数
-        { checked: false, name: 'E0001', text: '单体充电截止电压值(mV)', value: '' },
-        { checked: false, name: 'E0002', text: '单体电池充电恢复电压值(mV)', value: '' },
-        { checked: false, name: 'E0003', text: '额定容量(0.1Ah)', value: '' },
-        { checked: false, name: 'E0004', text: '压差过大三级报警值(mV)', value: '' },
-        { checked: false, name: 'E0005', text: '压差过大二级报警值(mV)', value: '' },
-        { checked: false, name: 'E0006', text: '压差过大一级报警值(mV)', value: '' },
-        { checked: false, name: 'E0007', text: '温差过大三级报警值(0.1℃)', value: '' },
-        { checked: false, name: 'E0008', text: '温差过大二级报警值(0.1℃)', value: '' },
-        { checked: false, name: 'E0009', text: '温差过大一级报警值(0.1℃)', value: '' },
-        { checked: false, name: 'E0010', text: '充电过流三级报警值(0.1A)', value: '' },
-        { checked: false, name: 'E0011', text: '充电过流二级报警值(0.1A)', value: '' },
-        { checked: false, name: 'E0012', text: '充电过流一级报警值(0.1A)', value: '' },
-        { checked: false, name: 'E0013', text: '充电过流三级报警恢复值(0.1A)', value: '' },
-        { checked: false, name: 'E0014', text: '充电过流二级报警恢复值(0.1A)', value: '' },
-        { checked: false, name: 'E0015', text: '充电过流一级报警恢复值(0.1A)', value: '' },
-        { checked: false, name: 'E0016', text: '放电过流三级报警值(0.1A)', value: '' },
-        { checked: false, name: 'E0017', text: '放电过流二级报警值(0.1A)', value: '' },
-        { checked: false, name: 'E0018', text: '放电过流一级报警值(0.1A)', value: '' },
-        { checked: false, name: 'E0019', text: '放电过流三级报警恢复值(0.1A)', value: '' },
-        { checked: false, name: 'E0020', text: '放电过流二级报警恢复值(0.1A)', value: '' },
-        { checked: false, name: 'E0021', text: '放电过流一级报警恢复值(0.1A)', value: '' }
+        { checked: false, name: 'E0001', tip: '', text: '单体充电截止电压值(mV)', value: '' },
+        { checked: false, name: 'E0002', tip: '', text: '单体电池充电恢复电压值(mV)', value: '' },
+        { checked: false, name: 'E0003', tip: '', text: '额定容量(0.1Ah)', value: '' },
+        { checked: false, name: 'E0004', tip: '', text: '压差过大三级报警值(mV)', value: '' },
+        { checked: false, name: 'E0005', tip: '', text: '压差过大二级报警值(mV)', value: '' },
+        { checked: false, name: 'E0006', tip: '', text: '压差过大一级报警值(mV)', value: '' },
+        { checked: false, name: 'E0007', tip: '', text: '温差过大三级报警值(0.1℃)', value: '' },
+        { checked: false, name: 'E0008', tip: '', text: '温差过大二级报警值(0.1℃)', value: '' },
+        { checked: false, name: 'E0009', tip: '', text: '温差过大一级报警值(0.1℃)', value: '' },
+        { checked: false, name: 'E0010', tip: '', text: '充电过流三级报警值(0.1A)', value: '' },
+        { checked: false, name: 'E0011', tip: '', text: '充电过流二级报警值(0.1A)', value: '' },
+        { checked: false, name: 'E0012', tip: '', text: '充电过流一级报警值(0.1A)', value: '' },
+        { checked: false, name: 'E0013', tip: '', text: '充电过流三级报警恢复值(0.1A)', value: '' },
+        { checked: false, name: 'E0014', tip: '', text: '充电过流二级报警恢复值(0.1A)', value: '' },
+        { checked: false, name: 'E0015', tip: '', text: '充电过流一级报警恢复值(0.1A)', value: '' },
+        { checked: false, name: 'E0016', tip: '', text: '放电过流三级报警值(0.1A)', value: '' },
+        { checked: false, name: 'E0017', tip: '', text: '放电过流二级报警值(0.1A)', value: '' },
+        { checked: false, name: 'E0018', tip: '', text: '放电过流一级报警值(0.1A)', value: '' },
+        { checked: false, name: 'E0019', tip: '', text: '放电过流三级报警恢复值(0.1A)', value: '' },
+        { checked: false, name: 'E0020', tip: '', text: '放电过流二级报警恢复值(0.1A)', value: '' },
+        { checked: false, name: 'E0021', tip: '', text: '放电过流一级报警恢复值(0.1A)', value: '' }
       ],
       monomerVoltageParameter: [ // 单体电压参数
-        { checked: false, name: 'V0001', text: '单体过压三级报警值(mV)', value: '' },
-        { checked: false, name: 'V0002', text: '单体过压二级报警值(mV)', value: '' },
-        { checked: false, name: 'V0003', text: '单体过压一级报警值(mV)', value: '' },
-        { checked: false, name: 'V0004', text: '单体过压三级报警恢复值(mV)', value: '' },
-        { checked: false, name: 'V0005', text: '单体过压二级报警恢复值(mV)', value: '' },
-        { checked: false, name: 'V0006', text: '单体过压一级报警恢复值(mV)', value: '' },
-        { checked: false, name: 'V0007', text: '单体欠压三级报警值(mV)', value: '' },
-        { checked: false, name: 'V0008', text: '单体欠压二级报警值(mV)', value: '' },
-        { checked: false, name: 'V0009', text: '单体欠压一级报警值(mV)', value: '' },
-        { checked: false, name: 'V0010', text: '单体欠压三级报警恢复值(mV)', value: '' },
-        { checked: false, name: 'V0011', text: '单体欠压二级报警恢复值(mV)', value: '' },
-        { checked: false, name: 'V0012', text: '单体欠压一级报警恢复值(mV)', value: '' }
+        { checked: false, name: 'V0001', tip: '', text: '单体过压三级报警值(mV)', value: '' },
+        { checked: false, name: 'V0002', tip: '', text: '单体过压二级报警值(mV)', value: '' },
+        { checked: false, name: 'V0003', tip: '', text: '单体过压一级报警值(mV)', value: '' },
+        { checked: false, name: 'V0004', tip: '', text: '单体过压三级报警恢复值(mV)', value: '' },
+        { checked: false, name: 'V0005', tip: '', text: '单体过压二级报警恢复值(mV)', value: '' },
+        { checked: false, name: 'V0006', tip: '', text: '单体过压一级报警恢复值(mV)', value: '' },
+        { checked: false, name: 'V0007', tip: '', text: '单体欠压三级报警值(mV)', value: '' },
+        { checked: false, name: 'V0008', tip: '', text: '单体欠压二级报警值(mV)', value: '' },
+        { checked: false, name: 'V0009', tip: '', text: '单体欠压一级报警值(mV)', value: '' },
+        { checked: false, name: 'V0010', tip: '', text: '单体欠压三级报警恢复值(mV)', value: '' },
+        { checked: false, name: 'V0011', tip: '', text: '单体欠压二级报警恢复值(mV)', value: '' },
+        { checked: false, name: 'V0012', tip: '', text: '单体欠压一级报警恢复值(mV)', value: '' }
       ],
       totalVoltageParameter: [ // 总电压参数
-        { checked: false, name: 'A0001', text: '总电压过压三级报警值(mV)', value: '' },
-        { checked: false, name: 'A0002', text: '总电压过压二级报警值(mV)', value: '' },
-        { checked: false, name: 'A0003', text: '总电压过压一级报警值(mV)', value: '' },
-        { checked: false, name: 'A0004', text: '总电压过压三级报警恢复值(mV)', value: '' },
-        { checked: false, name: 'A0005', text: '总电压过压二级报警恢复值(mV)', value: '' },
-        { checked: false, name: 'A0006', text: '总电压过压一级报警恢复值(mV)', value: '' },
-        { checked: false, name: 'A0007', text: '总电压欠压三级报警值(mV)', value: '' },
-        { checked: false, name: 'A0008', text: '总电压欠压二级报警值(mV)', value: '' },
-        { checked: false, name: 'A0009', text: '总电压欠压一级报警值(mV)', value: '' },
-        { checked: false, name: 'A0010', text: '总电压欠压三级报警恢复值(mV)', value: '' },
-        { checked: false, name: 'A0011', text: '总电压欠压二级报警恢复值(mV)', value: '' },
-        { checked: false, name: 'A0012', text: '总电压欠压一级报警恢复值(mV)', value: '' }
+        { checked: false, name: 'A0001', tip: '', text: '总电压过压三级报警值(mV)', value: '' },
+        { checked: false, name: 'A0002', tip: '', text: '总电压过压二级报警值(mV)', value: '' },
+        { checked: false, name: 'A0003', tip: '', text: '总电压过压一级报警值(mV)', value: '' },
+        { checked: false, name: 'A0004', tip: '', text: '总电压过压三级报警恢复值(mV)', value: '' },
+        { checked: false, name: 'A0005', tip: '', text: '总电压过压二级报警恢复值(mV)', value: '' },
+        { checked: false, name: 'A0006', tip: '', text: '总电压过压一级报警恢复值(mV)', value: '' },
+        { checked: false, name: 'A0007', tip: '', text: '总电压欠压三级报警值(mV)', value: '' },
+        { checked: false, name: 'A0008', tip: '', text: '总电压欠压二级报警值(mV)', value: '' },
+        { checked: false, name: 'A0009', tip: '', text: '总电压欠压一级报警值(mV)', value: '' },
+        { checked: false, name: 'A0010', tip: '', text: '总电压欠压三级报警恢复值(mV)', value: '' },
+        { checked: false, name: 'A0011', tip: '', text: '总电压欠压二级报警恢复值(mV)', value: '' },
+        { checked: false, name: 'A0012', tip: '', text: '总电压欠压一级报警恢复值(mV)', value: '' }
 
       ],
       chargingParameter: [ // 充电参数
-        { checked: false, name: 'C0001', text: '充电温度过高三级报警值(0.1℃)', value: '' },
-        { checked: false, name: 'C0002', text: '充电温度过高二级报警值(0.1℃)', value: '' },
-        { checked: false, name: 'C0003', text: '充电温度过高一级报警值(0.1℃)', value: '' },
-        { checked: false, name: 'C0004', text: '充电温度高三级报警恢复值(0.1℃)', value: '' },
-        { checked: false, name: 'C0005', text: '充电温度高二级报警恢复值(0.1℃)', value: '' },
-        { checked: false, name: 'C0006', text: '充电温度高一级报警恢复值(0.1℃)', value: '' },
-        { checked: false, name: 'C0007', text: '充电温度过低三级报警值(0.1℃)', value: '' },
-        { checked: false, name: 'C0008', text: '充电温度过低二级报警值(0.1℃)', value: '' },
-        { checked: false, name: 'C0008', text: '充电温度过低一级报警值(0.1℃)', value: '' },
-        { checked: false, name: 'C0010', text: '充电温度过低三级报警值恢复值(0.1℃)', value: '' },
-        { checked: false, name: 'C0011', text: '充电温度过低二级报警值恢复值(0.1℃)', value: '' },
-        { checked: false, name: 'C0012', text: '充电温度过低一级报警值恢复值(0.1℃)', value: '' }
+        { checked: false, name: 'C0001', tip: '', text: '充电温度过高三级报警值(0.1℃)', value: '' },
+        { checked: false, name: 'C0002', tip: '', text: '充电温度过高二级报警值(0.1℃)', value: '' },
+        { checked: false, name: 'C0003', tip: '', text: '充电温度过高一级报警值(0.1℃)', value: '' },
+        { checked: false, name: 'C0004', tip: '', text: '充电温度高三级报警恢复值(0.1℃)', value: '' },
+        { checked: false, name: 'C0005', tip: '', text: '充电温度高二级报警恢复值(0.1℃)', value: '' },
+        { checked: false, name: 'C0006', tip: '', text: '充电温度高一级报警恢复值(0.1℃)', value: '' },
+        { checked: false, name: 'C0007', tip: '', text: '充电温度过低三级报警值(0.1℃)', value: '' },
+        { checked: false, name: 'C0008', tip: '', text: '充电温度过低二级报警值(0.1℃)', value: '' },
+        { checked: false, name: 'C0008', tip: '', text: '充电温度过低一级报警值(0.1℃)', value: '' },
+        { checked: false, name: 'C0010', tip: '', text: '充电温度过低三级报警值恢复值(0.1℃)', value: '' },
+        { checked: false, name: 'C0011', tip: '', text: '充电温度过低二级报警值恢复值(0.1℃)', value: '' },
+        { checked: false, name: 'C0012', tip: '', text: '充电温度过低一级报警值恢复值(0.1℃)', value: '' }
       ],
       dischargeParameter: [ // 放电参数
-        { checked: false, name: 'D0001', text: '放电温度过高三级报警值(0.1℃)', value: '' },
-        { checked: false, name: 'D0002', text: '放电温度过高二级报警值(0.1℃)', value: '' },
-        { checked: false, name: 'D0003', text: '放电温度过高一级报警值(0.1℃)', value: '' },
-        { checked: false, name: 'D0004', text: '放电温度高三级报警恢复值(0.1℃)', value: '' },
-        { checked: false, name: 'D0005', text: '放电温度高二级报警恢复值(0.1℃)', value: '' },
-        { checked: false, name: 'D0006', text: '放电温度高一级报警恢复值(0.1℃)', value: '' },
-        { checked: false, name: 'D0007', text: '放电温度过低三级报警值(0.1℃)', value: '' },
-        { checked: false, name: 'D0008', text: '放电温度过低二级报警值(0.1℃)', value: '' },
-        { checked: false, name: 'D0009', text: '放电温度过低一级报警值(0.1℃)', value: '' },
-        { checked: false, name: 'D0010', text: '放电温度过低三级报警值恢复值(0.1℃)', value: '' },
-        { checked: false, name: 'D0011', text: '放电温度过低二级报警值恢复值(0.1℃)', value: '' },
-        { checked: false, name: 'D0012', text: '放电温度过低一级报警值恢复值(0.1℃)', value: '' }
+        { checked: false, name: 'D0001', tip: '', text: '放电温度过高三级报警值(0.1℃)', value: '' },
+        { checked: false, name: 'D0002', tip: '', text: '放电温度过高二级报警值(0.1℃)', value: '' },
+        { checked: false, name: 'D0003', tip: '', text: '放电温度过高一级报警值(0.1℃)', value: '' },
+        { checked: false, name: 'D0004', tip: '', text: '放电温度高三级报警恢复值(0.1℃)', value: '' },
+        { checked: false, name: 'D0005', tip: '', text: '放电温度高二级报警恢复值(0.1℃)', value: '' },
+        { checked: false, name: 'D0006', tip: '', text: '放电温度高一级报警恢复值(0.1℃)', value: '' },
+        { checked: false, name: 'D0007', tip: '', text: '放电温度过低三级报警值(0.1℃)', value: '' },
+        { checked: false, name: 'D0008', tip: '', text: '放电温度过低二级报警值(0.1℃)', value: '' },
+        { checked: false, name: 'D0009', tip: '', text: '放电温度过低一级报警值(0.1℃)', value: '' },
+        { checked: false, name: 'D0010', tip: '', text: '放电温度过低三级报警值恢复值(0.1℃)', value: '' },
+        { checked: false, name: 'D0011', tip: '', text: '放电温度过低二级报警值恢复值(0.1℃)', value: '' },
+        { checked: false, name: 'D0012', tip: '', text: '放电温度过低一级报警值恢复值(0.1℃)', value: '' }
       ],
       elseParameter: [ // 其他参数
-        { checked: false, name: 'Q0001', text: '充电加热使能', value: '', type: 'select', options: [{ name: '使能', value: 1 }, { name: '禁止', value: 0 }] },
-        { checked: false, name: 'Q0002', text: '充电加热开始温度(0.1℃)', value: '' },
-        { checked: false, name: 'Q0003', text: '充电加热截止温度(0.1℃)', value: '' },
-        { checked: false, name: 'Q0004', text: 'SOC过低三级报警值（‰）', value: '' },
-        { checked: false, name: 'Q0005', text: 'SOC过低二级报警值（‰）', value: '' },
-        { checked: false, name: 'Q0006', text: 'SOC过低一级报警值(0.001)', value: '' },
-        { checked: false, name: 'Q0007', text: '正常充电电流设置值(0.1A)', value: '' },
-        { checked: false, name: 'Q0008', text: '充电加热电流设置值(0.1A)', value: '' },
-        { checked: false, name: 'Q0009', text: '总放电电量（0.1KWh）', value: '' },
-        { checked: false, name: 'Q0010', text: '总充电电量（0.1KWh）', value: '' },
-        { checked: false, name: 'Q0011', text: '被动均衡使能', value: '', type: 'select', options: [{ name: '使能', value: 1 }, { name: '禁止', value: 0 }] },
-        { checked: false, name: 'Q0012', text: '被动均衡开启电压差值（mV）', value: '' },
-        { checked: false, name: 'Q0013', text: '被动均衡开启压差值（mV）', value: '' },
-        { checked: false, name: 'Q0014', text: '远程升级使能', value: '', type: 'select', options: [{ name: '使能', value: 1 }, { name: '禁止', value: 0 }] }
+        { checked: false, name: 'Q0001', tip: '', text: '充电加热使能', value: '', type: 'select', options: [{ name: '使能', value: 1 }, { name: '禁止', value: 0 }] },
+        { checked: false, name: 'Q0002', tip: '', text: '充电加热开始温度(0.1℃)', value: '' },
+        { checked: false, name: 'Q0003', tip: '', text: '充电加热截止温度(0.1℃)', value: '' },
+        { checked: false, name: 'Q0004', tip: '', text: 'SOC过低三级报警值（‰）', value: '' },
+        { checked: false, name: 'Q0005', tip: '', text: 'SOC过低二级报警值（‰）', value: '' },
+        { checked: false, name: 'Q0006', tip: '', text: 'SOC过低一级报警值(0.001)', value: '' },
+        { checked: false, name: 'Q0007', tip: '', text: '正常充电电流设置值(0.1A)', value: '' },
+        { checked: false, name: 'Q0008', tip: '', text: '充电加热电流设置值(0.1A)', value: '' },
+        { checked: false, name: 'Q0009', tip: '', text: '总放电电量（0.1KWh）', value: '' },
+        { checked: false, name: 'Q0010', tip: '', text: '总充电电量（0.1KWh）', value: '' },
+        { checked: false, name: 'Q0011', tip: '', text: '被动均衡使能', value: '', type: 'select', options: [{ name: '使能', value: 1 }, { name: '禁止', value: 0 }] },
+        { checked: false, name: 'Q0012', tip: '', text: '被动均衡开启电压差值（mV）', value: '' },
+        { checked: false, name: 'Q0013', tip: '', text: '被动均衡开启压差值（mV）', value: '' },
+        { checked: false, name: 'Q0014', tip: '', text: '远程升级使能', value: '', type: 'select', options: [{ name: '使能', value: 1 }, { name: '禁止', value: 0 }] }
       ],
       defaultCurrentParameter: [],
       defaultMonomerVoltageParameter: [],
@@ -231,6 +237,22 @@ export default {
     this.$root.enterDown = this.searchSubmit
   },
   methods: {
+    checkAllHandle(list, val) {
+      if (val) {
+        list.forEach(element => {
+          element.checked = true
+        })
+        return
+      }
+      list.forEach(element => {
+        element.checked = false
+      })
+    },
+    checkMousd(flg, list) {
+      this[flg] = !list.some(element => {
+        return !element.checked
+      })
+    },
     searchSubmit() {
       // 搜索设备
       this.searchLoading = true
@@ -299,12 +321,16 @@ export default {
         this.$message.warning('请确保输入正确的设备id~')
         return
       }
-      const filterFun = (element) => {
+      const filterFun = (element, index, arr) => {
+        const value = Number(element.value)
         if (element.checked) {
           if (!element.value.toString()) { // 值为空
             return true
           }
-          if (isNaN(element.value)) { // 不是数字
+          if (isNaN(value)) { // 不是数字
+            return true
+          }
+          if (!Number.isInteger(value) && element.text.indexOf('0.') === -1) { // 只能输入整形的填入了小数
             return true
           }
         }
@@ -318,7 +344,19 @@ export default {
       const elseParameter = this.elseParameter.filter(filterFun)
       const valueFun = (element) => {
         setTimeout(() => {
-          this.$message.warning('请输入正确的' + element.text)
+          const value = Number(element.value)
+          if (!element.value.toString()) { // 值为空
+            this.$message.warning('请输入' + element.text)
+            return true
+          }
+          if (isNaN(value)) { // 不是数字
+            this.$message.warning('请输入正确的' + element.text)
+            return true
+          }
+          if (!Number.isInteger(value) && element.text.indexOf('0.') === -1) { // 只能输入整形的填入了小数
+            this.$message.warning(element.text + '：不能输入小数！')
+            return true
+          }
         }, 200)
       }
       if (currentParameter.length) {
@@ -351,7 +389,7 @@ export default {
         type: 'warning'
       }).then(() => {
         downCode(this.getParams).then((res) => {
-
+          this.$message.warning('下发命令成功')
         }).catch(() => {
         }).finally(() => {
 
