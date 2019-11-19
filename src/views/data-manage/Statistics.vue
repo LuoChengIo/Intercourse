@@ -55,14 +55,14 @@
         <el-table-column
           align="center"
           prop="charge"
-          label="充电功率（W）"
-          width="120"
+          label="充电电量（kWh）"
+          width="140"
         />
         <el-table-column
           align="center"
           prop="discharge"
-          label="放电功率（W）"
-          width="120"
+          label="放电电量（kWh）"
+          width="140"
         />
         <el-table-column
           align="center"
