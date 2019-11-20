@@ -149,7 +149,8 @@ export default {
         loginId: this.loginForm.loginId, // 用户名
         password: encryptedData(this.loginForm.password) // 密码
       }).then(() => {
-        this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+        // this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+        this.$router.push({ path: '/', query: this.otherQuery })
         this.loading = false
         this.setUserInfo()
       }).catch((err) => {
