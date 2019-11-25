@@ -389,7 +389,7 @@ export default {
         type: 'warning'
       }).then(() => {
         downCode(this.getParams).then((res) => {
-          this.$message.warning('下发命令成功')
+          this.$message.success('下发命令成功')
         }).catch(() => {
         }).finally(() => {
 
