@@ -131,6 +131,7 @@ export default {
         { checked: false, name: 'E0021', tip: '', text: '放电过流一级报警恢复值(0.1A)', float: true, value: '' }
       ],
       monomerVoltageParameter: [ // 单体电压参数
+        { checked: false, name: 'V0001', tip: '', text: '单体过压三级报警值(mV)', value: '' },
         { checked: false, name: 'V0002', tip: '', text: '单体过压二级报警值(mV)', value: '' },
         { checked: false, name: 'V0003', tip: '', text: '单体过压一级报警值(mV)', value: '' },
         { checked: false, name: 'V0004', tip: '', text: '单体过压三级报警恢复值(mV)', value: '' },
@@ -167,7 +168,7 @@ export default {
         { checked: false, name: 'C0006', tip: '', text: '充电温度高一级报警恢复值(0.1℃)', float: true, value: '' },
         { checked: false, name: 'C0007', tip: '', text: '充电温度过低三级报警值(0.1℃)', float: true, value: '' },
         { checked: false, name: 'C0008', tip: '', text: '充电温度过低二级报警值(0.1℃)', float: true, value: '' },
-        { checked: false, name: 'C0008', tip: '', text: '充电温度过低一级报警值(0.1℃)', float: true, value: '' },
+        { checked: false, name: 'C0009', tip: '', text: '充电温度过低一级报警值(0.1℃)', float: true, value: '' },
         { checked: false, name: 'C0010', tip: '', text: '充电温度过低三级报警值恢复值(0.1℃)', float: true, value: '' },
         { checked: false, name: 'C0011', tip: '', text: '充电温度过低二级报警值恢复值(0.1℃)', float: true, value: '' },
         { checked: false, name: 'C0012', tip: '', text: '充电温度过低一级报警值恢复值(0.1℃)', float: true, value: '' }
