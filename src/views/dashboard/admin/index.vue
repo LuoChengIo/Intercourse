@@ -16,18 +16,18 @@
           </el-col> -->
         </el-row>
         <el-row v-for="(item,index) in warningData" :key="index" class="mt20 mb20 f13">
-          <el-col :span="12" class="text-primary">
-            <router-link :to="{ path: '/real/time-list', query: { failure: item.value }}">
+          <router-link :to="{ path: '/real/time-list', query: { failure: item.value }}">
+            <el-col :span="12" class="text-primary">
               <img class="warn-icon" :src="item.imgsrc" alt="" srcset="">
               {{ item.title }}
-            </router-link>
-          </el-col>
-          <el-col :span="12" :class="item.myclass" class="tc">
-            {{ item.quantity }}
-          </el-col>
+            </el-col>
+            <el-col :span="12" :class="item.myclass" class="tc">
+              {{ item.quantity }}
+            </el-col>
           <!-- <el-col :span="8" :class="item.myclass" class="tc">
             {{ item.yearonyear }}
           </el-col> -->
+          </router-link>
         </el-row>
         <div>
           <line-chart :chart-data="lineChartData" />
@@ -64,7 +64,7 @@ import LineChart from './components/LineChart'
 import BarChart from './components/BarChart'
 import PieChart from './components/PieChart'
 const warningData = [{
-  imgsrc: require('@/assets/icon_warning01@2x.png'),
+  imgsrc: require('@/assets/icon_warning03@2x.png'),
   title: '一级警告',
   key: 'alarmLevel1',
   value: '1',
@@ -80,7 +80,7 @@ const warningData = [{
   yearonyear: '10.85↑',
   myclass: 'text-danger'
 }, {
-  imgsrc: require('@/assets/icon_warning03@2x.png'),
+  imgsrc: require('@/assets/icon_warning01@2x.png'),
   title: '三级警告',
   key: 'alarmLevel3',
   value: '3',

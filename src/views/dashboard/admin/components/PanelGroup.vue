@@ -17,7 +17,7 @@
       <div class="card-panel bg-item2" @click="handleSetLineChartData('messages')">
         <div class="card-panel-description">
           <div class="card-panel-text">
-            总放电功率(W)
+            总放电电量（KWh）
           </div>
           <count-to :start-val="0" :end-val="numobj.disChargeSum" :duration="3000" class="card-panel-num" />
         </div>
@@ -27,7 +27,7 @@
       <div class="card-panel bg-item3" @click="handleSetLineChartData('purchases')">
         <div class="card-panel-description">
           <div class="card-panel-text">
-            总充电功率(W)
+            总充电电量（KWh）
           </div>
           <count-to :start-val="0" :end-val="numobj.chargeSum" :duration="3200" class="card-panel-num" />
         </div>

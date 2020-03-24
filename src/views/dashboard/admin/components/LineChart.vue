@@ -171,9 +171,9 @@ export default {
         series: [{
           name: '一级警告', itemStyle: {
             normal: {
-              color: '#FA2121',
+              color: '#FFC12F',
               lineStyle: {
-                color: '#FA2121',
+                color: '#FFC12F',
                 width: 1
               }
             }
@@ -188,9 +188,9 @@ export default {
         {
           name: '二级警告', itemStyle: {
             normal: {
-              color: '#FF832F',
+              color: '#cc9516',
               lineStyle: {
-                color: '#FF832F',
+                color: '#cc9516',
                 width: 1
               }
             }
@@ -204,9 +204,9 @@ export default {
         }, {
           name: '三级警告', itemStyle: {
             normal: {
-              color: '#FFC12F',
+              color: '#FA2121',
               lineStyle: {
-                color: '#FFC12F',
+                color: '#FA2121',
                 width: 1
               }
             }
