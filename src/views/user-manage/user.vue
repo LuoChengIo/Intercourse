@@ -176,10 +176,9 @@
             </el-form-item>
           </el-form>
           <div class="dialog-boder-card p10">
-            <el-transfer v-model="formInline.transfer" :data="transferData" :right-default-checked="rightDefaultchecked" @right-check-change="transferChange" />
+            <el-transfer v-model="formInline.transfer" :titles="['可选角色', '已选角色']" :data="transferData" :right-default-checked="rightDefaultchecked" @right-check-change="transferChange" />
           </div>
         </div>
-
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button v-if="dialogType!==1" type="primary" @click="addEditSubmit">确 定</el-button>
@@ -188,7 +187,6 @@
     </el-dialog>
   </div>
 </template>
-
 <script>
 import { getUserList, getCompanyList, midifyUserStatus, passwordReset, getFunctionListByRoleList, getUserInformation, addUser, modifyUserInformation, getRoleList } from '@/api/user.js'
 import { validUsername } from '@/utils/validate'
